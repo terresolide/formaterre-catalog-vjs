@@ -13,9 +13,17 @@ export default defineConfig({
   ],
   experimental: {
 	  renderBuiltUrl(filename, hostType) {
-	    
-	      return prodUrl + '/' + filename
+	      return prodUrl + filename
 	  }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: `assets/[name].js`,
+        chunkFileNames: `assets/[name].js`,
+        assetFileNames: `assets/[name].[ext]`,
+      }
+    }
   },
   resolve: {
     alias: {
