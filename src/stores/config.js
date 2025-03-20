@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 
 export const useConfig = defineStore('config', () => {
-  let configuration = {
+  let state = {
       api: 'https://machin'
   }
   function init(conf) {
-    configuration = Object.assign(configuration, conf)
+    state = Object.assign(state, conf)
   }
 
-  return {configuration, init}
+  return {state, init}
 })
