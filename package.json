@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "production": {
+    "url": "https://cdn.jsdelivr.net/gh/terresolide"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
