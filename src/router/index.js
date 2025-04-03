@@ -34,7 +34,7 @@ const router = createRouter({
       component: () => import('../views/MapView.vue'),
     },
     {
-      path: '/grid:id',
+      path: '/grid/:id',
       name: 'catalog-grid',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
