@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink} from 'vue-router'
-import { defineProps } from 'vue';
+// import { defineProps } from 'vue';
 import {useConfig} from '@/stores/config';
 const props = defineProps({
     catalog: Object
@@ -11,8 +11,9 @@ console.log(props.catalog)
 <template>
     <div class="element-flex">
         <router-link class="service-link" :to="{name: 'catalog-grid', params: {id: props.catalog.name}}">
+           
             <figure >
-	         <img :src="config.state.api + '/images/harvesting/' + props.catalog.logo" />
+	         <img v-if="props.catalog.logo" :src="config.state.api + '/images/harvesting/' + props.catalog.logo" />
              <div >{{props.catalog.name}}</div>
 
 	       </figure>
