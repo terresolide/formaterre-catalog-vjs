@@ -24,7 +24,7 @@ console.log(props.catalog)
 <style scoped>
 figure div {
   position:absolute;
-  top:110px;
+  top:100px;
   color:white;
   font-weight:600;
   text-align:center;
