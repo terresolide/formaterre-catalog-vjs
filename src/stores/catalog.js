@@ -17,6 +17,9 @@ export const useCatalog = defineStore('catalog', {
                 this.list = json
             })
         }
+    },
+    getCatalog (name) {
+      return this.list.find(c => c.name.toLowerCase() === name.toLowerCase())
     }
   }
 })
