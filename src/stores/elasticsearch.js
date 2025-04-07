@@ -7,6 +7,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
       catalogId: null,
       uuid: null,
       nbRecords: 24,
+      groupOwner: null,
       aggregations: {
         step1: {
           groupOwner: {
@@ -125,8 +126,16 @@ export const useElasticsearch = defineStore('elasticsearch', {
     }),
     actions: {
       setCatalog ( name, id) {
-         this.name = name
-         this.id = id
+        this.name = name
+        if (!id) {
+          this.groupOwner = null
+        }
+        let catalogs = useCatalog()
+        let catalog = catalogs.getCatalog(id)
+        console.log(catalog)
+        if (catalog) {
+          this.groupOwner = catalog.id
+        }
       },
       getDefaultParameters () {
         return {
@@ -213,9 +222,9 @@ export const useElasticsearch = defineStore('elasticsearch', {
             }
             parameters.query.bool.must.push(term)
         }
-     
-        if (this.catalogId) {
-            parameters.query.bool.filter.push({term: {groupOwner: this.catalogId }})
+      
+        if (this.groupOwner) {
+            parameters.query.bool.filter.push({term: {groupOwner: this.groupOwner }})
             delete aggregations['groupOwner']
         }
       

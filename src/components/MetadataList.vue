@@ -57,16 +57,24 @@ div.wrapper-group{
   -ms-flex: 1 1 330px;
   flex: 1 1 330px;
   
-   padding: 20px;
+  padding: 0px 10px 20px 10px;
   margin: 0 10px 20px;
   -webkit-box-shadow: 0 0px 3px rgba(0,0,0,0.5);
   box-shadow: 0 0px 3px rgba(0,0,0,0.5);
   position: relative;
   background: #fff;
+  max-height:200px;
+  overflow:hidden;
   
   
   }
-  div.element-flex > div:first-child {
+  div.element-metadata-flex h3 {
+    margin: -25px -10px 0 -10px;
+    padding: 5px;
+    background: blue;
+    color: white;
+  }
+  div.element-metadata-flex > div:first-child {
       position:relative;
       overflow: hidden;
       /*padding: 20px;

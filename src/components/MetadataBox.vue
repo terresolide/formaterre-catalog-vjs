@@ -6,22 +6,16 @@ let config = useConfig()
 const props = defineProps({
     metadata: Object
 })
-function tr (obj) {
-   if (obj['lang' + config.state.lang + 'e']) {
-    obj['lang' + config.state.lang + 'e']
-   } else {
-    return obj.default
-   }
-}
+
 
 </script>
 <template>
-    <div class="element-flex">
-        <router-link class="service-link" >
+    <div class="element-metadata-flex" >
+        <a class="service-link" >
         
-           <h3 style="color:black;margin:5px 0;">{{tr(props.metadata._source.resourceTitleObject)}}</h3>
+           <h3 :style="{background: config.state.emphasis}">{{config.tr(props.metadata._source.resourceTitleObject)}}</h3>
              {{props.metadata._source.resourceTitleObject}}
-        </router-link>
+        </a>
     </div>
 </template>
 <style scoped>
@@ -39,6 +33,7 @@ figure div {
  -webkit-text-shadow: 0 0 3px #000;
  -webkit-box-sizing: content-box;
  box-sizing: content-box;
+
   
 }
 

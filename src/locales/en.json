@@ -1,3 +1,8 @@
 {
-    "catalog": "catalogs en"
+    "catalog": "Catalog | Catalogs",
+    "grid_view": "Grid view",
+    "login": "Login",
+    "logout": "Logout",
+    "map_view": "Map view",
+    "text_search": "Text search"
 }

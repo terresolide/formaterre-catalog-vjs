@@ -1,7 +1,8 @@
 {
     "catalog": "Catalogue | Catalogues",
-    "grid": "Vue grille",
+    "grid_view": "Vue grille",
     "login": "Se connecter",
     "logout": "Se déconnecter",
-    "map": "Vue carte"
+    "map_view": "Vue carte",
+    "text_search": "Recherche textuelle"
 }

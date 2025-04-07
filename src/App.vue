@@ -32,14 +32,14 @@ const route = useRoute()
       </div>
       <div style="text-align:center;width:calc(100% - 300px);">
         <template v-if="route.params.id">
-          <RouterLink :to="{name: 'catalog-map', id: route.params.id}"><font-awesome-icon icon="fa-solid fa-map" /> Vue Carte</RouterLink>
-          <RouterLink :to="{name: 'catalog-grid', id: route.params.id}"><font-awesome-icon icon="fa-solid fa-grip" /> Vue Grille</RouterLink>
-          <RouterLink :to="{name: 'catalog-search', id: route.params.id}"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> Recherche textuelle</RouterLink>
+          <RouterLink :to="{name: 'catalog-map', id: route.params.id}"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
+          <RouterLink :to="{name: 'catalog-grid', id: route.params.id}"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
+          <RouterLink :to="{name: 'catalog-search', id: route.params.id}"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
         </template>
         <template v-else>
-          <RouterLink to="/map"><font-awesome-icon icon="fa-solid fa-map" /> Vue Carte</RouterLink>
-          <RouterLink to="/grid"><font-awesome-icon icon="fa-solid fa-grip" /> Vue Grille</RouterLink>
-          <RouterLink to="/search"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> Recherche textuelle</RouterLink>
+          <RouterLink to="/map"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
+          <RouterLink to="/grid"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
+          <RouterLink to="/search"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
         </template>
       </div>
       

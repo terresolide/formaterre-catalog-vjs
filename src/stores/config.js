@@ -6,12 +6,20 @@ export const useConfig = defineStore('config', () => {
       primary:"#754a15",
       emphasis: "#dd9946",
       link: "#754a15",
-      over: "#8c0209"
+      over: "#8c0209",
+      lang: 'en'
 
   }
   function init(conf) {
     state = Object.assign(state, conf)
+    state.locale = state.lang === 'fr' ? 'fre' : 'eng'
+    console.log(state.locale)
   }
-
-  return {state, init}
+  function tr (obj) {
+    if (obj['lang' + state.locale]) {
+      return obj['lang' + state.locale]
+    }
+    return obj.default
+  }
+  return {state, init, tr}
 })
