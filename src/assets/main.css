@@ -1,0 +1,20 @@
+@import './base.css';
+
+#app {
+  max-width: 1975px;
+  min-width: 800px;
+  margin:auto;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: darkred;
+  transition: 0.4s;
+  padding: 3px;
+}
+
+
