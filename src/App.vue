@@ -1,20 +1,23 @@
 <script setup lang="ts">
-// import { ref } from 'vue'
+import {computed, onMounted, watch } from 'vue'
 import { useRoute, RouterLink, RouterView } from 'vue-router'
 import {useConfig} from '@/stores/config'
 import {useCatalog} from '@/stores/catalog'
-// import { useI18n } from "vue-i18n";
-// import { loadLocaleMessages } from './i18n'
 const config = useConfig()
 config.init()
 const catalog = useCatalog()
 catalog.init()
 
 const route = useRoute()
-// const i18n = useI18n()
-// loadLocaleMessages(i18n, 'en')
-// const primary = ref(config.state.primary)
-
+watch(route, () => {
+    catalog.setCatalog(route.params.catalog)
+})
+onMounted(() => {
+    catalog.setCatalog(route.params.catalog)
+})
+let currentCatalog = computed(() => { 
+    return catalog.getCatalog()
+})
 // Ajouter authentification et un store user
 </script>
 
@@ -23,18 +26,20 @@ const route = useRoute()
 
     <div class="wrapper">
       <div style="text-align:right;">
+        <a><font-awesome-icon icon="fa-solid fa-basket"/> {{$t('basket')}}</a>
         <a><font-awesome-icon icon="fa-solid fa-user" /> {{ $t('login') }}</a>
       </div>
       <nav>
-        <!--<div class="test" :style="{background: primary}">machin</div>-->
         <div>
-        <RouterLink style="padding-right:0;" to="/" >{{$t('catalog', 10)}}</RouterLink><template v-if="route.params.id"> / {{route.params.id}}</template>
+        <RouterLink style="padding-right:0;" to="/" >{{$t('catalog', 10)}}</RouterLink>
+        <template v-if="currentCatalog"> / 
+        <img :src="config.state.api + '/images/harvesting/' + currentCatalog.logo" width="25" style="vertical-align:middle;" > {{currentCatalog.name}}</template>
       </div>
       <div style="text-align:center;width:calc(100% - 300px);">
-        <template v-if="route.params.id">
-          <RouterLink :to="{name: 'catalog-map', id: route.params.id}"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
-          <RouterLink :to="{name: 'catalog-grid', id: route.params.id}"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
-          <RouterLink :to="{name: 'catalog-search', id: route.params.id}"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
+        <template v-if="route.params.catalog">
+          <RouterLink :to="{name: 'catalog-map', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
+          <RouterLink :to="{name: 'catalog-grid', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
+          <RouterLink :to="{name: 'catalog-search', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
         </template>
         <template v-else>
           <RouterLink to="/map"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>

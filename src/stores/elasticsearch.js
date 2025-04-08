@@ -144,7 +144,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             _source: {
               includes: this.includes
             },
-            sort: [{changeDate: "desc"}, {popularity: "desc"}],
+            sort: [ {popularity: "desc"}, {changeDate: "desc"}],
             query: {
               bool: {
                   filter: [{
@@ -171,7 +171,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
         }
         if (query.sortBy) {
             // this.parameters.sort = [{changeDate: 'desc'}, {popularity: desc}]
-            if (query.sortBy === 'popularity') {
+            if (query.sortBy === 'changeDate') {
             parameters.sort.reverse()
             } 
             // else if (route.query.sortBy === 'title') {

@@ -4,7 +4,8 @@ import {useConfig} from './config'
 export const useCatalog = defineStore('catalog', {
   state: () => ({
     list: [],
-    initialized: false
+    initialized: false,
+    current: null
   }),
   actions: {
     async init () {
@@ -18,9 +19,17 @@ export const useCatalog = defineStore('catalog', {
             })
         }
     },
-    getCatalog (name) {
-      console.log(name)
-      return this.list.find(c => c.name.toLowerCase() === name.toLowerCase())
+    setCatalog (name) {
+        console.log(name)
+        if (!name) {
+           this.current = null
+           return null
+        }
+        this.current = this.list.find(c => c.name.toLowerCase() === name.toLowerCase())
+        return this.current
+    },
+    getCatalog () {
+      return this.current
     }
   }
 })

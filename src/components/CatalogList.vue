@@ -3,7 +3,9 @@ import { computed } from 'vue';
 import {useCatalog} from '@/stores/catalog';
 import CatalogBox from './CatalogBox.vue';
 let catalog = useCatalog()
-const list = computed(() => {return catalog.list})
+const list = computed(() => {
+  return catalog.list
+})
 </script>
 <template>
     <div class="wrapper-group">

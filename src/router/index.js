@@ -34,7 +34,7 @@ const router = createRouter({
       component: () => import('../views/SearchView.vue'),
     },
     {
-      path: '/map/:id',
+      path: '/map/:catalog',
       name: 'catalog-map',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
@@ -42,7 +42,7 @@ const router = createRouter({
       component: () => import('../views/MapView.vue'),
     },
     {
-      path: '/grid/:id',
+      path: '/grid/:catalog',
       name: 'catalog-grid',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
@@ -50,7 +50,7 @@ const router = createRouter({
       component: () => import('../views/GridView.vue'),
     },
     {
-      path: '/search/:id',
+      path: '/search/:catalog',
       name: 'catalog-search',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route

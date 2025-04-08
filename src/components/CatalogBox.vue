@@ -1,21 +1,17 @@
 <script setup>
 import { RouterLink} from 'vue-router'
-// import { defineProps } from 'vue';
 import {useConfig} from '@/stores/config';
 const props = defineProps({
     catalog: Object
 })
 let config = useConfig()
-console.log(props.catalog)
 </script>
 <template>
     <div class="element-flex">
-        <router-link class="service-link" :to="{name: 'catalog-grid', params: {id: props.catalog.name}}">
-           
+        <router-link class="service-link" :to="{name: 'catalog-grid', params: {catalog: props.catalog.name.toLowerCase()}}">
             <figure >
 	         <img v-if="props.catalog.logo" :src="config.state.api + '/images/harvesting/' + props.catalog.logo" />
              <div >{{props.catalog.name}}</div>
-
 	       </figure>
            <h3 style="color:black;margin:5px 0;">{{props.catalog.name}}</h3>
            {{ props.catalog }}
@@ -37,7 +33,5 @@ figure div {
  -webkit-text-shadow: 0 0 3px #000;
  -webkit-box-sizing: content-box;
  box-sizing: content-box;
-  
 }
-
 </style>
