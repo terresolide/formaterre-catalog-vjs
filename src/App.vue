@@ -33,7 +33,7 @@ let currentCatalog = computed(() => {
         <div>
         <RouterLink style="padding-right:0;" to="/" >{{$t('catalog', 10)}}</RouterLink>
         <template v-if="currentCatalog"> / 
-        <img :src="config.state.api + '/images/harvesting/' + currentCatalog.logo" width="25" style="vertical-align:middle;" > {{currentCatalog.name}}</template>
+        <img :src="config.state.api + '/images/harvesting/' + currentCatalog.logo" height="25" style="vertical-align:middle;" > {{currentCatalog.name}}</template>
       </div>
       <div style="text-align:center;width:calc(100% - 300px);">
         <template v-if="route.params.catalog">

@@ -7,7 +7,9 @@ export const useConfig = defineStore('config', () => {
       emphasis: "#dd9946",
       link: "#754a15",
       over: "#8c0209",
-      lang: 'en'
+      lang: 'en',
+      locale: 'eng',
+      formatDate: ''
 
   }
   function init(conf) {

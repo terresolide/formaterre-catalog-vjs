@@ -1,9 +1,10 @@
 <script setup>
 import {computed} from 'vue'
 import { RouterLink} from 'vue-router'
-// import { defineProps } from 'vue';
-import {useConfig} from '@/stores/config';
+import {useConfig} from '@/stores/config'
+import TemporalExtent from '@/components/TemporalExtent.vue'
 let config = useConfig()
+
 let x = 3
 const props = defineProps({
     metadata: Object
@@ -39,6 +40,7 @@ const metadata = computed(() => {
           title: source.overview[0].nameObject ? config.tr(source.overview[0].nameObject) : ''
       }
     }
+    meta.temporalExtents = source.resourceTemporalExtentDetails
     
     return meta
 })
@@ -59,6 +61,7 @@ const metadata = computed(() => {
                      </div>
            
                 </div>
+                <temporal-extent v-for="extent in metadata.temporalExtents" :extent="extent"></temporal-extent>
                 <div v-html="metadata.description"></div>
             </div>
         </a>
@@ -121,7 +124,7 @@ div.element-metadata-flex {
   padding: 3px 5px;
   vertical-align: middle;
   box-sizing: border-box;
-  line-height: 30px;
+  line-height: 130px;
   }
    div.element-metadata-flex  div.element-description{
     max-height:165px;
@@ -129,13 +132,11 @@ div.element-metadata-flex {
     padding: 5px;
     font-size:15px;
 }
- div.element-metadata-flex .mtdt-child div.element-description{
-   max-height: 170px;
-}
+
  div.element-metadata-flex div.element-description img {
   position: relative;
    max-width: 110px;
-   max-height:180px;
+   max-height:130px;
    display:block;
    background: #ddd;
    margin: 0px 15px 3px 0;
