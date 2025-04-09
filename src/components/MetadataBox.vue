@@ -3,6 +3,7 @@ import {computed} from 'vue'
 import { RouterLink} from 'vue-router'
 import {useConfig} from '@/stores/config'
 import TemporalExtent from '@/components/TemporalExtent.vue'
+import RelatedLinks from '@/components/RelatedLinks.vue'
 let config = useConfig()
 
 let x = 3
@@ -41,12 +42,16 @@ const metadata = computed(() => {
       }
     }
     meta.temporalExtents = source.resourceTemporalExtentDetails
-    
+    meta.related = []
+    if (source.link) {
+        meta.related = source.link
+    }
     return meta
 })
 </script>
 <template>
     <div class="element-metadata-flex" >
+       
         <a class="service-link" >
             <h3 :style="{background: config.state.emphasis}">
                 <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
@@ -64,6 +69,7 @@ const metadata = computed(() => {
                 <temporal-extent v-for="extent in metadata.temporalExtents" :extent="extent"></temporal-extent>
                 <div v-html="metadata.description"></div>
             </div>
+            <div class="mtdt-footer"><related-links :links="metadata.links"></related-links></div>
         </a>
     </div>
 </template>
