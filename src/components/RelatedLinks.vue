@@ -3,26 +3,40 @@ import { computed} from 'vue';
 import {useConfig} from '@/stores/config'
 import {useCatalog} from '@/stores/catalog'
 const props = defineProps({
-   links: Object,
-   catalogId: Number
+   links: Object
 })
 let config = useConfig()
 
 </script>
 <template>
 les liens
-  <font-awesome-icon icon="fa-solid fa-earth-americas" />
-  
-   <font-awesome-icon icon="fa-solid fa-link" />
-   <font-awesome-icon icon="fa-solid fa-gauge-simple-high" />
-   <font-awesome-icon icon="fa-solid fa-download" />
-   <font-awesome-icon icon="fa-solid fa-terminal" />
-   <font-awesome-icon icon="fa-solid fa-pen-to-square" />
-   <font-awesome-icon icon="fa-solid fa-asterisk" />
-   <font-awesome-icon icon="fa-solid fa-circle-dot" />
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-earth-americas" />
+  </div>
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-link" />
+  </div>
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-gauge-simple-high" />
+  </div>
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-download" />
+  </div>
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-terminal" />
+  </div>
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-pen-to-square" />
+  </div>
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-asterisk" />
+  </div>
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-circle-dot" />
+  </div>
 </template>
 <style scoped>
-    .mtdt-related .mtdt-related-type{
+.mtdt-related-type{
  text-align:center;
  min-width:20px;
  vertical-align:bottom;
@@ -33,23 +47,24 @@ les liens
  padding:3px 5px;
  color:white;
  margin-right:3px;
+ display:inline-block;
  box-sizing: content-box;
 }
-.mtdt-related-cartouche .mtdt-related-type{
+ .mtdt-related-type{
    cursor:pointer;
    opacity:0.9
 }
-.mtdt-related-cartouche .mtdt-related-type.disabled,
-.mtdt-related-cartouche a.disabled ,
-.mtdt-related-cartouche span.disabled,
+ .mtdt-related-type.disabled,
+a.disabled ,
+span.disabled,
 .mtdt-expand span.disabled {
   pointer-events:none;
   opacity:0.5;
 }
- .mtdt-related-cartouche .mtdt-related-type:hover{
+ .mtdt-related-type:hover{
   opacity:1;
 }
-.mtdt-related-metadata .mtdt-expand{
+ .mtdt-expand{
   margin: 20px 10px 30px 10px;
   text-align:left;
 }
