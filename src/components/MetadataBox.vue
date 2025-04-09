@@ -14,7 +14,7 @@ const metadata = computed(() => {
          id: source.uuid, 
          title: config.tr(source.resourceTitleObject),
          catalogId: source.groupOwner,
-         description: config.tr(source.resourceAbstractObject)
+         description: config.tr(source.resourceAbstractObject).replace('\n', '<br>')
     }
     
     if (source.cl_hierarchyLevel && source.cl_hierarchyLevel.length > 0) {
@@ -51,15 +51,15 @@ const metadata = computed(() => {
                 <div >{{metadata.title}}</div>
             </h3>
             <div class="element-description">
-             <div v-if="metadata.quicklook || metadata.status" style="display:block;float:left;max-width:120px;">
-        <img :src="metadata.quicklook.src" :title="metadata.quicklook.title" v-if="metadata.quicklook"/>
-         <div class="mtdt-status" v-if="metadata.status"  
-         :style="{color: config.state.primary, borderColor: config.state.primary}">
-         {{metadata.status.label}}
-         </div>
-       
-        </div>
-              <div v-html="metadata.description"></div>
+                <div v-if="metadata.quicklook || metadata.status" style="display:block;float:left;max-width:120px;text-align:center;">
+                    <img :src="metadata.quicklook.src" :title="metadata.quicklook.title" v-if="metadata.quicklook"/>
+                     <div class="mtdt-status" v-if="metadata.status"  
+                     :style="{color: config.state.primary, borderColor: config.state.primary}">
+                        {{metadata.status.label}}
+                     </div>
+           
+                </div>
+                <div v-html="metadata.description"></div>
             </div>
         </a>
     </div>
@@ -92,7 +92,7 @@ div.element-metadata-flex {
   
   }
  div.element-metadata-flex h3 {
-    margin: -25px -10px 0 -10px;
+    margin: -25px -10px 5px -10px;
     padding: 5px;
     color: white;
     text-align: left;
@@ -123,16 +123,16 @@ div.element-metadata-flex {
   box-sizing: border-box;
   line-height: 30px;
   }
-   div.element-metadata-flex  div.mtdt-description{
-    max-height:157px;
+   div.element-metadata-flex  div.element-description{
+    max-height:165px;
     overflow:hidden;
     padding: 5px;
     font-size:15px;
 }
- div.element-metadata-flex .mtdt-child div.mtdt-description{
+ div.element-metadata-flex .mtdt-child div.element-description{
    max-height: 170px;
 }
- div.element-metadata-flex div.mtdt-description img {
+ div.element-metadata-flex div.element-description img {
   position: relative;
    max-width: 110px;
    max-height:180px;
