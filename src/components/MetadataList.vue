@@ -50,7 +50,6 @@ div.wrapper-group{
     overflow:hidden;
   }
   a img{
-      object-fit: cover;
       -webkit-transition: 0.5s ease all;
       transition: 0.5s ease all;
       height: 100%;

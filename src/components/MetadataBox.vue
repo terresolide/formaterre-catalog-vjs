@@ -1,12 +1,13 @@
 <script setup>
 import {computed} from 'vue'
-import { RouterLink} from 'vue-router'
+import { useRoute,RouterLink} from 'vue-router'
 import {useConfig} from '@/stores/config'
+import {useCatalog} from '@/stores/catalog'
 import TemporalExtent from '@/components/TemporalExtent.vue'
 import RelatedLinks from '@/components/RelatedLinks.vue'
 let config = useConfig()
-
-let x = 3
+let catalogs = useCatalog()
+let route = useRoute()
 const props = defineProps({
     metadata: Object
 })
@@ -46,8 +47,15 @@ const metadata = computed(() => {
     if (source.link) {
         meta.related = source.link
     }
+    let catalog = catalogs.getCurrent()
+    console.log(catalog)
+    if (!catalog) {
+        meta.catalog = catalogs.getCatalogById(source.groupOwner)
+        console.log(meta.catalog)
+    }
     return meta
 })
+
 </script>
 <template>
     <div class="element-metadata-flex" >
@@ -69,7 +77,14 @@ const metadata = computed(() => {
                 <temporal-extent v-for="extent in metadata.temporalExtents" :extent="extent"></temporal-extent>
                 <div v-html="metadata.description"></div>
             </div>
-            <div class="mtdt-footer"><related-links :links="metadata.links"></related-links></div>
+            <div class="mtdt-footer">
+                <template v-if="metadata.catalog">
+                  <router-link :to="{name: 'catalog-grid', params: {catalog: metadata.catalog.name.toLowerCase()}}" style="width:50px;">
+                  <img :src="config.state.api + '/images/harvesting/' + metadata.catalog.logo"   height="25" style="vertical-align:middle;max-height:31px;max-width:30px;padding-bottom:1px;" />
+                  </router-link>
+                </template>
+                <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:4px;width:calc(100% - 35px;)"><related-links :links="metadata.links"></related-links></div>
+            </div>
         </a>
     </div>
 </template>
@@ -162,8 +177,10 @@ div.element-metadata-flex {
    margin-bottom: 0px;
 }
  div.element-metadata-flex  .mtdt-footer{
+
   position: absolute;
   margin: 0 2px;
+  right:-5px;
   bottom:0;
   width:100%;
   min-height: 28px;

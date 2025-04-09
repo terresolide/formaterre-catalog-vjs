@@ -125,13 +125,14 @@ export const useElasticsearch = defineStore('elasticsearch', {
         "th_formater-platform-gn", "th_formaterre-product-gn", "th_ron.default", "th_polarisation.default", "overview","link"]
     }),
     actions: {
-      setCatalog ( name, id) {
-        this.name = name
-        if (!id) {
+      setCatalog ( routeName, catalogName) {
+        this.name = routeName
+        if (!catalogName) {
           this.groupOwner = null
+          return
         }
         let catalogs = useCatalog()
-        let catalog = catalogs.getCatalog(id)
+        let catalog = catalogs.getCatalog(catalogName)
         console.log(catalog)
         if (catalog) {
           this.groupOwner = catalog.id

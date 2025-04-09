@@ -6,34 +6,46 @@ const props = defineProps({
    links: Object
 })
 let config = useConfig()
+let links = computed(() => {
+    
+})
 
 </script>
 <template>
 les liens
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-earth-americas" />
-  </div>
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-link" />
-  </div>
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-gauge-simple-high" />
-  </div>
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-download" />
-  </div>
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-terminal" />
-  </div>
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-pen-to-square" />
-  </div>
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-asterisk" />
-  </div>
+  <!-- afficher la position sur la carte -->
   <div class="mtdt-related-type">
     <font-awesome-icon icon="fa-solid fa-circle-dot" />
   </div>
+  <!-- afficher la couche sur la carte -->
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-earth-americas" />
+  </div>
+  <!-- instrument -->
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-gauge-simple-high" />
+  </div>
+  <!-- lien de téléchargement -->
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-download" />
+  </div>
+  <!-- téléchargement en ligne de commande -->
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-terminal" />
+  </div>
+  <!-- commander les données -->
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-pen-to-square" />
+  </div>
+  <!-- liens d'information -->
+   <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-link" />
+  </div>
+  <!-- articles -->
+  <div class="mtdt-related-type">
+    <font-awesome-icon icon="fa-solid fa-asterisk" />
+  </div>
+  
 </template>
 <style scoped>
 .mtdt-related-type{

@@ -16,7 +16,7 @@ onMounted(() => {
     catalog.setCatalog(route.params.catalog)
 })
 let currentCatalog = computed(() => { 
-    return catalog.getCatalog()
+    return catalog.getCurrent()
 })
 // Ajouter authentification et un store user
 </script>

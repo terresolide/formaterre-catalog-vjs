@@ -20,15 +20,22 @@ export const useCatalog = defineStore('catalog', {
         }
     },
     setCatalog (name) {
-        console.log(name)
+       this.current = this.getCatalog(name)
+    },
+    getCatalog (name) {
         if (!name) {
-           this.current = null
            return null
         }
-        this.current = this.list.find(c => c.name.toLowerCase() === name.toLowerCase())
-        return this.current
+        return this.list.find(c => c.name.toLowerCase() === name.toLowerCase())
     },
-    getCatalog () {
+    getCatalogById (id) {
+        console.log(id)
+        if (!id) {
+           return null
+        }
+        return this.list.find(c => parseInt(c.id) === parseInt(id))
+    },
+    getCurrent () {
       return this.current
     }
   }
