@@ -12,10 +12,8 @@ const props = defineProps({
        default: 'information'
     }
 })
-let config = useConfig()
-let links = computed(() => {
-    
-})
+console.log(props.links)
+
 
 </script>
 <template v-if="props.links.length">
@@ -29,4 +27,13 @@ let links = computed(() => {
   </template>
   <font-awesome-icon v-if="props.links.length > 1" icon="fa-solid fa-caret-down" />
   </div>
+   <div v-if="props.links.length > 1" class="mtdt-expand mtdt-links">
+            <ul >
+            <template v-for="link in props.links">
+            <li >
+             <a :href="link.url" target="_blank" :title="link.description">{{link.name}}</a>
+           </li>
+           </template>
+           </ul>    
+       </div> 
 </template>

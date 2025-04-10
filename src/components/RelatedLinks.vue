@@ -27,13 +27,21 @@ let links = computed(() => {
   <div class="mtdt-related-type">
     <font-awesome-icon icon="fa-solid fa-gauge-simple-high" />
   </div>
-   <download-links></download-links>
+  <template v-if="props.links.download && props.links.download.length > 0">
+   <download-links :links="props.links.download"></download-links>
+  </template>
  
   <!-- commander les données -->
   <div class="mtdt-related-type">
     <font-awesome-icon icon="fa-solid fa-pen-to-square" />
   </div>
-  <simple-links></simple-links>
+  
+   <template v-if="props.links.links && props.links.links.length > 0">
+    <simple-links :links="props.links.links" type="information"></simple-links>
+  </template>
+  <template v-if="props.links.relatedLinks && props.links.relatedLinks.length > 0">
+    <simple-links :links="props.links.relatedLinks" type="related"></simple-links>
+  </template>
   
   
 </template>
@@ -91,7 +99,7 @@ span.disabled,
 .mtdt-layers li:hover {
   color: darkred;
 }
-.mtdt-related-cartouche .mtdt-related-type + .mtdt-expand{
+.element-metadata-flex .mtdt-related-type + .mtdt-expand{
     display:none;
     position:absolute;
     bottom: 21px;
@@ -110,10 +118,10 @@ span.disabled,
     max-height: 230px;
     overflow-y:scroll;
 }
-.mtdt-related-cartouche .mtdt-expand:hover {
+.element-metadata-flex .mtdt-expand:hover {
   display: block;
 }
-.mtdt-related-cartouche  .mtdt-related-type:hover + .mtdt-expand{
+.element-metadata-flex  .mtdt-related-type:hover + .mtdt-expand{
   display:block;
 }
  .mtdt-related-type span{
@@ -133,7 +141,7 @@ span.disabled,
 .mtdt-related-metadata .mtdt-expand ul {
   display:inline;
 }
-  .mtdt-related-cartouche .mtdt-expand ul li {
+.element-metadata-flex .mtdt-expand ul li {
      word-break: break-word;
   }
  .mtdt-related-metadata .mtdt-expand ul li {
@@ -154,7 +162,7 @@ display: table-cell;
 font-size: 1.1em;
 }
 
-.mtdt-related-cartouche .mtdt-expand ul:not(.mtdt-layers)  li:before {
+.element-metadata-flex .mtdt-expand ul:not(.mtdt-layers)  li:before {
   content: "-";
   vertical-align:top;
   padding: 0 5px;
@@ -167,8 +175,8 @@ display: table-cell;
 display: table-cell;
 max-width:92%;
 }
-.mtdt-related-cartouche .mtdt-expand ul:not(.mtdt-layers)  li > a,
-.mtdt-related-cartouche .mtdt-expand ul:not(.mtdt-layers)  li > span{
+.element-metadata-flex .mtdt-expand ul:not(.mtdt-layers)  li > a,
+.element-metadata-flex .mtdt-expand ul:not(.mtdt-layers)  li > span{
    display: table-cell;
    max-width:300px;
 }
@@ -194,10 +202,10 @@ max-width:92%;
    word-break: break-word;
    text-align:justify;
 }
- .mtdt-related-cartouche ul.mtdt-layers li i.fa {
+.element-metadata-flex ul.mtdt-layers li i.fa {
    margin-right: 3px;
  }
- .mtdt-related-cartouche ul.mtdt-layers li div{
+.element-metadata-flex ul.mtdt-layers li div{
 
     text-overflow: clip;
     margin:0;
@@ -210,7 +218,7 @@ max-width:92%;
     max-height:32px;
     padding:2px 0;
 }
- .mtdt-related-cartouche .mtdt-expand h4 {
+.element-metadata-flex .mtdt-expand h4 {
    margin: 5px 0px;
  }
 </style>
