@@ -14,6 +14,105 @@ const props = defineProps({
 const catalog = computed(() => {
     return catalogs.getCurrent()
 })
+function treatmentLinks (list) {
+    var links = {}
+    list.forEach((lk, index) => {
+    switch(lk.protocol) {
+        case 'OpenSearch':
+        case 'SensorThings':
+        case 'Sensorthings':
+          links.api = {}
+          links.api.http = lk.urlObject.default
+          links.api.name = config.tr(lk.nameObject)
+          break;
+        case 'GetMap':
+        case 'WTS':
+        case 'OGC:WMS':
+        case 'OGC:WMS-1.1.1-http-get-map':
+        case 'OGC:WFS':
+        case 'OGC:WFS-G':
+        case 'OGC:KML':
+        case 'OGC:OWS':
+        case 'OGC:OWS-C':
+        case 'OGC API - Tiles':
+        case 'OGC Web Map Service':
+        case 'GLG:KML-2.0-http-get-map':
+            if (!links.layers) {
+              links.layers = []
+            }
+           //  var id = meta.id + '_' + index
+           //  links.layers.push(self.linkToLayer(lk, id))
+           break;
+        case 'application/vnd.google-earth.kml+xml':
+           break;
+        case 'WWW:DOWNLOAD-1.0-ftp--download':
+            break;
+        case 'WWW:DOWNLOAD-1.0-link--download':
+        case 'WWW:DOWNLOAD-1.0-http--download':
+        case 'download':
+        case 'telechargement':
+           if (!links.download) {
+             links.download = []
+           }
+           var download = {
+                 name:config.tr(lk.nameObject),
+                 description: config.tr(lk.descriptionObject),
+                 url: config.tr(lk.urlObject),
+                 type: lk.protocol
+           }
+           
+           links.download.push(download)
+           break;
+        case 'WWW:DOWNLOAD-1.0-link--order':
+        case 'order':
+           if (!links.order) {
+             links.order = []
+           }
+           var download = {
+                 name:config.tr(lk.nameObject),
+                 description: config.tr(lk.descriptionObject),
+                 url: config.tr(lk.urlObject),
+                 type: lk.protocol
+          }
+          links.order.push(download)
+           break;
+        case 'UKST':
+          
+          //  if (link[6] && link[6].toLowerCase() === 'opensearch') {
+          //    response.api = {}
+          //    response.api.http = link[2]
+          //    response.api.name = link[0].length > 0 ? link[0] : link[1]
+          //  }
+           break;
+        case 'WWW:LINK-1.0-http--related':
+           if (!links.relatedLinks) {
+             links.relatedLinks = []
+           }
+           var link = {
+                 name:config.tr(lk.nameObject),
+                 description: config.tr(lk.descriptionObject),
+                 url: config.tr(lk.urlObject),
+                 type: lk.protocol
+           }
+           links.relatedLinks.push(link)
+           break;
+        case 'WWW:LINK-1.0-http--link':
+        default:
+           if (!links.links) {
+             links.links = []
+           }
+           var link = {
+                 name:config.tr(lk.nameObject),
+                 description: config.tr(lk.descriptionObject),
+                 url: config.tr(lk.urlObject),
+                 type: lk.protocol
+           }
+           links.links.push(link)
+           break;
+      }
+     })
+     return links
+   }
 const metadata = computed(() => {
     let source = props.metadata._source
     let meta = {
@@ -58,6 +157,8 @@ const metadata = computed(() => {
     if (source['th_formater-distributor']) {
         meta.provider = config.getProvider(source['th_formater-distributor'][0].link)
     }
+    meta.links = treatmentLinks(source.link)
+    console.log(meta.links)
     return meta
 })
 

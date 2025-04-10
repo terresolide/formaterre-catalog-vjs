@@ -2,6 +2,9 @@
 import { computed} from 'vue';
 import {useConfig} from '@/stores/config'
 import {useCatalog} from '@/stores/catalog'
+// const SimpleLinks = () => import('@/components/SimpleLinks.vue')
+import SimpleLinks from '@/components/SimpleLinks.vue'
+import DownloadLinks from '@/components/DownloadLinks.vue'
 const props = defineProps({
    links: Object
 })
@@ -24,29 +27,17 @@ let links = computed(() => {
   <div class="mtdt-related-type">
     <font-awesome-icon icon="fa-solid fa-gauge-simple-high" />
   </div>
-  <!-- lien de téléchargement -->
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-download" />
-  </div>
-  <!-- téléchargement en ligne de commande -->
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-terminal" />
-  </div>
+   <download-links></download-links>
+ 
   <!-- commander les données -->
   <div class="mtdt-related-type">
     <font-awesome-icon icon="fa-solid fa-pen-to-square" />
   </div>
-  <!-- liens d'information -->
-   <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-link" />
-  </div>
-  <!-- articles -->
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-asterisk" />
-  </div>
+  <simple-links></simple-links>
+  
   
 </template>
-<style scoped>
+<style>
 .mtdt-related-type{
  text-align:center;
  min-width:20px;

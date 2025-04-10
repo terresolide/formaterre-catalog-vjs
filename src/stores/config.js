@@ -20,13 +20,15 @@ export const useConfig = defineStore('config', () => {
     
   }
   function getProvider (url) {
-      console.log(url)
       if (dataCenters[url]) {
           return dataCenters[url]
       }
       return null
   }
   function tr (obj) {
+    if (!obj) {
+        return ''
+    }
     if (obj['lang' + state.locale]) {
       return obj['lang' + state.locale]
     }

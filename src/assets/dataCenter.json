@@ -1,0 +1,67 @@
+{
+
+  "https://catalogue-terresolide.ipgp.fr/geonetwork/srv/api/registries/vocabularies/local.dataCentre.distributor#cdgp": {
+    "logo": "https://cdgp.u-strasbg.fr/img/logo_cdgp.png",
+    "href": "https://cdgp.u-strasbg.fr/",
+    "title": {
+      "fr": "CDGP - Centre de Données de Géothermie Profonde",
+      "en": "CDGP - Data Center for Deep Geothermal Energy"
+    }
+  }, 
+  "https://catalogue-terresolide.ipgp.fr/geonetwork/srv/api/registries/vocabularies/local.dataCentre.distributor#cnes": {
+    "logo": "https://catalogue-terresolide.ipgp.fr/geonetwork/images/harvesting/200px-CNES.png",
+    "href": "https://cnes.fr/",
+    "title": {
+      "fr": "CNES - Centre National d'Etudes Spatiales",
+      "en": "CNES - Centre National d'Etudes Spatiales"
+    }
+  },
+  "https://catalogue-terresolide.ipgp.fr/geonetwork/srv/api/registries/vocabularies/local.dataCentre.distributor#eost": {
+    "logo": "https://catalogue-terresolide.ipgp.fr/geonetwork/images/harvesting/eost.png",
+    "href": "https://eost.unistra.fr/",
+    "title": {
+      "fr": "EOST - École et Observatoire des sciences de la Terre",
+      "en": "EOST - École et Observatoire des sciences de la Terre"
+    }
+  },
+  "https://catalogue-terresolide.ipgp.fr/geonetwork/srv/api/registries/vocabularies/local.dataCentre.distributor#isgi": {
+    "logo": "https://catalogue-terresolide.ipgp.fr/geonetwork/images/harvesting/logo_ISGI_2.png",
+    "href": "http://isgi.unistra.fr/",
+    "title": {
+      "fr": "SIIG - Service International des Indices Géomagnétiques",
+      "en": "ISGI - International Service of Geomagnetic Indices"
+    }
+  }, 
+  "https://catalogue-terresolide.ipgp.fr/geonetwork/srv/api/registries/vocabularies/local.dataCentre.distributor#ipgp": {
+    "logo": "https://catalogue-terresolide.ipgp.fr/geonetwork/images/harvesting/last-logo-ipgp-up.png",
+    "href": "https://www.ipgp.fr/",
+    "title": {
+      "fr": "IPGP",
+      "en": "IPGP"
+    }
+  }, 
+   "https://catalogue-terresolide.ipgp.fr/geonetwork/srv/api/registries/vocabularies/local.dataCentre.distributor#shom": {
+    "logo": "https://catalogue-terresolide.ipgp.fr/geonetwork/images/harvesting/shom-data.png",
+    "href": "https://data.shom.fr/",
+    "title": {
+      "fr": "SHOM - Service hydrographique et océanographique de la Marine",
+      "en": "SHOM - Hydrographic and Oceanographic Service of the French Marine"
+    }
+  },
+    "https://catalogue-terresolide.ipgp.fr/geonetwork/srv/api/registries/vocabularies/local.dataCentre.distributor#isdeform": {
+    "logo": "https://catalogue-terresolide.ipgp.fr/geonetwork/images/harvesting/isdeform.png",
+    "href": "https://www.isdeform.fr/",
+    "title": {
+      "fr": "ISDeform",
+      "en": "ISDeform"
+    }
+  },
+   "https://catalogue-terresolide.ipgp.fr/geonetwork/srv/api/registries/vocabularies/local.dataCentre.distributor#uga": {
+    "logo": "https://catalogue-terresolide.ipgp.fr/geonetwork/images/harvesting/logo_bleu_uga.png",
+    "href": "https://www.univ-grenoble-alpes.fr/",
+    "title": {
+      "fr": "UGA - Université Grenoble Alpes",
+      "en": "UGA - Université Grenoble Alpes"
+    }
+  }
+}
