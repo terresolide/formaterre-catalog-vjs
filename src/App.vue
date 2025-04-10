@@ -51,7 +51,6 @@ let currentCatalog = computed(() => {
       </nav>
     </div>
   </header>
-
   <RouterView />
 </template>
 

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import data from '@/assets/dataCenter.json'
 
 export const useConfig = defineStore('config', () => {
   let state = {
@@ -10,12 +11,20 @@ export const useConfig = defineStore('config', () => {
       lang: 'en',
       locale: 'eng',
       formatDate: ''
-
   }
+  let dataCenters = data
   function init(conf) {
     state = Object.assign(state, conf)
     state.locale = state.lang === 'fr' ? 'fre' : 'eng'
-    console.log(state.locale)
+    // load dataCenter
+    
+  }
+  function getProvider (url) {
+      console.log(url)
+      if (dataCenters[url]) {
+          return dataCenters[url]
+      }
+      return null
   }
   function tr (obj) {
     if (obj['lang' + state.locale]) {
@@ -23,5 +32,5 @@ export const useConfig = defineStore('config', () => {
     }
     return obj.default
   }
-  return {state, init, tr}
+  return {state, init, tr, getProvider}
 })

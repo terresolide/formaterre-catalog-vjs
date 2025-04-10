@@ -120,7 +120,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
           }
         }
       },
-      includes: ["uuid", "id", "groupOwner", "cl_status", "cl_hierarchyLevel", "geom", 
+      includes: ["uuid", "id", "groupOwner", "cl_status", "cl_hierarchyLevel", "geom", "contactForResource", "organisationName",
         "resourceTitle*", "resourceTemporalExtentDetails", "resourceAbstract*",  "th_formater-distributor.*",
         "th_formater-platform-gn", "th_formaterre-product-gn", "th_ron.default", "th_polarisation.default", "overview","link"]
     }),

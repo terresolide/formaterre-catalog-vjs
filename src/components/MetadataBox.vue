@@ -11,6 +11,9 @@ let route = useRoute()
 const props = defineProps({
     metadata: Object
 })
+const catalog = computed(() => {
+    return catalogs.getCurrent()
+})
 const metadata = computed(() => {
     let source = props.metadata._source
     let meta = {
@@ -47,11 +50,13 @@ const metadata = computed(() => {
     if (source.link) {
         meta.related = source.link
     }
-    let catalog = catalogs.getCurrent()
-    console.log(catalog)
-    if (!catalog) {
-        meta.catalog = catalogs.getCatalogById(source.groupOwner)
-        console.log(meta.catalog)
+    // catalog
+    meta.catalog = catalogs.getCatalogById(source.groupOwner)
+    
+    // fournisseur (on utilise distributor pour le moment)
+    meta.provider = null
+    if (source['th_formater-distributor']) {
+        meta.provider = config.getProvider(source['th_formater-distributor'][0].link)
     }
     return meta
 })
@@ -78,17 +83,36 @@ const metadata = computed(() => {
                 <div v-html="metadata.description"></div>
             </div>
             <div class="mtdt-footer">
-                <template v-if="metadata.catalog">
-                  <router-link :to="{name: 'catalog-grid', params: {catalog: metadata.catalog.name.toLowerCase()}}" style="display:inline-block;width:90px;max-width:90px;">
-                  <img :src="config.state.api + '/images/harvesting/' + metadata.catalog.logo"   height="31" style="vertical-align:middle;max-height:31px;height:31px;max-width:80px;padding-bottom:1px;" />
-                  </router-link>
-                </template>
+                <div  class="mtdt-center">
+                    <template v-if="!catalog">
+                      <router-link :to="{name: 'catalog-grid', params: {catalog: metadata.catalog.name.toLowerCase()}}" :title="metadata.catalog.name">
+                        <img :src="config.state.api + '/images/harvesting/' + metadata.catalog.logo"   height="31" />
+                      </router-link>
+                    </template>
+                    <template v-else-if="metadata.provider">
+                       <a :href="metadata.provider.href" :title="metadata.provider.title[config.state.lang]" target="_blank">
+                        <img :src="metadata.provider.logo"  />
+                       </a>
+                    </template>
+                </div>
                 <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:4px;width:calc(100% - 100px);"><related-links :links="metadata.links"></related-links></div>
             </div>
         </a>
     </div>
 </template>
 <style scoped>
+div.mtdt-center {
+    display:inline-block;
+    width:90px;
+    max-width:90px;
+}
+div.mtdt-center img {
+    vertical-align:middle;
+    max-height:31px;
+    height:31px;
+    max-width:80px;
+    padding-bottom:1px;
+}
 div.element-metadata-flex {
   position:relative;
   display:block;
