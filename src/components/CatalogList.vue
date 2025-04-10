@@ -97,7 +97,7 @@ div.wrapper-group{
     margin:-15px 0 0 0;
     position:relative;
   }
-  figure div {
+  div.element-flex figure div {
     position:absolute;
     top:70px;
     color:white;
@@ -124,7 +124,7 @@ div.wrapper-group{
     max-height:200px;
     overflow:hidden;
   }
-  a img{
+ div.element-flex a img{
       object-fit: cover;
       -webkit-transition: 0.5s ease all;
       transition: 0.5s ease all;
@@ -132,7 +132,7 @@ div.wrapper-group{
       margin: 0;
       width: 100%;
   }
-  a img:hover {
+ div.element-flex a img:hover {
     transform: scale(1.03);
   }
   

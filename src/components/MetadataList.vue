@@ -52,9 +52,7 @@ div.wrapper-group{
   a img{
       -webkit-transition: 0.5s ease all;
       transition: 0.5s ease all;
-      height: 100%;
       margin: 0;
-      width: 100%;
   }
   a img:hover {
     transform: scale(1.03);

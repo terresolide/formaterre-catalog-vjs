@@ -12,7 +12,6 @@ let links = computed(() => {
 
 </script>
 <template>
-les liens
   <!-- afficher la position sur la carte -->
   <div class="mtdt-related-type">
     <font-awesome-icon icon="fa-solid fa-circle-dot" />

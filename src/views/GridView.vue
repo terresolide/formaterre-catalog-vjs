@@ -10,9 +10,9 @@
   })
   const route = useRoute()
   watch(route, () => {
-    if (route.params.catalog) {
-      elasticsearch.setCatalog(newvalue.name, newvalue.params.catalog)
-    }
+
+    elasticsearch.setCatalog(route.name, route.params.catalog)
+
     getRecords(route.query)
   })
   onMounted(() => {

@@ -79,11 +79,11 @@ const metadata = computed(() => {
             </div>
             <div class="mtdt-footer">
                 <template v-if="metadata.catalog">
-                  <router-link :to="{name: 'catalog-grid', params: {catalog: metadata.catalog.name.toLowerCase()}}" style="width:50px;">
-                  <img :src="config.state.api + '/images/harvesting/' + metadata.catalog.logo"   height="25" style="vertical-align:middle;max-height:31px;max-width:30px;padding-bottom:1px;" />
+                  <router-link :to="{name: 'catalog-grid', params: {catalog: metadata.catalog.name.toLowerCase()}}" style="display:inline-block;width:90px;max-width:90px;">
+                  <img :src="config.state.api + '/images/harvesting/' + metadata.catalog.logo"   height="31" style="vertical-align:middle;max-height:31px;height:31px;max-width:80px;padding-bottom:1px;" />
                   </router-link>
                 </template>
-                <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:4px;width:calc(100% - 35px;)"><related-links :links="metadata.links"></related-links></div>
+                <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:4px;width:calc(100% - 100px);"><related-links :links="metadata.links"></related-links></div>
             </div>
         </a>
     </div>
