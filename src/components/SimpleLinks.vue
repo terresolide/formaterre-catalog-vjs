@@ -28,12 +28,12 @@ console.log(props.links)
   <font-awesome-icon v-if="props.links.length > 1" icon="fa-solid fa-caret-down" />
   </div>
    <div v-if="props.links.length > 1" class="mtdt-expand mtdt-links">
-            <ul >
+        <ul >
             <template v-for="link in props.links">
-            <li >
-             <a :href="link.url" target="_blank" :title="link.description">{{link.name}}</a>
-           </li>
-           </template>
-           </ul>    
+              <li >
+                <a :href="link.url" target="_blank" :title="link.description">{{link.name}}</a>
+              </li>
+            </template>
+       </ul>    
        </div> 
 </template>
