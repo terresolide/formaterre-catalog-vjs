@@ -7,11 +7,16 @@
   const elasticsearch = useElasticsearch()
   let data = reactive({
     list: [],
+    pagination: {
+      count: 0,
+      total: 0
+    },
     aggregations: []
   })
   const route = useRoute()
-  watch(route, () => {
-
+  watch( () => route,
+   (route) => {
+    console.log(route)
     elasticsearch.setCatalog(route.name, route.params.catalog)
 
     getRecords(route.query)
@@ -26,6 +31,9 @@
       data.aggregations = json.aggregations
       if (json.hits && json.hits.hits) {
         data.list = json.hits.hits
+        data.pagination.count = json.hits.hits.length
+        data.pagination.total = json.hits.total.value
+        data.pagination.relation = json.hits.total.relation
       }
     })
   }
@@ -34,7 +42,7 @@
 <template>
   <main>
     <!--<FormGrid :aggregations="aggregations"></FormGrid> -->
-    <div style="text-align:center;"><PageNavigation></PageNavigation> </div>
+    <div style="text-align:center;margin:15px 0;"><PageNavigation :tot="data.pagination"></PageNavigation> </div>
     <MetadataList :list="data.list"></MetadataList>
 
   </main>
