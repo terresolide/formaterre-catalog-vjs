@@ -14,13 +14,11 @@
     aggregations: []
   })
   const route = useRoute()
-  watch( () => route,
+  watch(  route,
    (route) => {
-    console.log(route)
     elasticsearch.setCatalog(route.name, route.params.catalog)
-
     getRecords(route.query)
-  })
+  }, {flush: 'pre', immediate: true, deep: true})
   onMounted(() => {
     elasticsearch.setCatalog(route.name, route.params.catalog)
     getRecords(route.query)
