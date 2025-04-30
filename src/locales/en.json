@@ -1,8 +1,16 @@
 {
+    "among": "among",
+    "basket": "Basket",
     "catalog": "Catalog | Catalogs",
     "grid_view": "Grid view",
     "login": "Login",
     "logout": "Logout",
     "map_view": "Map view",
-    "text_search": "Text search"
+    "per": "per",
+    "popularity": "Popularity",
+    "results": "Results",
+    "sort_by": "Sort by",
+    "text_search": "Text search",
+    "to": "to",
+    "update": "Update"
 }

@@ -70,7 +70,6 @@ function pagingChange() {
 }
 function sortChange() {
   var query = Object.assign({}, route.query)
-  
   query.sortBy = config.state.sortBy
   changeRoute(query)
 }
@@ -80,19 +79,19 @@ function sortChange() {
       <div class="paging">
         <span class="mini-button" :class="{disabled: from === 1}" :style="{background: config.state.primary}" @click="first">&laquo;</span>
         <span class="mini-button" :class="{disabled: from === 1}" :style="{background: config.state.primary}" @click="previous">&lsaquo;</span>
-       Results: <b>{{ from }}</b> to <b>{{ to }}</b> among {{ pagination.tot.total }}
+       {{$t('results')}}: <b>{{ from }}</b> {{$t('to')}} <b>{{ to }}</b> {{$t('among')}} {{ pagination.tot.total }}
         &nbsp; (<select v-model="config.state.size" @change="pagingChange">
-          <option value="24">24 per page</option>
-          <option value="30">30 per page</option>
-          <option value="100">100 per page</option>
+          <option value="24">24 {{$t('per')}} page</option>
+          <option value="30">30 {{$t('per')}} page</option>
+          <option value="100">100 {{$t('per')}} page</option>
         </select>) &nbsp;
         <span class="mini-button" :class="{disabled: to >= pagination.tot.total}" :style="{background: config.state.primary}" @click="next">&rsaquo;</span>
         <span class="mini-button" :class="{disabled: to >= pagination.tot.total}" :style="{background: config.state.primary}" @click="last">&raquo;</span>
       </div>
       <div class="order-by">
-        Sort by <select v-model="config.state.sortBy" @change="sortChange">
-            <option value="popularity">Popularity</option>
-            <option value="changeDate">Update</option>
+        {{$t('sort_by')}} <select v-model="config.state.sortBy" @change="sortChange">
+            <option value="popularity">{{$t('popularity')}}</option>
+            <option value="changeDate">{{$t('update')}}</option>
           </select>
       </div>
   </div>

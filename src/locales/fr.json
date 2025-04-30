@@ -1,8 +1,16 @@
 {
+    "among": "parmi",
+    "basket": "Panier",
     "catalog": "Catalogue | Catalogues",
     "grid_view": "Vue grille",
     "login": "Se connecter",
     "logout": "Se déconnecter",
     "map_view": "Vue carte",
-    "text_search": "Recherche textuelle"
+    "per": "par",
+    "popularity": "Popularité",
+    "results": "Résultats",
+    "sort_by": "Trié par",
+    "text_search": "Recherche textuelle",
+    "to": "à",
+    "update": "Mise à jour"
 }
