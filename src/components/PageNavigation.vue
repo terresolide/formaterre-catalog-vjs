@@ -9,11 +9,9 @@ const router = useRouter()
 
 const data = reactive({
     offset: 0,
-    nb: 24,
-    total: null
+    nb: 30
 })
 const from = computed(() => {
-  console.log(route)
   if (route.query.from) {
     return parseInt(route.query.from)
   } else {
@@ -26,36 +24,40 @@ const to = computed(() => {
   return from.value + pagination.tot.count - 1 
 })
 
+// const config.state.size.value = computed(() => {
+//   return parseInt(config.state.size)
+// })
+
 function changeRoute(query) {
   router.push({name: route.name, params: route.params, query:query})
 }
 function first () {
   var query = Object.assign({}, route.query)
   query.from = 1
-  query.to = query.from + parseInt(data.nb) - 1
+  query.to = query.from + parseInt(config.state.size) - 1
   changeRoute(query)
 }
 function previous () {
   console.log('previous')
   var query = Object.assign({}, route.query)
-  var index = from.value - parseInt(data.nb)
+  var index = from.value - parseInt(config.state.size)
   query.from = index > 0 ? index : 1
-  query.to =  query.from + parseInt(data.nb) - 1
+  query.to =  query.from + parseInt(config.state.size) - 1
   changeRoute(query)
 }
 function next () {
   var query = Object.assign({}, route.query)
-
+  console.log(config.state.size)
   query.from = to.value + 1
-  query.to = query.from + parseInt(data.nb) - 1
+  query.to = query.from + parseInt(config.state.size) - 1
   changeRoute(query)
 
 }
 function last () {
   var query = Object.assign({}, route.query)
-  var nbpage = Math.floor(pagination.tot.total / parseInt(data.nb)) + (pagination.tot.total % parseInt(data.nb) === 0 ? 1 : 0)
-  query.from = nbpage * parseInt(data.nb) + 1
-  query.to = query.from + parseInt(data.nb) - 1
+  var nbpage = Math.floor(pagination.tot.total / parseInt(config.state.size)) + (pagination.tot.total % parseInt(config.state.size) === 0 ? 1 : 0)
+  query.from = nbpage * parseInt(config.state.size) + 1
+  query.to = query.from + parseInt(config.state.size) - 1
   changeRoute(query)
 }
 function pagingChange() {
@@ -63,17 +65,18 @@ function pagingChange() {
   if (!query.from) {
     query.from = 1
   }
-  query.to = parseInt(query.from) + parseInt(data.nb) - 1
+  query.to = parseInt(query.from) + parseInt(config.state.size) - 1
   changeRoute(query)
 
 }
 </script>
 <template>
+  {{config.state.size}}
       <div class="paging">
         <span :class="{disabled: from === 1}" :style="{background: config.state.primary}" @click="first">&laquo;</span>
         <span :class="{disabled: from === 1}" :style="{background: config.state.primary}" @click="previous">&lsaquo;</span>
        Results: <b>{{ from }}</b> to <b>{{ to }}</b> among {{ pagination.tot.total }}
-        &nbsp; (<select v-model="data.nb" @change="pagingChange">
+        &nbsp; (<select v-model="config.state.size" @change="pagingChange">
           <option value="24">24 per page</option>
           <option value="30">30 per page</option>
           <option value="100">100 per page</option>

@@ -6,7 +6,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
     state: () => ({
       catalogId: null,
       uuid: null,
-      nbRecords: 24,
       groupOwner: null,
       aggregations: {
         step1: {
@@ -139,9 +138,10 @@ export const useElasticsearch = defineStore('elasticsearch', {
         }
       },
       getDefaultParameters () {
+        let config = useConfig()
         return {
             from: 0,
-            size: this.nbRecords,
+            size: config.state.size,
             _source: {
               includes: this.includes
             },
