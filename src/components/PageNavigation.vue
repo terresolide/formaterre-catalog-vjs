@@ -67,26 +67,46 @@ function pagingChange() {
   }
   query.to = parseInt(query.from) + parseInt(config.state.size) - 1
   changeRoute(query)
-
+}
+function sortChange() {
+  var query = Object.assign({}, route.query)
+  
+  query.sortBy = config.state.sortBy
+  changeRoute(query)
 }
 </script>
 <template>
-  {{config.state.size}}
+  <div style="max-width:1900px;text-align:center;">
       <div class="paging">
-        <span :class="{disabled: from === 1}" :style="{background: config.state.primary}" @click="first">&laquo;</span>
-        <span :class="{disabled: from === 1}" :style="{background: config.state.primary}" @click="previous">&lsaquo;</span>
+        <span class="mini-button" :class="{disabled: from === 1}" :style="{background: config.state.primary}" @click="first">&laquo;</span>
+        <span class="mini-button" :class="{disabled: from === 1}" :style="{background: config.state.primary}" @click="previous">&lsaquo;</span>
        Results: <b>{{ from }}</b> to <b>{{ to }}</b> among {{ pagination.tot.total }}
         &nbsp; (<select v-model="config.state.size" @change="pagingChange">
           <option value="24">24 per page</option>
           <option value="30">30 per page</option>
           <option value="100">100 per page</option>
         </select>) &nbsp;
-        <span  :class="{disabled: to >= pagination.tot.total}" :style="{background: config.state.primary}" @click="next">&rsaquo;</span>
-        <span  :class="{disabled: to >= pagination.tot.total}" :style="{background: config.state.primary}" @click="last">&raquo;</span>
+        <span class="mini-button" :class="{disabled: to >= pagination.tot.total}" :style="{background: config.state.primary}" @click="next">&rsaquo;</span>
+        <span class="mini-button" :class="{disabled: to >= pagination.tot.total}" :style="{background: config.state.primary}" @click="last">&raquo;</span>
       </div>
+      <div class="order-by">
+        Sort by <select v-model="config.state.sortBy" @change="sortChange">
+            <option value="popularity">Popularity</option>
+            <option value="changeDate">Update</option>
+          </select>
+      </div>
+  </div>
 </template>
 <style scoped>
-.paging span {
+div.paging {
+  display:inline-block;
+  width: calc(100% - 200px);
+}
+div.order-by {
+  display:inline-block;
+  width:180px;
+}
+.paging span.mini-button {
   font-size: 1.2em;
   cursor: pointer;
   margin: 0 1px;

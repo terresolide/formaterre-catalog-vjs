@@ -171,6 +171,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             parameters.size = parseInt(query.to) - parameters.from
         }
         if (query.sortBy) {
+            console.log(query.sortBy)
             // this.parameters.sort = [{changeDate: 'desc'}, {popularity: desc}]
             if (query.sortBy === 'changeDate') {
             parameters.sort.reverse()
