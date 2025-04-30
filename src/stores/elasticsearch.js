@@ -141,7 +141,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
       getDefaultParameters () {
         return {
             from: 0,
-            size: this.nbRecord,
+            size: this.nbRecords,
             _source: {
               includes: this.includes
             },

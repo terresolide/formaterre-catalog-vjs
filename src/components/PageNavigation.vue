@@ -23,7 +23,8 @@ const from = computed(() => {
 const to = computed(() => {
   console.log(from)
   console.log(pagination.tot.count)
-  return from.value + pagination.tot.count - 1 })
+  return from.value + pagination.tot.count - 1 
+})
 
 function changeRoute(query) {
   router.push({name: route.name, params: route.params, query:query})
@@ -45,7 +46,7 @@ function next () {
   var query = Object.assign({}, route.query)
 
   query.from = to.value + 1
-  query.to = query.from + data.nb - 1
+  query.to = query.from + parseInt(data.nb) - 1
   changeRoute(query)
 
 }
@@ -63,13 +64,13 @@ function pagingChange() {
 <template>
   {{from}}
       <div class="paging">
-        <span :class="{disabled: data.offset === 0}" :style="{background: config.state.primary}" @click="first">&laquo;</span>
-        <span :class="{disabled: data.offset === 0}" :style="{background: config.state.primary}" @click="previous">&lsaquo;</span>
+        <span :class="{disabled: from === 1}" :style="{background: config.state.primary}" @click="first">&laquo;</span>
+        <span :class="{disabled: from === 1}" :style="{background: config.state.primary}" @click="previous">&lsaquo;</span>
        Results: <b>{{ from }}</b> to <b>{{ to }}</b> among {{ pagination.tot.total }}
         &nbsp; (<select v-model="data.nb" @change="pagingChange">
           <option value="24">24 per page</option>
           <option value="30">30 per page</option>
-          <option value="100">30 per page</option>
+          <option value="100">100 per page</option>
         </select>) &nbsp;
         <span  :class="{disabled: to >= pagination.tot.total}" :style="{background: config.state.primary}" @click="next">&rsaquo;</span>
         <span  :class="{disabled: to >= pagination.tot.total}" :style="{background: config.state.primary}" @click="last">&raquo;</span>

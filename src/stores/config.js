@@ -10,7 +10,8 @@ export const useConfig = defineStore('config', () => {
       over: "#8c0209",
       lang: 'en',
       locale: 'eng',
-      formatDate: ''
+      formatDate: '',
+      size:24
   }
   let dataCenters = data
   function init(conf) {
