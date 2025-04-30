@@ -32,15 +32,16 @@ function changeRoute(query) {
 function first () {
   var query = Object.assign({}, route.query)
   query.from = 1
-  query.to = query.from + data.nb - 1
+  query.to = query.from + parseInt(data.nb) - 1
   changeRoute(query)
 }
 function previous () {
+  console.log('previous')
   var query = Object.assign({}, route.query)
-  var index = from.value - data.nb 
+  var index = from.value - parseInt(data.nb)
   query.from = index > 0 ? index : 1
-  query.to =  query.to = query.from + data.nb - 1
-  
+  query.to =  query.from + parseInt(data.nb) - 1
+  changeRoute(query)
 }
 function next () {
   var query = Object.assign({}, route.query)
@@ -52,17 +53,22 @@ function next () {
 }
 function last () {
   var query = Object.assign({}, route.query)
-  var nbpage = Math.floor(pagination.tot.total / data.nb) + (pagination.tot.total % data.nb === 0 ? 1 : 0)
-  query.from = nbpage * data.nb + 1
-  query.to = query.from + data.nb - 1
-
+  var nbpage = Math.floor(pagination.tot.total / parseInt(data.nb)) + (pagination.tot.total % parseInt(data.nb) === 0 ? 1 : 0)
+  query.from = nbpage * parseInt(data.nb) + 1
+  query.to = query.from + parseInt(data.nb) - 1
+  changeRoute(query)
 }
 function pagingChange() {
+  var query = Object.assign({}, route.query)
+  if (!query.from) {
+    query.from = 1
+  }
+  query.to = parseInt(query.from) + parseInt(data.nb) - 1
+  changeRoute(query)
 
 }
 </script>
 <template>
-  {{from}}
       <div class="paging">
         <span :class="{disabled: from === 1}" :style="{background: config.state.primary}" @click="first">&laquo;</span>
         <span :class="{disabled: from === 1}" :style="{background: config.state.primary}" @click="previous">&lsaquo;</span>

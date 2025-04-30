@@ -15,10 +15,12 @@ const props = defineProps({
     </div>
 </template>
 <style>
-div.wrapper-group{
+div.wrapper-group-2{
     text-align: center;
    /* height:calc(100% - 60px);
     line-height: calc(100% - 60px);*/
+    max-height:calc(100vh - 80px);
+    overflow-y:scroll;
   }
   div.container-flex {
   display: -webkit-box;

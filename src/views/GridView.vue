@@ -3,6 +3,7 @@
   import { useRoute } from "vue-router"
   import { useElasticsearch } from '@/stores/elasticsearch';
   import MetadataList from '@/components/MetadataList.vue'
+  import FormGrid from '@/components/FormGrid.vue'
   import PageNavigation from '@/components/PageNavigation.vue'
   const elasticsearch = useElasticsearch()
   let data = reactive({
@@ -39,9 +40,17 @@
 
 <template>
   <main>
-    <!--<FormGrid :aggregations="aggregations"></FormGrid> -->
+    <FormGrid :aggregations="aggregations"></FormGrid> 
+    <div class="grid-content">
     <div style="text-align:center;margin:15px 0;"><PageNavigation :tot="data.pagination"></PageNavigation> </div>
     <MetadataList :list="data.list"></MetadataList>
-
+    </div>
   </main>
 </template>
+<style scoped>
+div.grid-content {
+  
+  max-width: calc(100% - 270px);
+  margin-left:270px;
+}
+</style>
