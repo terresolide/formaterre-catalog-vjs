@@ -11,6 +11,20 @@ const data = reactive({
     controlLayer: null,
     bbox: null
 })
+const selectedOptions = {
+    color: 'red',
+    fillColor: 'red',
+    fillOpacity: 0.3,
+    strokeWidth:1,
+    weight:1
+}
+const currentOptions = {
+    color: 'purple',
+    fillColor: 'purple',
+    fillOpacity: 0.05,
+    strokeWidth:1,
+    weight:1
+}
 watch(() => props.list,
 (list) => {
     var geojson = {
@@ -25,8 +39,10 @@ watch(() => props.list,
             geojson.features.push({type: 'Feature', id: mtdt._source.uuid, geometry: mtdt._source.geom[0]})
         }
     })
-    data.bbox = L.geoJSON(geojson)
+    data.bbox = L.geoJSON(geojson, {style: currentOptions})
     data.bbox.addTo(data.map)
+    var bounds = data.bbox.getBounds()
+    data.map.fitBounds(bounds)
 })
 function initialize () {
     if (data.map) {
