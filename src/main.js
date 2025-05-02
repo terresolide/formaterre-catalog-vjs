@@ -8,7 +8,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import specific icons */
 import {faAsterisk,faCaretDown,faCircleDot,faDownload, faFile, faFolderOpen, faEarthAmericas, faGaugeSimpleHigh, faGrip, faLink, faMagnifyingGlass,faMap, 
-        faPenToSquare,faSatelliteDish, faTerminal, faUser} from '@fortawesome/free-solid-svg-icons'
+        faPenToSquare,faSatelliteDish, faSearch, faTerminal, faUser} from '@fortawesome/free-solid-svg-icons'
 import { setupI18n, loadLocaleMessages } from './i18n'
 import moment from 'moment'
 import fr from "moment/dist/locale/fr"
@@ -16,7 +16,7 @@ import fr from "moment/dist/locale/fr"
 //   faSquare as farSquare
 // } from '@fortawesome/free-regular-svg-icons'
 library.add(faAsterisk,faCaretDown, faCircleDot,faDownload, faFile, faFolderOpen,faEarthAmericas, faGaugeSimpleHigh, faGrip, faLink, faMagnifyingGlass,faMap,
-            faPenToSquare,faSatelliteDish,faTerminal, faUser)
+            faPenToSquare,faSatelliteDish, faSearch, faTerminal, faUser)
 
 let cfg = {}
 

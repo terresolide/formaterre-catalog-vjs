@@ -52,7 +52,7 @@
 <style scoped>
 div.grid-content {
   
-  max-width: calc(100% - 310px);
-  margin-left:300px;
+  max-width: calc(100% - 330px);
+  margin-left:330px;
 }
 </style>
