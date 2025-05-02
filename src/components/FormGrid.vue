@@ -4,6 +4,10 @@
   import { useConfig } from "@/stores/config.js"
   import MapBox from '@/components/MapBox.vue'
   const config = useConfig()
+  const props = defineProps({
+    aggregations: Object,
+    list: Array
+  })
 </script>
 
 <template>
@@ -11,7 +15,7 @@
     
    <div class="formater-input-group" style="margin: 10px; width: calc(100% - 20px); " :style="{backgroundColor: config.state.lightcolor}"><input id="any" name="any" :placeholder="$t('search')  + '...'">
     <font-awesome-icon icon="fa-solid fa-search"/></div>
-   <map-box></map-box>
+   <map-box :list="props.list"></map-box>
 
   </aside>
 </template>

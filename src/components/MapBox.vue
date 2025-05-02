@@ -1,11 +1,32 @@
 <script setup>
-import {ref, reactive, onMounted} from 'vue'
+import {computed, ref, reactive, onMounted, watch} from 'vue'
 import L from 'leaflet'
 import '@/modules/leaflet.control.mylayers.js'
 const map = ref(null)
+const props = defineProps( {
+    list: Array
+})
 const data = reactive({
     map: null,
-    controlLayer: null
+    controlLayer: null,
+    bbox: null
+})
+watch(() => props.list,
+(list) => {
+    var geojson = {
+        type: 'FeatureCollection',
+        features: []
+    }
+    if (data.bbox) {
+        data.bbox.clearLayers()
+    }
+    list.forEach(function (mtdt) {
+        if (mtdt._source && mtdt._source.geom) {
+            geojson.features.push({type: 'Feature', id: mtdt._source.uuid, geometry: mtdt._source.geom[0]})
+        }
+    })
+    data.bbox = L.geoJSON(geojson)
+    data.bbox.addTo(data.map)
 })
 function initialize () {
     if (data.map) {

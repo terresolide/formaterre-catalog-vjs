@@ -40,7 +40,7 @@
 
 <template>
   <main>
-    <FormGrid :aggregations="data.aggregations"></FormGrid> 
+    <FormGrid :aggregations="data.aggregations" :list="data.list"></FormGrid> 
     <div class="grid-content"> 
       <div style="text-align:center;margin:15px 0;">
         <PageNavigation :tot="data.pagination"></PageNavigation>
