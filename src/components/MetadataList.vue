@@ -22,7 +22,7 @@ div.wrapper-group-2{
     max-height:calc(100vh - 80px);
     overflow-y:scroll;
   }
-  div.container-flex {
+  div.wrapper-group-2 div.container-flex {
   display: -webkit-box;
   display: -ms-flexbox;
     display: flex;
@@ -41,7 +41,7 @@ div.wrapper-group-2{
   -webkit-box-pack: space-evenly;
   -ms-flex-pack: space-evenly;
   justify-content: space-evenly;
-   max-width:1200px;
+   max-width:100%;
   }
   
 

@@ -311,6 +311,7 @@ div.element-metadata-flex {
   min-height: 28px;
   -webkit-box-sizing: content-box;
   box-sizing: content-box;
+  overflow:visible;
 }
  div.element-metadata-flex .mtdt-footer > div{
   display: inline-block;

@@ -1,24 +1,25 @@
 <script setup>
   import { reactive, watch, onMounted } from 'vue'; 
   import { useRoute } from "vue-router"
- 
-  function getRecords (query) {
-    elasticsearch.getRecords(query)
-    .then(json => {
-      data.aggregations = json.aggregations
-      if (json.hits && json.hits.hits) {
-        data.list = json.hits.hits
-        data.pagination.count = json.hits.hits.length
-        data.pagination.total = json.hits.total.value
-        data.pagination.relation = json.hits.total.relation
-      }
-    })
-  }
+  import MapBox from '@/components/MapBox.vue'
+  
 </script>
 
 <template>
-  <sidebar>
+  <aside>
    ICI LE FORMULAIRE DE RECHERCHE
+   <map-box></map-box>
 
-  </sidebar>
+  </aside>
 </template>
+<style scoped>
+aside {
+  max-width:300px;
+  float:left;
+  border:1px solid grey;
+  padding: 0px 0px 30px 0px;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+</style>
+

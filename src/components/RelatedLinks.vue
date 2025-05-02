@@ -60,6 +60,10 @@ let links = computed(() => {
  display:inline-block;
  box-sizing: content-box;
 }
+.mtdt-expand ul {
+  list-style:none;
+  padding-left:0;
+}
  .mtdt-related-type{
    cursor:pointer;
    opacity:0.9
@@ -102,7 +106,7 @@ span.disabled,
 .element-metadata-flex .mtdt-related-type + .mtdt-expand{
     display:none;
     position:absolute;
-    bottom: 21px;
+    bottom: -3px;
     right:0;
     z-index:100;
     height:auto;

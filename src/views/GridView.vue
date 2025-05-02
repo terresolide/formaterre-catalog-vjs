@@ -40,17 +40,19 @@
 
 <template>
   <main>
-    <FormGrid :aggregations="aggregations"></FormGrid> 
-    <div class="grid-content">
-    <div style="text-align:center;margin:15px 0;"><PageNavigation :tot="data.pagination"></PageNavigation> </div>
-    <MetadataList :list="data.list"></MetadataList>
+    <FormGrid :aggregations="data.aggregations"></FormGrid> 
+    <div class="grid-content"> 
+      <div style="text-align:center;margin:15px 0;">
+        <PageNavigation :tot="data.pagination"></PageNavigation>
+      </div>
+      <MetadataList :list="data.list"></MetadataList>
     </div>
   </main>
 </template>
 <style scoped>
 div.grid-content {
   
-  max-width: calc(100% - 270px);
-  margin-left:270px;
+  max-width: calc(100% - 310px);
+  margin-left:300px;
 }
 </style>
