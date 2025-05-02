@@ -196,7 +196,8 @@ const metadata = computed(() => {
                        </a>
                     </template>
                 </div>
-                <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:4px;width:calc(100% - 100px);"><related-links :links="metadata.links"></related-links></div>
+                <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:4px;width:calc(100% - 100px);">
+                  <related-links :uuid="metadata.id" :links="metadata.links"></related-links></div>
             </div>
         </a>
     </div>

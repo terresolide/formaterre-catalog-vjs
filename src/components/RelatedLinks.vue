@@ -1,22 +1,27 @@
 <script setup>
 import { computed} from 'vue';
 import {useConfig} from '@/stores/config'
-import {useCatalog} from '@/stores/catalog'
+// import {useSelect} from '@/stores/selection'
 // const SimpleLinks = () => import('@/components/SimpleLinks.vue')
 import SimpleLinks from '@/components/SimpleLinks.vue'
 import DownloadLinks from '@/components/DownloadLinks.vue'
 const props = defineProps({
+   uuid: String,
    links: Object
 })
 let config = useConfig()
+// let selection = useSelection()
 let links = computed(() => {
     
 })
+function select() {
+  // selection.setUuid(props.uuid)
+}
 
 </script>
 <template>
   <!-- afficher la position sur la carte -->
-  <div class="mtdt-related-type">
+  <div class="mtdt-related-type" @click="select">
     <font-awesome-icon icon="fa-solid fa-circle-dot" />
   </div>
   <!-- afficher la couche sur la carte -->
