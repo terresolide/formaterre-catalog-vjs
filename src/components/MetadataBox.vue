@@ -14,7 +14,7 @@ const props = defineProps({
 const catalog = computed(() => {
     return catalogs.getCurrent()
 })
-function treatmentLinks (list) {
+function treatmentLinks (list, id) {
     var links = {}
     list.forEach((lk, index) => {
     switch(lk.protocol) {
@@ -40,8 +40,15 @@ function treatmentLinks (list) {
             if (!links.layers) {
               links.layers = []
             }
-           //  var id = meta.id + '_' + index
-           //  links.layers.push(self.linkToLayer(lk, id))
+            var idLayer =  id + '_' + index
+            links.layers.push({
+                 id: idLayer,
+                 name: config.tr(lk.nameObject),
+                 description: config.tr(lk.descriptionObject),
+                 url:  config.tr(lk.urlObject),
+                 type: lk.protocol,
+                 checked: false
+            })
            break;
         case 'application/vnd.google-earth.kml+xml':
            break;
@@ -157,7 +164,7 @@ const metadata = computed(() => {
     if (source['th_formater-distributor']) {
         meta.provider = config.getProvider(source['th_formater-distributor'][0].link)
     }
-    meta.links = treatmentLinks(source.link)
+    meta.links = treatmentLinks(source.link, meta.id)
     console.log(meta.links)
     return meta
 })

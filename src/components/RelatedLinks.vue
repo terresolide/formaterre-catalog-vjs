@@ -1,10 +1,11 @@
 <script setup>
-import { computed} from 'vue';
+import {computed} from 'vue';
 import {useConfig} from '@/stores/config'
 import {useSelection} from '@/stores/selection'
 // const SimpleLinks = () => import('@/components/SimpleLinks.vue')
 import SimpleLinks from '@/components/SimpleLinks.vue'
 import DownloadLinks from '@/components/DownloadLinks.vue'
+import LayerLinks from '@/components/LayerLinks.vue'
 const props = defineProps({
    uuid: String,
    links: Object
@@ -18,18 +19,20 @@ let selectedUuid = computed(() => selection.uuid)
 function select() {
   selection.toggle(props.uuid)
 }
-console.log(config)
+console.log(props.links)
 
 </script>
 <template>
+
   <!-- afficher la position sur la carte -->
-  <div class="mtdt-related-type" :style="{backgroundColor: uuid === selectedUuid ? config.state.over: config.state.primary}" @click="select">
+  <div class="mtdt-related-type" :style="{backgroundColor: uuid === selectedUuid ? config.state.over: config.state.primary}"
+  :title="$t('localize')" @click="select">
     <font-awesome-icon icon="fa-solid fa-circle-dot" />
   </div>
   <!-- afficher la couche sur la carte -->
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-earth-americas" />
-  </div>
+   <template v-if="props.links.layers && props.links.layers.length > 0">
+    <layer-links :links="props.links.layers" :uuid="uuid" :access="access"></layer-links>
+   </template>
   <!-- instrument -->
   <div class="mtdt-related-type">
     <font-awesome-icon icon="fa-solid fa-gauge-simple-high" />

@@ -12,13 +12,13 @@ const props = defineProps({
        default: 'information'
     }
 })
-console.log(props.links)
+let config = useConfig()
 
 
 </script>
 <template v-if="props.links.length">
   <!-- liens d'information -->
-   <div class="mtdt-related-type">
+   <div class="mtdt-related-type" :style="{backgroundColor: config.state.primary}">
    <template v-if="props.type === 'information'">
     <font-awesome-icon icon="fa-solid fa-link" /> 
   </template>

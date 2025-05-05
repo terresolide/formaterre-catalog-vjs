@@ -40,7 +40,15 @@ watch(() => props.list,
     }
     list.forEach(function (mtdt) {
         if (mtdt._source && mtdt._source.geom) {
-            geojson.features.push({type: 'Feature', id: mtdt._source.uuid, geometry: mtdt._source.geom[0]})
+            if (mtdt._source.geom.length === 1) {
+                geojson.features.push({type: 'Feature', id: mtdt._source.uuid, geometry: mtdt._source.geom[0]})
+            } else {
+                var geometry = {type: 'MultiPolygon', coordinates: []}
+                mtdt._source.geom.forEach(function (geom) {
+                    geometry.coordinates.push(geom.coordinates)
+                })
+                geojson.features.push({ type: 'Feature', id: mtdt._source.uuid, geometry: geometry})
+            }
         }
     })
     data.bbox = L.geoJSON(geojson, {style: currentOptions})
