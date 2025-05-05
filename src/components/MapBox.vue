@@ -50,18 +50,18 @@ watch(() => props.list,
 })
 watch(() => selection.uuid,
 (uuid) => {
+    if (data.selectedBbox) {
+        data.selectedBbox.setStyle(currentOptions)
+    }
+    if (!uuid) {
+        data.selectedBbox = null
+        data.map.fitBounds(data.bbox.getBounds())
+        return
+    }
     var layers = data.bbox.getLayers()
     data.selectedBbox = layers.find(ly => ly.feature.id === uuid)
     data.selectedBbox.setStyle(selectedOptions)
-    data.map.fitBounds(data.selectedBbox.getBounds())
-    for (var i in layers) {
-        console.log(layers[i].feature.id)
-        if (layers[i].feature.id === uuid) {
-            console.log('find ' + uuid)
-            break
-        }
-    }
-    
+    data.map.fitBounds(data.selectedBbox.getBounds()) 
 })
 
 function initialize () {

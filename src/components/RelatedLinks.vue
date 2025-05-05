@@ -14,14 +14,16 @@ let selection = useSelection()
 let links = computed(() => {
     
 })
+let selectedUuid = computed(() => selection.uuid)
 function select() {
-  selection.setUuid(props.uuid)
+  selection.toggle(props.uuid)
 }
+console.log(config)
 
 </script>
 <template>
   <!-- afficher la position sur la carte -->
-  <div class="mtdt-related-type" @click="select">
+  <div class="mtdt-related-type" :style="{backgroundColor: uuid === selectedUuid ? config.state.over: config.state.primary}" @click="select">
     <font-awesome-icon icon="fa-solid fa-circle-dot" />
   </div>
   <!-- afficher la couche sur la carte -->
