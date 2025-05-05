@@ -1,7 +1,7 @@
 <script setup>
 import { computed} from 'vue';
 import {useConfig} from '@/stores/config'
-// import {useSelect} from '@/stores/selection'
+import {useSelection} from '@/stores/selection'
 // const SimpleLinks = () => import('@/components/SimpleLinks.vue')
 import SimpleLinks from '@/components/SimpleLinks.vue'
 import DownloadLinks from '@/components/DownloadLinks.vue'
@@ -10,12 +10,12 @@ const props = defineProps({
    links: Object
 })
 let config = useConfig()
-// let selection = useSelection()
+let selection = useSelection()
 let links = computed(() => {
     
 })
 function select() {
-  // selection.setUuid(props.uuid)
+  selection.setUuid(props.uuid)
 }
 
 </script>
