@@ -2,7 +2,8 @@ import { defineStore } from 'pinia'
 
 export const useSelection = defineStore('selection', {
     state: () => ({
-        uuid: null
+        uuid: null,
+        layers: []
     }),
     actions: {
         toggle(uuid) {

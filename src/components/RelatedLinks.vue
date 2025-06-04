@@ -15,11 +15,11 @@ let selection = useSelection()
 let links = computed(() => {
     
 })
+let access =  {view: 'free', download: 'free'}
 let selectedUuid = computed(() => selection.uuid)
 function select() {
   selection.toggle(props.uuid)
 }
-console.log(props.links)
 
 </script>
 <template>

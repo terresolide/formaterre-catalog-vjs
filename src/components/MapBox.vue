@@ -87,7 +87,6 @@ onMounted(() => {initialize()})
 
 </script>
 <template>
-    {{selectedUuid}}
     <div id="map" ref="map" class="mtdt-small">map box</div>
 </template>
 <style src='leaflet/dist/leaflet.css' />

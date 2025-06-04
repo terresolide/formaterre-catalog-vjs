@@ -14,12 +14,10 @@ const props = defineProps({
 let config = useConfig()
 let selection = useSelection()
 
-let selectedUuid = computed(() => selection.uuid)
+let selectedLayers = computed(() => selection.layers)
 function select() {
   selection.toggle(props.uuid)
 }
-console.log(config)
-
 </script>
 <template>
 
