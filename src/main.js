@@ -12,11 +12,12 @@ import {faAsterisk,faCaretDown,faCircleDot,faDownload, faFile, faFolderOpen, faE
 import { setupI18n, loadLocaleMessages } from './i18n'
 import moment from 'moment'
 import fr from "moment/dist/locale/fr"
-// import {
-//   faSquare as farSquare
-// } from '@fortawesome/free-regular-svg-icons'
+import {
+   faSquare,
+   faSquareCheck
+} from '@fortawesome/free-regular-svg-icons'
 library.add(faAsterisk,faCaretDown, faCircleDot,faDownload, faFile, faFolderOpen,faEarthAmericas, faGaugeSimpleHigh, faGrip, faLink, faMagnifyingGlass,faMap,
-            faPenToSquare,faSatelliteDish, faSearch, faTerminal, faUser)
+            faPenToSquare,faSatelliteDish, faSearch, faSquare, faSquareCheck, faTerminal, faUser)
 
 let cfg = {}
 
