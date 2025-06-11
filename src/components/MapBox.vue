@@ -3,6 +3,9 @@ import { computed, ref, reactive, onMounted, watch } from 'vue'
 import L from 'leaflet'
 import '@/modules/leaflet.control.mylayers.js'
 import { useSelection } from '@/stores/selection'
+import { useConfig } from '@/stores/config'
+const getReader = () => import('@/modules/capabilities-reader.js')
+const config = useConfig()
 const map = ref(null)
 const props = defineProps({
   list: Array,
@@ -13,6 +16,7 @@ const data = reactive({
   layers: [],
   bbox: null,
   selectedBbox: null,
+  reader: null
 })
 const selectedOptions = {
   color: 'red',
@@ -62,14 +66,14 @@ function addLayer(layer, zoom) {
     case 'OGC:WMS':
     case 'OGC Web Map Service':
       var regex = new RegExp(/GetCapabilities/i)
-      if (regex.test(layer.href)) {
+      if (regex.test(layer.url)) {
         beforeAddWMS(layer, metaId, zoom)
         return
       }
       if (!layer.options) {
-        var extract = layer.href.match(/^(.*\?).*$/)
+        var extract = layer.url.match(/^(.*\?).*$/)
         var url = extract[1]
-        layer.href = url
+        layer.url = url
         layer.options = {
           id: layer.id,
           service: 'WMS',
@@ -108,12 +112,12 @@ function addLayer(layer, zoom) {
       this.addWTSLayer(layer, metaId)
       break
     case 'XXX':
-      var extract = layer.href.match(/^(.*\?).*$/)
+      var extract = layer.url.match(/^(.*\?).*$/)
       var url = extract[1]
       var options = {
         service: 'WMS',
         layers: layer.name,
-        url: layer.href, //,
+        url: layer.url, //,
         //  format: 'image/png',
         // opacity: 0.5
       }
@@ -128,8 +132,8 @@ function addLayer(layer, zoom) {
       break
     case 'OGC:WFS':
     case 'OGC:WFS-G':
-      var extract = layer.href.match(/^(.*\?).*$/)
-      url = layer.href + 'r?'
+      var extract = layer.url.match(/^(.*\?).*$/)
+      url = layer.url + 'r?'
       url += 'version=1.0.0&request=GetFeature&typeName=' + layer.name
       url += '&service=WFS'
       url += '&outputFormat=' + encodeURIComponent('application/vnd.google-earth.kml+xml')
@@ -147,7 +151,7 @@ function addLayer(layer, zoom) {
     case 'OGC:OWS':
     case 'OGC:OWS-C':
     case 'GLG:KML-2.0-http-get-map':
-      this.$http.get(layer.href).then((response) => {
+      this.$http.get(layer.url).then((response) => {
         const parser = new DOMParser()
         const kml = parser.parseFromString(response.body, 'text/xml')
         var newLayer = new L.KML(kml)
@@ -160,7 +164,16 @@ function addLayer(layer, zoom) {
   }
 }
 function beforeAddWMS(layer, metaId, zoom) {
-  reader.loadInfo(layer, { opacity: 0.5, zoom: zoom }, metaId, addWMSLayer)
+  if (!data.reader) {
+    getReader().then((rd) => {
+      console.log(rd)
+      data.reader = rd.default
+      data.reader.init(config.state.proxy)
+      data.reader.loadInfo(layer, { opacity: 0.5, zoom: zoom }, metaId, addWMSLayer)
+    })
+  } else {
+      data.reader.loadInfo(layer, { opacity: 0.5, zoom: zoom }, metaId, addWMSLayer)
+  }
 }
 function addWTSLayer(layer, metaId) {
   var tileLayer = L.tileLayer(layer.href, { opacity: 0.5 })
@@ -169,7 +182,7 @@ function addWTSLayer(layer, metaId) {
 function addWMSLayer(layerObj, metaId, zoom) {
   // add bearer if necessary
   // layerObj.options._bearer = 'mon bearer'
-  var newLayer = L.tileLayer.wms(layerObj.href, layerObj.options)
+  var newLayer = L.tileLayer.wms(layerObj.url, layerObj.options)
   addLayerToMap(layerObj.options.id, metaId, newLayer, zoom)
   // Add legend if there is specific legend with the layer and only one metadata
   if (layerObj.options.legend && selection.uuid && layerObj.id.indexOf(selection.uuid) >= 0) {
@@ -186,7 +199,7 @@ function addLayerToMap(id, groupId, newLayer, zoom) {
     //        if (!this.layers[this.depth]) {
     //          this.layers[this.depth] = new Map()
     //        }
-    data.layers.set(id, newLayer)
+    data.layers[id] =  newLayer
     var bounds = searchBboxBoundsById(groupId)
     console.log(bounds)
     console.log(groupId)
@@ -264,6 +277,10 @@ watch(
   () => selection.layers,
   (layers) => {
     // add new layers or remove
+    layers.forEach(function (layer) {
+      console.log(layer)
+      addLayer(layer)
+    })
   },
   { deep: true },
 )
