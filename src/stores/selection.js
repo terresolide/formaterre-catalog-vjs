@@ -24,6 +24,7 @@ export const useSelection = defineStore('selection', {
       if (index >= 0) {
         // remove layer
         this.layers.splice(index, 1)
+        this.uuid = null
         return false
       } else {
         this.layers.push(layer)

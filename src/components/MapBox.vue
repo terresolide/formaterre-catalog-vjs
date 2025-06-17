@@ -21,8 +21,8 @@ const data = reactive({
 const selectedOptions = {
   color: 'red',
   fillColor: 'red',
-  fillOpacity: 0.3,
-  strokeWidth: 1,
+  fillOpacity: 0.01,
+  strokeWidth: 2,
   weight: 1,
 }
 const currentOptions = {
@@ -34,28 +34,13 @@ const currentOptions = {
 }
 const selection = useSelection()
 
-function searchBboxBoundsById(id) {
-  var self = this
-  var bounds = null
-  data.bbox.eachLayer(function (layer) {
-    if (layer.options.id === id || (layer.feature && layer.feature.id === id)) {
-      var bds = layer.getBounds()
-      if (!bounds) {
-        bounds = bds
-      } else {
-        bounds.extend(bds)
-      }
-    }
-  })
-  return bounds
-}
+
 function addLayer(layer, zoom) {
   
   var metaId = layer.id.split('_')[0]
   console.log(metaId)
   // var token = event.detail.token
 
-  var bounds = searchBboxBoundsById(metaId)
   var newLayer = null
 
   switch (layer.type) {
@@ -106,7 +91,7 @@ function addLayer(layer, zoom) {
           layers: layer.name,
         }
       }
-      this.addWTSLayer(layer, metaId)
+      addWTSLayer(layer, metaId)
       break
     case 'XXX':
       var extract = layer.url.match(/^(.*\?).*$/)
@@ -173,8 +158,8 @@ function beforeAddWMS(layer, metaId, zoom) {
   }
 }
 function addWTSLayer(layer, metaId) {
-  var tileLayer = L.tileLayer(layer.href, { opacity: 0.5 })
-  addLayerToMap(layer.options.id, metaId, tileLayer, true)
+  var tileLayer = L.tileLayer(layer.url, { opacity: 0.5 })
+  addLayerToMap(layer.options.id, metaId, tileLayer)
 }
 function addWMSLayer(layerObj, metaId, zoom) {
   // add bearer if necessary
@@ -188,20 +173,11 @@ function addWMSLayer(layerObj, metaId, zoom) {
  //   data.legendControl.addLegend(data.selectedMetadata.id, '0', data.selectedMetadata.legend)
  // }
 }
-function addLayerToMap(id, groupId, newLayer, zoom) {
+function addLayerToMap(id, groupId, newLayer) {
   if (newLayer) {
     newLayer.addTo(data.map)
     newLayer.bringToFront()
     data.layers[id] =  newLayer
-    var bounds = searchBboxBoundsById(groupId)
-    console.log(bounds)
-    console.log(groupId)
-    if (newLayer._kml) {
-      bounds = newLayer.getBounds()
-    }
-    if (bounds && zoom) {
-      data.map.fitBounds(bounds, { animate: true, padding: [30, 30] })
-    }
   }
 }
 
@@ -244,6 +220,7 @@ watch(
     if (data.selectedBbox) {
       data.selectedBbox.setStyle(currentOptions)
     }
+    console.log(uuid)
     if (!uuid) {
       data.selectedBbox = null
       data.map.fitBounds(data.bbox.getBounds())
