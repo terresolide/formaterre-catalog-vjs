@@ -204,18 +204,7 @@ function addLayerToMap(id, groupId, newLayer, zoom) {
     }
   }
 }
-function removeLayer(id) {
-  var layer = data.layers.get(id)
-  if (layer) {
-    layer.remove()
-    // this.$store.commit('layers/removeLayer', event.detail.id)
-    if (layer.options.legend) {
-      // remove legend attached to one layer (not legend attached to metadata)
-      legendControl.removeLegend(id)
-    }
-  }
-  data.layers.delete(id)
-}
+
 watch(
   () => props.list,
   (list) => {

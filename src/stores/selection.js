@@ -9,6 +9,9 @@ export const useSelection = defineStore('selection', {
     hasLayer(layer) {
       return this.layers.findIndex((l) => l.id === layer.id) >= 0
     },
+    select (uuid) {
+        this.uuid = uuid
+    },
     toggle(uuid) {
       if (uuid === this.uuid) {
         this.uuid = null
