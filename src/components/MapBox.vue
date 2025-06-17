@@ -50,12 +50,9 @@ function searchBboxBoundsById(id) {
   return bounds
 }
 function addLayer(layer, zoom) {
-  // test get capabilities
-  //      this.$http.get('http://api.formater/interface-services/index.php?x=8').then(
-  //          response => { console.log(response.body)}
-  //      )
-
-  var metaId = layer.id
+  
+  var metaId = layer.id.split('_')[0]
+  console.log(metaId)
   // var token = event.detail.token
 
   var bounds = searchBboxBoundsById(metaId)
@@ -185,20 +182,16 @@ function addWMSLayer(layerObj, metaId, zoom) {
   var newLayer = L.tileLayer.wms(layerObj.url, layerObj.options)
   addLayerToMap(layerObj.options.id, metaId, newLayer, zoom)
   // Add legend if there is specific legend with the layer and only one metadata
-  if (layerObj.options.legend && selection.uuid && layerObj.id.indexOf(selection.uuid) >= 0) {
-    data.legendControl.addLegend(selection.uuid, layerObj.id, layerObj.options.legend.src)
-  } else if (data.selectedMetadata && data.selectedMetadata.legend) {
-    data.legendControl.addLegend(data.selectedMetadata.id, '0', data.selectedMetadata.legend)
-  }
+ // if (layerObj.options.legend && selection.uuid && layerObj.id.indexOf(selection.uuid) >= 0) {
+ //   data.legendControl.addLegend(selection.uuid, layerObj.id, layerObj.options.legend.src)
+ // } else if (data.selectedMetadata && data.selectedMetadata.legend) {
+ //   data.legendControl.addLegend(data.selectedMetadata.id, '0', data.selectedMetadata.legend)
+ // }
 }
 function addLayerToMap(id, groupId, newLayer, zoom) {
   if (newLayer) {
     newLayer.addTo(data.map)
     newLayer.bringToFront()
-    // this.$store.commit('layers/addLayer', id)
-    //        if (!this.layers[this.depth]) {
-    //          this.layers[this.depth] = new Map()
-    //        }
     data.layers[id] =  newLayer
     var bounds = searchBboxBoundsById(groupId)
     console.log(bounds)
@@ -278,9 +271,21 @@ watch(
   (layers) => {
     // add new layers or remove
     layers.forEach(function (layer) {
-      console.log(layer)
-      addLayer(layer)
+      if (!data.layers[layer.id]) {
+          addLayer(layer)
+      }
     })
+    // remove 
+    var onMap = Object.keys(data.layers)
+    var onMap = layers.map(l => l.id)
+    console.log(onMap)
+    for(var key in data.layers) {
+        if (onMap.indexOf(key) < 0) {
+            data.layers[key].remove()
+            delete data.layers[key]
+        }
+    }
+    
   },
   { deep: true },
 )

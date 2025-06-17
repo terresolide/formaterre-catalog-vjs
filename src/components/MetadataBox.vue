@@ -164,6 +164,7 @@ const metadata = computed(() => {
     if (source['th_formater-distributor']) {
         meta.provider = config.getProvider(source['th_formater-distributor'][0].link)
     }
+    console.log(meta.id)
     meta.links = treatmentLinks(source.link, meta.id)
     return meta
 })

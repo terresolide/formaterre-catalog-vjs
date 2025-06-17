@@ -29,7 +29,7 @@ function hasSelectedLayer() {
   return false
 }
 function select(index) {
-  selection.toggleLayer(props.links[index], this.uuid)
+  selection.toggleLayer(props.links[index])
 }
 </script>
 <template>
