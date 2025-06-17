@@ -43,6 +43,7 @@ function treatmentLinks (list, id) {
             var idLayer =  id + '_' + index
             links.layers.push({
                  id: idLayer,
+                 uuid: id,
                  name: config.tr(lk.nameObject),
                  description: config.tr(lk.descriptionObject),
                  url:  config.tr(lk.urlObject),

@@ -37,7 +37,7 @@ const selection = useSelection()
 
 function addLayer(layer, zoom) {
   
-  var metaId = layer.id.split('_')[0]
+  var metaId = layer.uuid
   console.log(metaId)
   // var token = event.detail.token
 
@@ -228,8 +228,10 @@ watch(
     }
     var layers = data.bbox.getLayers()
     data.selectedBbox = layers.find((ly) => ly.feature.id === uuid)
-    data.selectedBbox.setStyle(selectedOptions)
-    data.map.fitBounds(data.selectedBbox.getBounds())
+    if (data.selectedBbox) {
+        data.selectedBbox.setStyle(selectedOptions)
+        data.map.fitBounds(data.selectedBbox.getBounds())
+    }
   },
 )
 watch(

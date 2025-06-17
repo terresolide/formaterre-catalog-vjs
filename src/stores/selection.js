@@ -21,7 +21,6 @@ export const useSelection = defineStore('selection', {
     },
     toggleLayer(layer) {
       var index = this.layers.findIndex((l) => l.id === layer.id)
-      var uuid = layer.id.split('_')[0]
       if (index >= 0) {
         // remove layer
         this.layers.splice(index, 1)
@@ -29,7 +28,7 @@ export const useSelection = defineStore('selection', {
         return false
       } else {
         this.layers.push(layer)
-        this.uuid = uuid
+        this.uuid = layer.uuid
         return true
       }
     },
