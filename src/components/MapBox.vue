@@ -1,7 +1,8 @@
 <script setup>
-import { computed, ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import L from 'leaflet'
 import '@/modules/leaflet.control.mylayers.js'
+import '@/modules/leaflet.control.legend.js'
 import { useSelection } from '@/stores/selection'
 import { useConfig } from '@/stores/config'
 const getReader = () => import('@/modules/capabilities-reader.js')
@@ -13,6 +14,7 @@ const props = defineProps({
 const data = reactive({
   map: null,
   controlLayer: null,
+  controlLegend: null,
   layers: [],
   bbox: null,
   selectedBbox: null,
@@ -35,13 +37,13 @@ const currentOptions = {
 const selection = useSelection()
 
 
-function addLayer(layer, zoom) {
+function addLayer(layer) {
   
   var metaId = layer.uuid
   console.log(metaId)
+  // voir comment passer le token quand authentifié
   // var token = event.detail.token
 
-  var newLayer = null
 
   switch (layer.type) {
     case 'WMS':
@@ -49,7 +51,7 @@ function addLayer(layer, zoom) {
     case 'OGC Web Map Service':
       var regex = new RegExp(/GetCapabilities/i)
       if (regex.test(layer.url)) {
-        beforeAddWMS(layer, metaId, zoom)
+        beforeAddWMS(layer, metaId)
         return
       }
       if (!layer.options) {
@@ -67,7 +69,7 @@ function addLayer(layer, zoom) {
           layer.options._bearer = token
         }
       }
-      addWMSLayer(layer, metaId, zoom)
+      addWMSLayer(layer, metaId)
       break
     case 'GetMap':
       if (!layer.options) {
@@ -79,7 +81,7 @@ function addLayer(layer, zoom) {
           opacity: 0.5,
         }
       }
-      addWMSLayer(layer, metaId, zoom)
+      addWMSLayer(layer, metaId)
       break
     case 'WMTS':
     case 'OGC API - Tiles':
@@ -125,7 +127,7 @@ function addLayer(layer, zoom) {
       //              const parser = new DOMParser();
       //              const kml = parser.parseFromString(response.body, 'text/xml');
       //              var newLayer = new L.KML(kml)
-      //              this.addLayerToMap(layer.id, metaId, newLayer, zoom)
+      //              this.addLayerToMap(layer.id, metaId, newLayer)
       //            }
       //        )
       break
@@ -137,7 +139,7 @@ function addLayer(layer, zoom) {
         const parser = new DOMParser()
         const kml = parser.parseFromString(response.body, 'text/xml')
         var newLayer = new L.KML(kml)
-        addLayerToMap(layer.id, metaId, newLayer, zoom)
+        addLayerToMap(layer.id, metaId, newLayer)
       })
       break
 
@@ -145,27 +147,27 @@ function addLayer(layer, zoom) {
     // kmlLayer.addTo(this.map)
   }
 }
-function beforeAddWMS(layer, metaId, zoom) {
+function beforeAddWMS(layer, metaId) {
   if (!data.reader) {
     getReader().then((rd) => {
       console.log(rd)
       data.reader = rd.default
       data.reader.init(config.state.proxy)
-      data.reader.loadInfo(layer, { opacity: 0.5, zoom: zoom }, metaId, addWMSLayer)
+      data.reader.loadInfo(layer, { opacity: 0.5}, metaId, addWMSLayer)
     })
   } else {
-      data.reader.loadInfo(layer, { opacity: 0.5, zoom: zoom }, metaId, addWMSLayer)
+      data.reader.loadInfo(layer, { opacity: 0.5}, metaId, addWMSLayer)
   }
 }
 function addWTSLayer(layer, metaId) {
   var tileLayer = L.tileLayer(layer.url, { opacity: 0.5 })
   addLayerToMap(layer.options.id, metaId, tileLayer)
 }
-function addWMSLayer(layerObj, metaId, zoom) {
+function addWMSLayer(layerObj, metaId) {
   // add bearer if necessary
   // layerObj.options._bearer = 'mon bearer'
   var newLayer = L.tileLayer.wms(layerObj.url, layerObj.options)
-  addLayerToMap(layerObj.options.id, metaId, newLayer, zoom)
+  addLayerToMap(layerObj.options.id, metaId, newLayer)
   // Add legend if there is specific legend with the layer and only one metadata
  // if (layerObj.options.legend && selection.uuid && layerObj.id.indexOf(selection.uuid) >= 0) {
  //   data.legendControl.addLegend(selection.uuid, layerObj.id, layerObj.options.legend.src)
@@ -267,6 +269,10 @@ function initialize() {
   data.controlLayer.tiles.arcgisTopo.layer.addTo(data.map)
   data.controlLayer.addTo(data.map)
   L.control.scale().addTo(data.map)
+  data.legendControl = new L.Control.Legend(config.state.lang, function (uuid) {
+      return uuid
+  })
+  data.legendControl.addTo(data.map)
 }
 onMounted(() => {
   initialize()
