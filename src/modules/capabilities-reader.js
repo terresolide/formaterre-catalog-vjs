@@ -13,8 +13,12 @@ export default {
       }
       this.proxy = prox.url
     },
-    loadInfo (layer, options, metaId, callback) {
+    loadInfo (layer, callback) {
+      var options = layer.options
+      var metaId = layer.uuid
       var url = layer.url
+      console.log(layer)
+      return
       var search = url
       if (this.regex.test(url) && this.proxy) {
         search = this.proxy + '?url=' + encodeURIComponent(url)
@@ -58,6 +62,7 @@ export default {
       layer.title = this.getTitle(root, layerXml, nsResolver)
       layer.options = {
         id: layer.id,
+        uuid: layer.uuid,
         ESPG: this.getESPG(root, layerXml, nsResolver),
         format: this.getFormat(root, nsResolver),
         opacity: options.opacity,
@@ -72,7 +77,7 @@ export default {
 //      options.id = layer.id
       // search crs and legend and bbox
       if (typeof callback !== 'undefined') {
-        callback(layer, metaId, options.zoom)
+        callback(layer)
       }
     },
     getUrlGetMap( root, resolver) {

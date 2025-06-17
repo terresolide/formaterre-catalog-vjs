@@ -51,7 +51,7 @@ function addLayer(layer) {
     case 'OGC Web Map Service':
       var regex = new RegExp(/GetCapabilities/i)
       if (regex.test(layer.url)) {
-        beforeAddWMS(layer, metaId)
+        beforeAddWMS(layer)
         return
       }
       if (!layer.options) {
@@ -60,6 +60,7 @@ function addLayer(layer) {
         layer.url = url
         layer.options = {
           id: layer.id,
+          uuid: layer.uuid,
           service: 'WMS',
           layers: layer.name,
           format: 'image/png',
@@ -69,19 +70,20 @@ function addLayer(layer) {
           layer.options._bearer = token
         }
       }
-      addWMSLayer(layer, metaId)
+      addWMSLayer(layer)
       break
     case 'GetMap':
       if (!layer.options) {
         layer.options = {
           id: layer.id,
+          uuid: layer.uuid,
           service: 'WMS',
           layers: layer.name,
           format: 'image/png',
           opacity: 0.5,
         }
       }
-      addWMSLayer(layer, metaId)
+      addWMSLayer(layer)
       break
     case 'WMTS':
     case 'OGC API - Tiles':
@@ -91,9 +93,10 @@ function addLayer(layer) {
           id: layer.id,
           service: 'WTS',
           layers: layer.name,
+          opacity: 0.5
         }
       }
-      addWTSLayer(layer, metaId)
+      addWTSLayer(layer)
       break
     case 'XXX':
       var extract = layer.url.match(/^(.*\?).*$/)
@@ -112,7 +115,7 @@ function addLayer(layer) {
       //          response => { console.log(response.body)}
       //         )
       //        var newLayer = L.tileLayer.wms(url, options);
-      //        this.addLayerToMap(layer.id, metaId, newLayer)
+      //        this.addLayerToMap(layer.id, newLayer)
       break
     case 'OGC:WFS':
     case 'OGC:WFS-G':
@@ -127,7 +130,7 @@ function addLayer(layer) {
       //              const parser = new DOMParser();
       //              const kml = parser.parseFromString(response.body, 'text/xml');
       //              var newLayer = new L.KML(kml)
-      //              this.addLayerToMap(layer.id, metaId, newLayer)
+      //              this.addLayerToMap(layer.id, newLayer)
       //            }
       //        )
       break
@@ -139,7 +142,7 @@ function addLayer(layer) {
         const parser = new DOMParser()
         const kml = parser.parseFromString(response.body, 'text/xml')
         var newLayer = new L.KML(kml)
-        addLayerToMap(layer.id, metaId, newLayer)
+        addLayerToMap(layer.id, newLayer)
       })
       break
 
@@ -147,35 +150,39 @@ function addLayer(layer) {
     // kmlLayer.addTo(this.map)
   }
 }
-function beforeAddWMS(layer, metaId) {
+function beforeAddWMS(layer) {
+  layer.options = {opacity: 0.5}
   if (!data.reader) {
     getReader().then((rd) => {
       console.log(rd)
       data.reader = rd.default
       data.reader.init(config.state.proxy)
-      data.reader.loadInfo(layer, { opacity: 0.5}, metaId, addWMSLayer)
+      data.reader.loadInfo(layer, addWMSLayer)
     })
   } else {
-      data.reader.loadInfo(layer, { opacity: 0.5}, metaId, addWMSLayer)
+    
+      data.reader.loadInfo(layer, addWMSLayer)
   }
 }
-function addWTSLayer(layer, metaId) {
-  var tileLayer = L.tileLayer(layer.url, { opacity: 0.5 })
-  addLayerToMap(layer.options.id, metaId, tileLayer)
+function addWTSLayer(layer) {
+  var tileLayer = L.tileLayer(layer.url, layer.options)
+  addLayerToMap(layer.options.id, tileLayer)
 }
-function addWMSLayer(layerObj, metaId) {
+function addWMSLayer(layerObj) {
   // add bearer if necessary
   // layerObj.options._bearer = 'mon bearer'
   var newLayer = L.tileLayer.wms(layerObj.url, layerObj.options)
-  addLayerToMap(layerObj.options.id, metaId, newLayer)
+  console.log(newLayer)
+  addLayerToMap(layerObj.options.id, newLayer)
   // Add legend if there is specific legend with the layer and only one metadata
- // if (layerObj.options.legend && selection.uuid && layerObj.id.indexOf(selection.uuid) >= 0) {
- //   data.legendControl.addLegend(selection.uuid, layerObj.id, layerObj.options.legend.src)
- // } else if (data.selectedMetadata && data.selectedMetadata.legend) {
- //   data.legendControl.addLegend(data.selectedMetadata.id, '0', data.selectedMetadata.legend)
+  if (layerObj.options.legend && selection.uuid && layerObj.options.uuid === selection.uuid ) {
+    data.legendControl.addLegend(selection.uuid, layerObj.id, layerObj.options.legend.src)
+  } 
+ // else if (data.selectedMetadata && data.selectedMetadata.legend) {
+//  data.legendControl.addLegend(data.selectedMetadata.id, '0', data.selectedMetadata.legend)
  // }
 }
-function addLayerToMap(id, groupId, newLayer) {
+function addLayerToMap(id, newLayer) {
   if (newLayer) {
     newLayer.addTo(data.map)
     newLayer.bringToFront()
@@ -239,22 +246,22 @@ watch(
 watch(
   () => selection.layers,
   (layers) => {
-    // add new layers or remove
-    layers.forEach(function (layer) {
-      if (!data.layers[layer.id]) {
-          addLayer(layer)
-      }
-    })
-    // remove 
-    var onMap = Object.keys(data.layers)
-    var onMap = layers.map(l => l.id)
-    console.log(onMap)
+    // remove
+     var onMap = layers.map(l => l.id)
+
     for(var key in data.layers) {
         if (onMap.indexOf(key) < 0) {
             data.layers[key].remove()
             delete data.layers[key]
         }
     }
+    // add new layers or remove
+    layers.forEach(function (layer) {
+      if (!data.layers[layer.id]) {
+          addLayer(layer)
+      }
+    })
+   
     
   },
   { deep: true },
@@ -269,8 +276,10 @@ function initialize() {
   data.controlLayer.tiles.arcgisTopo.layer.addTo(data.map)
   data.controlLayer.addTo(data.map)
   L.control.scale().addTo(data.map)
-  data.legendControl = new L.Control.Legend(config.state.lang, function (uuid) {
-      return uuid
+  data.legendControl = new L.Control.Legend(config.state.lang, function (uuid) {    
+     // create Dom identifier from uuid
+      // first character must be letter and character other than "_" and "-" are forbidden
+      return 'i' + uuid.toLowerCase().replace(/[^a-z0-9\-_]+/, '')
   })
   data.legendControl.addTo(data.map)
 }
@@ -306,5 +315,42 @@ div[id='map'].mtdt-small .leaflet-control a {
   width: 15px;
   height: 15px;
   line-height: 15px;
+}
+div[id="map"] .lfh-control-legend {
+ cursor: pointer;
+ background: white;
+ display:none;
+}
+div[id="map"] .lfh-control-legend img{
+  max-height:250px;
+}
+ div[id="map"]  div.lfh-control-legend{
+  display:block;
+}
+  div[id="map"]  div.lfh-control-legend.hidden{
+  display:none;
+}
+
+div[id="map"].mtdt-small .lfh-control-legend img{
+ max-width:120px;
+ max-height:100px;
+}
+div[id="map"] .lfh-control-legend img{
+  display: none;
+}
+/*  div[id="map"] .lfh-control-legend a{
+ display:block;
+} */
+div[id="map"] .lfh-control-legend.expand img{;
+ display:block;
+ float:left;
+ margin-left:5px;
+}
+ div[id="map"] .lfh-control-legend.expand img:first-child{
+  margin-left:0px;
+ }
+div[id="map"] .lfh-control-legend.expand a{
+ display:none;
+
 }
 </style>
