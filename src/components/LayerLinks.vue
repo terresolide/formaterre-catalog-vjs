@@ -30,7 +30,7 @@ function hasSelectedLayer() {
 }
 function select(index) {
   selection.toggleLayer(props.links[index])
-  selection.toggle(props.uuid)
+ //  selection.toggle(props.uuid)
  // selection.toggle(props.uuid)
 }
 </script>
