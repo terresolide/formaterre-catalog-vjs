@@ -235,6 +235,7 @@ watch(
     if (!uuid) {
       data.selectedBbox = null
       data.map.fitBounds(data.bbox.getBounds())
+      data.legendControl.removeAll()
       return
     }
     var layers = data.bbox.getLayers()
@@ -242,6 +243,7 @@ watch(
     if (data.selectedBbox) {
         data.selectedBbox.setStyle(selectedOptions)
         data.map.fitBounds(data.selectedBbox.getBounds())
+        // if layer add legend
     }
   },
 )
@@ -309,6 +311,9 @@ div[id='map'].mtdt-small .leaflet-top .leaflet-control {
 }
 div[id='map'].mtdt-small .leaflet-left .leaflet-control {
   margin-left: 2px;
+}
+div[id='map'].mtdt-small .leaflet-control-scale {
+    margin-bottom:2px;
 }
 div[id='map'].mtdt-small .leaflet-control .leaflet-control-zoom-in,
 div[id='map'].mtdt-small .leaflet-control .leaflet-control-zoom-out {
