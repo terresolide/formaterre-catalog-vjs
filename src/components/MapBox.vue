@@ -305,20 +305,36 @@ div[id='map'].mtdt-small {
   height: 200px;
 }
 div[id='map'].mtdt-small .leaflet-top .leaflet-control {
-  margin-top: 3px;
+  margin-top: 2px;
 }
 div[id='map'].mtdt-small .leaflet-left .leaflet-control {
-  margin-left: 3px;
+  margin-left: 2px;
 }
 div[id='map'].mtdt-small .leaflet-control .leaflet-control-zoom-in,
 div[id='map'].mtdt-small .leaflet-control .leaflet-control-zoom-out {
-  font-size: 16px;
+  font-size: 15px;
+  padding:0;
 }
 div[id='map'].mtdt-small .leaflet-bar a,
 div[id='map'].mtdt-small .leaflet-control a {
   width: 15px;
   height: 15px;
   line-height: 15px;
+  background-size: 14px 14px;
+  
+}
+div[id='map'].mtdt-small .leaflet-control-scale-line {
+    font-size:9px;
+    max-width: 50px;
+    padding:2px;
+}
+div[id='map'].mtdt-small .leaflet-right .leaflet-control {
+  margin-right: 2px;
+}
+div[id='map'].mtdt-small .leaflet-control-attribution {
+    font-size:9px;
+    padding:2px;
+    line-height:1.1;
 }
 div[id="map"] .lfh-control-legend {
  cursor: pointer;
