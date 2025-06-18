@@ -248,6 +248,15 @@ watch(
 watch(
   () => selection.layers,
   (layers) => {
+    var onMap = layers.map(l => l.id)
+    console.log(onMap)
+    for(var key in data.layers) {
+        if (onMap.indexOf(key) < 0) {
+            data.layers[key].remove()
+            delete data.layers[key]
+            data.legendControl.removeLegend(key)
+        }
+    }
     // add new layers or remove
     layers.forEach(function (layer) {
       if (!data.layers[layer.id]) {
@@ -256,14 +265,7 @@ watch(
     })
     // remove 
     var onMap = Object.keys(data.layers)
-    var onMap = layers.map(l => l.id)
-    console.log(onMap)
-    for(var key in data.layers) {
-        if (onMap.indexOf(key) < 0) {
-            data.layers[key].remove()
-            delete data.layers[key]
-        }
-    }
+   
     
   },
   { deep: true },
