@@ -199,6 +199,8 @@ watch(
     }
     if (data.bbox) {
       data.bbox.clearLayers()
+      data.legendControl.removeAll()
+      selection.select(null)
     }
     list.forEach(function (mtdt) {
       if (mtdt._source && mtdt._source.geom) {
