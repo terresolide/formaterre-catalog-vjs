@@ -60,6 +60,7 @@ function addLayer(layer) {
         layer.url = url
         layer.options = {
           id: layer.id,
+          uuid: layer.uuid,
           service: 'WMS',
           layers: layer.name,
           format: 'image/png',
@@ -75,6 +76,7 @@ function addLayer(layer) {
       if (!layer.options) {
         layer.options = {
           id: layer.id,
+          uuid: layer.uuid,
           service: 'WMS',
           layers: layer.name,
           format: 'image/png',
@@ -89,6 +91,7 @@ function addLayer(layer) {
       if (!layer.options) {
         layer.options = {
           id: layer.id,
+          uuid: layer.uuid,
           service: 'WTS',
           layers: layer.name,
         }
@@ -101,6 +104,8 @@ function addLayer(layer) {
       var options = {
         service: 'WMS',
         layers: layer.name,
+        uuid: layer.uuid,
+        id: layer.id,
         url: layer.url, //,
         //  format: 'image/png',
         // opacity: 0.5
@@ -169,8 +174,10 @@ function addWMSLayer(layerObj, metaId) {
   var newLayer = L.tileLayer.wms(layerObj.url, layerObj.options)
   addLayerToMap(layerObj.options.id, metaId, newLayer)
   // Add legend if there is specific legend with the layer and only one metadata
- // if (layerObj.options.legend && selection.uuid && layerObj.id.indexOf(selection.uuid) >= 0) {
- //   data.legendControl.addLegend(selection.uuid, layerObj.id, layerObj.options.legend.src)
+  console.log(layerObj.options)
+ if (layerObj.options.legend && selection.uuid && layerObj.options.uuid === selection.uuid ) {
+    data.legendControl.addLegend(selection.uuid, layerObj.id, layerObj.options.legend.src)
+  } 
  // } else if (data.selectedMetadata && data.selectedMetadata.legend) {
  //   data.legendControl.addLegend(data.selectedMetadata.id, '0', data.selectedMetadata.legend)
  // }
@@ -269,8 +276,10 @@ function initialize() {
   data.controlLayer.tiles.arcgisTopo.layer.addTo(data.map)
   data.controlLayer.addTo(data.map)
   L.control.scale().addTo(data.map)
-  data.legendControl = new L.Control.Legend(config.state.lang, function (uuid) {
-      return uuid
+  data.legendControl = new L.Control.Legend(config.state.lang, function (uuid) {    
+     // create Dom identifier from uuid
+      // first character must be letter and character other than "_" and "-" are forbidden
+      return 'i' + uuid.toLowerCase().replace(/[^a-z0-9\-_]+/, '')
   })
   data.legendControl.addTo(data.map)
 }
@@ -306,5 +315,40 @@ div[id='map'].mtdt-small .leaflet-control a {
   width: 15px;
   height: 15px;
   line-height: 15px;
+}
+div[id="map"] .lfh-control-legend {
+ cursor: pointer;
+ background: white;
+ display:none;
+}
+div[id="map"] .lfh-control-legend img{
+  max-height:250px;
+}
+ div[id="map"]  div.lfh-control-legend{
+  display:block;
+}
+  div[id="map"]  div.lfh-control-legend.hidden{
+  display:none;
+}
+
+div[id="map"].mtdt-small .lfh-control-legend img{
+ max-width:120px;
+ max-height:100px;
+}
+div[id="map"] .lfh-control-legend img{
+  display: none;
+}
+
+div[id="map"] .lfh-control-legend.expand img{
+ display:block;
+ float:left;
+ margin-left:5px;
+}
+ div[id="map"] .lfh-control-legend.expand img:first-child{
+  margin-left:0px;
+ }
+div[id="map"] .lfh-control-legend.expand a{
+ display:none;
+
 }
 </style>

@@ -58,6 +58,7 @@ export default {
       layer.title = this.getTitle(root, layerXml, nsResolver)
       layer.options = {
         id: layer.id,
+        uuid: layer.uuid,
         ESPG: this.getESPG(root, layerXml, nsResolver),
         format: this.getFormat(root, nsResolver),
         opacity: options.opacity,
@@ -70,6 +71,7 @@ export default {
 //      options.ESPG = this.getESPG(root, layerXml, nsResolver)
 //      options.layers = layer.name
 //      options.id = layer.id
+
       // search crs and legend and bbox
       if (typeof callback !== 'undefined') {
         callback(layer, metaId, options.zoom)
