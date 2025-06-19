@@ -190,7 +190,10 @@ function addLayerToMap(id, groupId, newLayer) {
     data.layers[id] =  newLayer
   }
 }
-
+function resize (e) {
+    console.log(e)
+    data.map.invalidateSize()
+}
 watch(
   () => props.list,
   (list) => {
@@ -269,6 +272,7 @@ watch(
   },
   { deep: true },
 )
+
 function initialize() {
   if (data.map) {
     return
@@ -294,7 +298,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div id="fmtLargeMap"></div>
+  <div id="fmtLargeMap" @resize="resize"></div>
   <div id="map" ref="map" class="mtdt-small">map box</div>
 </template>
 <style src="leaflet/dist/leaflet.css" />
@@ -308,6 +312,8 @@ div[id="fmtLargeMap"] {
     left:10px;
     width: 90%;
     z-index:10;
+    resize:both;
+    overflow:hidden;
 }
 div[id='map'] {
   position: relative;
