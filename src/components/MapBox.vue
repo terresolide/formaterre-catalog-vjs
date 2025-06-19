@@ -3,6 +3,8 @@ import { ref, reactive, onMounted, watch } from 'vue'
 import L from 'leaflet'
 import '@/modules/leaflet.control.mylayers.js'
 import '@/modules/leaflet.control.legend.js'
+import '@/modules/leaflet.control.fullscreen.js'
+
 import { useSelection } from '@/stores/selection'
 import { useConfig } from '@/stores/config'
 const getReader = () => import('@/modules/capabilities-reader.js')
@@ -174,7 +176,6 @@ function addWMSLayer(layerObj, metaId) {
   var newLayer = L.tileLayer.wms(layerObj.url, layerObj.options)
   addLayerToMap(layerObj.options.id, metaId, newLayer)
   // Add legend if there is specific legend with the layer and only one metadata
-  console.log(layerObj.options)
  if (layerObj.options.legend && selection.uuid && layerObj.options.uuid === selection.uuid ) {
     data.legendControl.addLegend(selection.uuid, layerObj.id, layerObj.options.legend.src)
   } 
@@ -265,10 +266,6 @@ watch(
           addLayer(layer)
       }
     })
-    // remove 
-    var onMap = Object.keys(data.layers)
-   
-    
   },
   { deep: true },
 )
@@ -288,19 +285,28 @@ function initialize() {
       return 'i' + uuid.toLowerCase().replace(/[^a-z0-9\-_]+/, '')
   })
   data.legendControl.addTo(data.map)
+  new L.Control.Fullscreen('fmtLargeMap', {lang: config.state.lang, mouseWheel: true}).addTo(data.map)
 }
 onMounted(() => {
   initialize()
 })
 </script>
 <template>
+  <div id="fmtLargeMap"></div>
   <div id="map" ref="map" class="mtdt-small">map box</div>
 </template>
 <style src="leaflet/dist/leaflet.css" />
 <style>
+div[id="fmtLargeMap"] {
+    position: fixed;
+    top:10px;
+    left:10px;
+    width: 90%;
+    z-index:10;
+}
 div[id='map'] {
   position: relative;
-  height: 500px;
+  height: 200px;
   width: 100%;
 }
 div[id='map'].mtdt-small {
@@ -345,6 +351,9 @@ div[id="map"] .lfh-control-legend {
  cursor: pointer;
  background: white;
  display:none;
+}
+ div[id="map"].mtdt-small  div.lfh-control-legend a.icon-palette {
+  padding:1px;
 }
 div[id="map"] .lfh-control-legend img{
   max-height:250px;

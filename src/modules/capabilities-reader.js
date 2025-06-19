@@ -15,6 +15,7 @@ export default {
     },
     loadInfo (layer, options, metaId, callback) {
       var url = layer.url
+      console.log(url)
       var search = url
       if (this.regex.test(url) && this.proxy) {
         search = this.proxy + '?url=' + encodeURIComponent(url)
