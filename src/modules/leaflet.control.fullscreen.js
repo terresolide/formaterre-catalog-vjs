@@ -6,6 +6,8 @@
     options: {
         position: 'topright',
     },
+    _iconCompress: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M160 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96zM32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM352 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 320c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0z"/></svg>',
+    _iconExpand: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"/></svg>',
     _large: null,
     _nodeSmall: null,
     _nodeLarge: null,
@@ -49,13 +51,14 @@
           return
         }
         var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control lfh-control-fullscreen');
-        var a = L.DomUtil.create('a', 'fa fa-expand')
+        var a = L.DomUtil.create('a')
+        a.innerHTML = this._iconExpand
         a.setAttribute('title', this._translate[this._lang]['fullscreen'])
         container.appendChild(a)
         var self = this
         a.onclick = function(e){
            self._fullscreen = !self._fullscreen
-           this.setAttribute('class', self._fullscreen ? 'fa fa-compress' : 'fa fa-expand')
+           this.innerHTML = self._fullscreen ? self._iconCompress : self._iconExpand
            if (self._fullscreen) {
              self._enlarge(e)
            } else {
@@ -82,6 +85,7 @@
     _reduce : function (e) {
       this._nodeLarge.style.display = 'none'
       this._nodeSmall.appendChild(this._map._container)
+      this._map._container.style.height = '200px'
       this._map.setMinZoom(1)
       this._map._container.className = this._map._container.className.replace('mtdt-fullscreen', 'mtdt-small')
       this._map.invalidateSize()

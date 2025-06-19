@@ -278,6 +278,8 @@ function initialize() {
   data.controlLayer = new L.Control.MyLayers(null, null, { position: 'topright' })
   data.controlLayer.tiles.arcgisTopo.layer.addTo(data.map)
   data.controlLayer.addTo(data.map)
+
+  new L.Control.Fullscreen('fmtLargeMap', {lang: config.state.lang, mouseWheel: true}).addTo(data.map)
   L.control.scale().addTo(data.map)
   data.legendControl = new L.Control.Legend(config.state.lang, function (uuid) {    
      // create Dom identifier from uuid
@@ -285,7 +287,7 @@ function initialize() {
       return 'i' + uuid.toLowerCase().replace(/[^a-z0-9\-_]+/, '')
   })
   data.legendControl.addTo(data.map)
-  new L.Control.Fullscreen('fmtLargeMap', {lang: config.state.lang, mouseWheel: true}).addTo(data.map)
+
 }
 onMounted(() => {
   initialize()
@@ -299,6 +301,9 @@ onMounted(() => {
 <style>
 div[id="fmtLargeMap"] {
     position: fixed;
+    display:none;
+    border: 2px solid grey;
+    border-radius:5px;
     top:10px;
     left:10px;
     width: 90%;
@@ -352,7 +357,8 @@ div[id="map"] .lfh-control-legend {
  background: white;
  display:none;
 }
- div[id="map"].mtdt-small  div.lfh-control-legend a.icon-palette {
+ div[id="map"].mtdt-small  div.lfh-control-legend a.icon-palette,
+ div[id="map"].mtdt-small  div.lfh-control-fullscreen a {
   padding:1px;
 }
 div[id="map"] .lfh-control-legend img{
