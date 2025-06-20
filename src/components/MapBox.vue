@@ -1,5 +1,5 @@
 <script setup>
-import {ref, reactive, onMounted,useTemplateRef, watch } from 'vue'
+import {ref, reactive, onMounted, watch } from 'vue'
 import L from 'leaflet'
 import '@/modules/leaflet.control.mylayers.js'
 import '@/modules/leaflet.control.legend.js'
@@ -37,14 +37,6 @@ const currentOptions = {
   weight: 1,
 }
 const selection = useSelection()
-
-const largeMap = useTemplateRef('largeMap')
-
-const resizeObserver = new ResizeObserver((elem) => {
-    console.log('resize')
-    data.map.invalidateSize()
-})
-
 
 function addLayer(layer) {
   
@@ -299,7 +291,6 @@ function initialize() {
       return 'i' + uuid.toLowerCase().replace(/[^a-z0-9\-_]+/, '')
   })
   data.legendControl.addTo(data.map)
-  resizeObserver.observe(map.value)
 
 }
 onMounted(() => {
@@ -307,25 +298,33 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div id="fmtLargeMap" ref="largeMap" @resize="resize"></div>
+<div class="large-container">
+  <div style="height:20px;background:grey;"></div>
+  <div id="fmtLargeMap" ref="largeMap"></div>
+</div>
  <div class="map-container">
-  <div id="map" ref="map" class="mtdt-small">map box</div>
+  <div id="map" ref="map" class="mtdt-small"></div>
  </div>
 </template>
 <style src="leaflet/dist/leaflet.css" />
 <style>
-div[id="fmtLargeMap"] {
+div.large-container {
     position: fixed;
     display:none;
-    border: 2px solid grey;
     border-radius:5px;
     top:10px;
     left:10px;
     width: 90%;
     height: 500px;
+    background: grey;
     z-index:10;
     resize:both;
     overflow:hidden;
+}
+div[id="fmtLargeMap"] {
+    width:calc(100% - 20px);
+    margin:auto;
+    height:calc(100% - 30px);
 }
 div[id='map'] {
   position: relative;
