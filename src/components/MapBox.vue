@@ -175,26 +175,42 @@ function addWMSLayer(layerObj, metaId) {
   // layerObj.options._bearer = 'mon bearer'
   var newLayer = L.tileLayer.wms(layerObj.url, layerObj.options)
   addLayerToMap(layerObj.options.id, metaId, newLayer)
+  addLegend()
   // Add legend if there is specific legend with the layer and only one metadata
- if (layerObj.options.legend && selection.uuid && layerObj.options.uuid === selection.uuid ) {
-    data.legendControl.addLegend(selection.uuid, layerObj.id, layerObj.options.legend.src)
-  } 
+ // if (layerObj.options.legend && selection.uuid && layerObj.options.uuid === selection.uuid ) {
+ //    data.legendControl.addLegend(selection.uuid, layerObj.id, layerObj.options.legend.src)
+ //  } 
  // } else if (data.selectedMetadata && data.selectedMetadata.legend) {
  //   data.legendControl.addLegend(data.selectedMetadata.id, '0', data.selectedMetadata.legend)
  // }
 }
+function addLegend () {
+    if (!selection.uuid) {
+        return
+    }
+    // get layers
+    var layers = []
+    for (var key in data.layers) {
+        if (data.layers[key].options.uuid === selection.uuid) {
+            layers.push(data.layers[key])
+        }
+    }
+    for (var i in layers) {
+        if (layers[i].options.legend) {
+            data.legendControl.addLegend(selection.uuid, layers[i].options.id, layers[i].options.legend.src)
+        }
+    }
+}
 function addLayerToMap(id, groupId, newLayer) {
   if (newLayer) {
+     
     newLayer.addTo(data.map)
     newLayer.bringToFront()
     data.layers[id] =  newLayer
+    data.controlLayer.addOverlay(newLayer, newLayer.options.layers)
   }
 }
-function resize (e) {
-    console.log(e)
-    data.map.value.style.height = largeMap.value.offsetHeight + 'px'
-    data.map.invalidateSize()
-}
+
 watch(
   () => props.list,
   (list) => {
@@ -236,11 +252,11 @@ watch(
     if (data.selectedBbox) {
       data.selectedBbox.setStyle(currentOptions)
     }
-    console.log(uuid)
+    data.legendControl.removeAll()
     if (!uuid) {
       data.selectedBbox = null
       data.map.fitBounds(data.bbox.getBounds())
-      data.legendControl.removeAll()
+      
       return
     }
     var layers = data.bbox.getLayers()
@@ -249,7 +265,10 @@ watch(
         data.selectedBbox.setStyle(selectedOptions)
         data.map.fitBounds(data.selectedBbox.getBounds())
         // if layer add legend
+         console.log('ajout legend')
+         addLegend()
     }
+   
   },
 )
 watch(
@@ -257,11 +276,13 @@ watch(
   (layers) => {
     var onMap = layers.map(l => l.id)
     console.log(onMap)
+    // data.legendControl.removeAll()
     for(var key in data.layers) {
         if (onMap.indexOf(key) < 0) {
+            data.controlLayer.removeLayer(data.layers[key])
             data.layers[key].remove()
             delete data.layers[key]
-            data.legendControl.removeLegend(key)
+            // data.legendControl.removeLegend(key)
         }
     }
     // add new layers or remove

@@ -2,35 +2,33 @@
 import {ref, reactive, onMounted } from 'vue'
 
 const largeContainer = ref(null)
-const props = defineProps({
-  list: Array,
-})
+
 const data = reactive({
-  lcontainer: {
-      selected: false,
-      pos: {x:0, y:0},
-      delta: {x:0, y:0}
-  },
-  mousemoveListener: null,
-  mouseupListener: null
+    lcontainer: {
+        selected: false,
+        pos: {x:0, y:0},
+        delta: {x:0, y:0}
+    },
+    mousemoveListener: null,
+    mouseupListener: null
 })
 
 function movestart (evt) {
-      data.lcontainer.selected = true
-      data.lcontainer.delta = {
-          x: data.lcontainer.pos.x - largeContainer.value.offsetLeft,
-          y: data.lcontainer.pos.y - largeContainer.value.offsetTop
-      }
+    data.lcontainer.selected = true
+    data.lcontainer.delta = {
+        x: data.lcontainer.pos.x - largeContainer.value.offsetLeft,
+        y: data.lcontainer.pos.y - largeContainer.value.offsetTop
     }
+ }
  function move (evt) {
-      data.lcontainer.pos.x = evt.clientX
-      data.lcontainer.pos.y = evt.clientY
-      if (data.lcontainer.selected) {
-        largeContainer.value.style.left = (data.lcontainer.pos.x - data.lcontainer.delta.x) + 'px'
-        var top = data.lcontainer.pos.y - data.lcontainer.delta.y
-        largeContainer.value.style.top = top > 0 ? (top + 'px') : 0
-      }
+    data.lcontainer.pos.x = evt.clientX
+    data.lcontainer.pos.y = evt.clientY
+    if (data.lcontainer.selected) {
+      largeContainer.value.style.left = (data.lcontainer.pos.x - data.lcontainer.delta.x) + 'px'
+      var top = data.lcontainer.pos.y - data.lcontainer.delta.y
+      largeContainer.value.style.top = top > 0 ? (top + 'px') : 0
     }
+ }
  function moveEnd () {
       data.lcontainer.selected = false
  }
@@ -42,10 +40,10 @@ function movestart (evt) {
  })
 </script>
 <template>
-   <div class="large-container" ref="largeContainer" >
-      <div style="" class="move-bar" @mousedown="movestart"></div>
-      <slot></slot>
- </div>
+    <div class="large-container" ref="largeContainer" >
+        <div style="" class="move-bar" @mousedown="movestart"></div>
+        <slot></slot>
+    </div>
 </template>
 <style scoped>
 div.large-container {
@@ -60,10 +58,8 @@ div.large-container {
     z-index:10;
     resize:both;
     overflow:hidden;
-
     -webkit-box-shadow: 0 0px 3px rgba(0,0,0,0.5);
     box-shadow: 0 0px 3px rgba(0,0,0,0.5);
-
 }
 div.move-bar {
     background-image: radial-gradient(grey 1px, transparent 0);
