@@ -7,6 +7,7 @@ import '@/modules/leaflet.control.fullscreen.js'
 
 import { useSelection } from '@/stores/selection'
 import { useConfig } from '@/stores/config'
+import DraggableBox from '@/components/DraggableBox.vue'
 const getReader = () => import('@/modules/capabilities-reader.js')
 const config = useConfig()
 const map = ref(null)
@@ -273,6 +274,7 @@ watch(
   { deep: true },
 )
 
+
 function initialize() {
   if (data.map) {
     return
@@ -298,33 +300,20 @@ onMounted(() => {
 })
 </script>
 <template>
-<div class="large-container">
-  <div style="height:20px;background:grey;"></div>
-  <div id="fmtLargeMap" ref="largeMap"></div>
-</div>
- <div class="map-container">
-  <div id="map" ref="map" class="mtdt-small"></div>
- </div>
+    <DraggableBox>
+        <div id="fmtLargeMap"></div>
+    </DraggableBox>
+    <div class="map-container">
+        <div id="map" ref="map" class="mtdt-small"></div>
+    </div>
 </template>
 <style src="leaflet/dist/leaflet.css" />
 <style>
-div.large-container {
-    position: fixed;
-    display:none;
-    border-radius:5px;
-    top:10px;
-    left:10px;
-    width: 90%;
-    height: 500px;
-    background: grey;
-    z-index:10;
-    resize:both;
-    overflow:hidden;
-}
+
 div[id="fmtLargeMap"] {
     width:calc(100% - 20px);
     margin:auto;
-    height:calc(100% - 30px);
+    height:calc(100% - 40px);
 }
 div[id='map'] {
   position: relative;
