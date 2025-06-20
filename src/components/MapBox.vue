@@ -45,9 +45,7 @@ const resizeObserver = new ResizeObserver((elem) => {
     data.map.invalidateSize()
 })
 
-function mapSize () {
-    return largeMap.value.offsetWidth
-}
+
 function addLayer(layer) {
   
   var metaId = layer.uuid
@@ -301,7 +299,7 @@ function initialize() {
       return 'i' + uuid.toLowerCase().replace(/[^a-z0-9\-_]+/, '')
   })
   data.legendControl.addTo(data.map)
-  resizeObserver.observe(largeMap.value)
+  resizeObserver.observe(map.value)
 
 }
 onMounted(() => {
@@ -310,7 +308,9 @@ onMounted(() => {
 </script>
 <template>
   <div id="fmtLargeMap" ref="largeMap" @resize="resize"></div>
+ <div class="map-container">
   <div id="map" ref="map" class="mtdt-small">map box</div>
+ </div>
 </template>
 <style src="leaflet/dist/leaflet.css" />
 <style>
@@ -332,7 +332,7 @@ div[id='map'] {
   height: 100%;
   width: 100%;
 }
-div[id='map'].mtdt-small {
+div.map-container {
   height: 200px;
 }
 div[id='map'].mtdt-small .leaflet-top .leaflet-control {

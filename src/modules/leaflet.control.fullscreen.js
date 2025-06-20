@@ -1,5 +1,5 @@
 /**
- * 
+ * Fullscreen control
  */
 
  L.Control.Fullscreen = L.Control.extend({
@@ -13,7 +13,6 @@
     _nodeLarge: null,
     _mapContainer: null,
     _lang: 'en',
-    _removeHeight: 400,
     _fullscreen: false,
     _mouseWheel: false,
     _translate: {
@@ -31,18 +30,12 @@
         if (options.lang) {
           this.setLang(options.lang)
         }
-        if (options.hasOwnProperty('removeHeight') && options.removeHeight !== null) {
-         this.setRemoveHeight(options.removeHeight) 
-        }
         if (options.mouseWheel) {
           this._mouseWheel = options.mouseWheel
         }
     },
     setLang (lang) {
       this._lang = (['en', 'fr'].indexOf(lang) >=0 ? lang : 'en')
-    },
-    setRemoveHeight (height) {
-      this._removeHeight = height
     },
     onAdd : function(map){
         this._nodeSmall = map._container.parentNode
@@ -72,29 +65,18 @@
       this._nodeLarge.style.display = 'block'
       var height = window.innerHeight - this._removeHeight
       this._container.querySelector('a').setAttribute('title', this._translate[this._lang]['reduce'])
-      // this._map._container.style.height = height + 'px'
       this._map._container.className = this._map._container.className.replace('mtdt-small', 'mtdt-fullscreen')
-      this._map.setMinZoom(2)
       if (this._mouseWheel) {
         this._map.scrollWheelZoom.enable()
       }
-      this._map.invalidateSize()
-      this._emitChange()
       e.stopPropagation()
     },
     _reduce : function (e) {
       this._nodeLarge.style.display = 'none'
       this._nodeSmall.appendChild(this._map._container)
-      this._map._container.style.height = '200px'
       this._map.setMinZoom(1)
       this._map._container.className = this._map._container.className.replace('mtdt-fullscreen', 'mtdt-small')
-      this._map.invalidateSize()
       this._map.scrollWheelZoom.disable()
-      this._emitChange()
       e.stopPropagation()
-    },
-    _emitChange : function () {
-      var event = new CustomEvent('mapNodeChange')
-      document.dispatchEvent(event)
     }
 })
