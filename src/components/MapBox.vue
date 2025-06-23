@@ -8,6 +8,9 @@ import 'leaflet-draw'
 import { useSelection } from '@/stores/selection'
 import { useConfig } from '@/stores/config'
 import DraggableBox from '@/components/DraggableBox.vue'
+
+// initialize window.type for leaflet-draw
+window.type = true
 const getReader = () => import('@/modules/capabilities-reader.js')
 const config = useConfig()
 const map = ref(null)
@@ -218,7 +221,10 @@ function addLayerToMap(id, newLayer) {
 }
 
 function drawValidBbox (bounds) {
-     
+  if (!data.drawnBbox) {
+      return
+  }
+  data.drawnBbox.clearLayers() 
   if (!bounds) {
     return null
   }
@@ -242,13 +248,13 @@ function drawValidBbox (bounds) {
   // draw or redraw if bbox change
   var bounds = [[bbox.south, bbox.west], [bbox.north, bbox.east]]
   var rectangle = L.rectangle(bounds, {color: '#ff0000'})
-  data.drawnBbox.clearLayers()
+ 
   data.drawnBbox.addLayer(rectangle)
   bounds = data.drawnBbox.getBounds()
 //       if (this.searchArea) {
 //         bounds.extend(this.boundsLayer.getBounds())
 //       }
-  data.drawnBbox.fitBounds(bounds, {padding: [20, 20]})
+  data.map.fitBounds(bounds, {padding: [20, 20]})
   return bbox;
 }
 watch(
@@ -362,17 +368,19 @@ function initDrawControl () {
     })
     data.controlDraw.addTo(data.map)
     data.map.on(L.Draw.Event.CREATED, function (e) {
+        console.log(e)
         let layer = e.layer
         let bounds = e.layer.getBounds()
-        data.drawnBbox = drawValidBbox(bounds)
+        drawValidBbox(bounds)
         // self.updateUrl()
     })
     data.map.on(L.Draw.Event.EDITED, function (e) {
+  
         let bounds
         e.layers.eachLayer(function (layer) {
           bounds = layer.getBounds()
         })
-        data.drawnBbox = drawValidBbox(bounds)
+        drawValidBbox(bounds)
         // self.updateUrl()
     })
     
@@ -383,7 +391,7 @@ function initDrawControl () {
           east: '',
           west: ''
         }
-        data.drawn.bbox = drawValidBbox(null)
+        drawValidBbox(null)
         // self.updateUrl()
     })
     data.controlLayer.addOverlay(data.drawnBbox, 'Seleted Area')
