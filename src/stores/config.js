@@ -35,7 +35,7 @@ export const useConfig = defineStore('config', () => {
     if (!obj) {
         return ''
     }
-    if (obj['lang' + state.locale]) {
+    if (obj['lang' + state.locale] && obj['lang' + state.locale]!== 'undefined') {
       return obj['lang' + state.locale]
     }
     return obj.default

@@ -4,7 +4,7 @@ import L from 'leaflet'
 import '@/modules/leaflet.control.mylayers.js'
 import '@/modules/leaflet.control.legend.js'
 import '@/modules/leaflet.control.fullscreen.js'
-
+import 'leaflet-draw'
 import { useSelection } from '@/stores/selection'
 import { useConfig } from '@/stores/config'
 import DraggableBox from '@/components/DraggableBox.vue'
@@ -18,9 +18,11 @@ const data = reactive({
   map: null,
   controlLayer: null,
   controlLegend: null,
+  controlDraw: null,
   layers: [],
-  bbox: null,
-  selectedBbox: null,
+  bbox: null, // ensemble des bbox
+  selectedBbox: null, // la bbox sélectionnée parmi toutes
+  drawnBbox: null, // la bbox dessinée
   reader: null
 })
 const selectedOptions = {
@@ -85,6 +87,7 @@ function addLayer(layer) {
           opacity: 0.5,
         }
       }
+      console.log('get map')
       addWMSLayer(layer, metaId)
       break
     case 'WMTS':
@@ -96,8 +99,10 @@ function addLayer(layer) {
           uuid: layer.uuid,
           service: 'WTS',
           layers: layer.name,
+          opacity: 0.5
         }
       }
+      
       addWTSLayer(layer, metaId)
       break
     case 'XXX':
@@ -119,7 +124,7 @@ function addLayer(layer) {
       //          response => { console.log(response.body)}
       //         )
       //        var newLayer = L.tileLayer.wms(url, options);
-      //        this.addLayerToMap(layer.id, metaId, newLayer)
+      //        this.addLayerToMap(layer.id, newLayer)
       break
     case 'OGC:WFS':
     case 'OGC:WFS-G':
@@ -134,7 +139,7 @@ function addLayer(layer) {
       //              const parser = new DOMParser();
       //              const kml = parser.parseFromString(response.body, 'text/xml');
       //              var newLayer = new L.KML(kml)
-      //              this.addLayerToMap(layer.id, metaId, newLayer)
+      //              this.addLayerToMap(layer.id, newLayer)
       //            }
       //        )
       break
@@ -146,7 +151,7 @@ function addLayer(layer) {
         const parser = new DOMParser()
         const kml = parser.parseFromString(response.body, 'text/xml')
         var newLayer = new L.KML(kml)
-        addLayerToMap(layer.id, metaId, newLayer)
+        addLayerToMap(layer.id, newLayer)
       })
       break
 
@@ -167,14 +172,14 @@ function beforeAddWMS(layer, metaId) {
   }
 }
 function addWTSLayer(layer, metaId) {
-  var tileLayer = L.tileLayer(layer.url, { opacity: 0.5 })
-  addLayerToMap(layer.options.id, metaId, tileLayer)
+  var tileLayer = L.tileLayer(layer.url, layer.options)
+  addLayerToMap(layer.options.id, tileLayer)
 }
 function addWMSLayer(layerObj, metaId) {
   // add bearer if necessary
   // layerObj.options._bearer = 'mon bearer'
   var newLayer = L.tileLayer.wms(layerObj.url, layerObj.options)
-  addLayerToMap(layerObj.options.id, metaId, newLayer)
+  addLayerToMap(layerObj.options.id, newLayer)
   addLegend()
   // Add legend if there is specific legend with the layer and only one metadata
  // if (layerObj.options.legend && selection.uuid && layerObj.options.uuid === selection.uuid ) {
@@ -201,16 +206,51 @@ function addLegend () {
         }
     }
 }
-function addLayerToMap(id, groupId, newLayer) {
+function addLayerToMap(id, newLayer) {
   if (newLayer) {
      
     newLayer.addTo(data.map)
     newLayer.bringToFront()
     data.layers[id] =  newLayer
+    console.log(newLayer)
     data.controlLayer.addOverlay(newLayer, newLayer.options.layers)
   }
 }
 
+function drawValidBbox (bounds) {
+     
+  if (!bounds) {
+    return null
+  }
+  let bbox = { north: bounds.getNorth(),
+    south: bounds.getSouth(),
+    east: bounds.getEast(),
+    west: bounds.getSouthWest().lng
+  }
+  // valid bbox
+  if (bbox.east > 180 || bbox.west < -180) {
+     var delta = bbox.east - bbox.west
+     if ( delta > 360) {
+       bbox.east = 180
+       bbox.west = -180
+     }else {
+       bbox.west = L.modLng(bbox.west);
+       bbox.west = bbox.west === 180 ? -180 : bbox.west
+       bbox.east = Math.min(bbox.west + delta, 180)
+     }
+  }
+  // draw or redraw if bbox change
+  var bounds = [[bbox.south, bbox.west], [bbox.north, bbox.east]]
+  var rectangle = L.rectangle(bounds, {color: '#ff0000'})
+  data.drawnBbox.clearLayers()
+  data.drawnBbox.addLayer(rectangle)
+  bounds = data.drawnBbox.getBounds()
+//       if (this.searchArea) {
+//         bounds.extend(this.boundsLayer.getBounds())
+//       }
+  data.drawnBbox.fitBounds(bounds, {padding: [20, 20]})
+  return bbox;
+}
 watch(
   () => props.list,
   (list) => {
@@ -240,7 +280,7 @@ watch(
         }
       }
     })
-    data.bbox = L.geoJSON(geojson, { style: currentOptions })
+    data.bbox.addLayer(L.geoJSON(geojson, { style: currentOptions }))
     data.bbox.addTo(data.map)
     var bounds = data.bbox.getBounds()
     data.map.fitBounds(bounds)
@@ -260,6 +300,11 @@ watch(
       return
     }
     var layers = data.bbox.getLayers()
+    if (layers.length === 0) {
+        return
+    }
+    layers = layers[0].getLayers()
+        
     data.selectedBbox = layers.find((ly) => ly.feature.id === uuid)
     if (data.selectedBbox) {
         data.selectedBbox.setStyle(selectedOptions)
@@ -276,7 +321,7 @@ watch(
   (layers) => {
     var onMap = layers.map(l => l.id)
     console.log(onMap)
-    // data.legendControl.removeAll()
+    // remove layers
     for(var key in data.layers) {
         if (onMap.indexOf(key) < 0) {
             data.controlLayer.removeLayer(data.layers[key])
@@ -285,7 +330,7 @@ watch(
             // data.legendControl.removeLegend(key)
         }
     }
-    // add new layers or remove
+    // add new layers 
     layers.forEach(function (layer) {
       if (!data.layers[layer.id]) {
           addLayer(layer)
@@ -295,7 +340,54 @@ watch(
   { deep: true },
 )
 
-
+function initDrawControl () {
+    data.drawnBbox = L.featureGroup()
+    data.drawnBbox.addTo(data.map)
+    data.controlDraw = new L.Control.Draw({
+         draw: {
+          rectangle: {
+            shapeOptions: {
+              color: '#ff0000'
+            }
+          },
+          circlemarker: false,
+          circle: false,
+          marker: false,
+          polygon: false,
+          polyline: false
+        },
+        edit: {
+          featureGroup: data.drawnBbox
+        }
+    })
+    data.controlDraw.addTo(data.map)
+    data.map.on(L.Draw.Event.CREATED, function (e) {
+        let layer = e.layer
+        let bounds = e.layer.getBounds()
+        data.drawnBbox = drawValidBbox(bounds)
+        // self.updateUrl()
+    })
+    data.map.on(L.Draw.Event.EDITED, function (e) {
+        let bounds
+        e.layers.eachLayer(function (layer) {
+          bounds = layer.getBounds()
+        })
+        data.drawnBbox = drawValidBbox(bounds)
+        // self.updateUrl()
+    })
+    
+    data.map.on(L.Draw.Event.DELETED , function (e) {
+        var returnedBbox = { 
+          north: '',
+          south: '',
+          east: '',
+          west: ''
+        }
+        data.drawn.bbox = drawValidBbox(null)
+        // self.updateUrl()
+    })
+    data.controlLayer.addOverlay(data.drawnBbox, 'Seleted Area')
+}
 function initialize() {
   if (data.map) {
     return
@@ -305,7 +397,8 @@ function initialize() {
   data.controlLayer = new L.Control.MyLayers(null, null, { position: 'topright' })
   data.controlLayer.tiles.arcgisTopo.layer.addTo(data.map)
   data.controlLayer.addTo(data.map)
-
+  data.bbox = L.featureGroup()
+  data.controlLayer.addOverlay(data.bbox, 'Les bbox')
   new L.Control.Fullscreen('fmtLargeMap', {lang: config.state.lang, mouseWheel: true}).addTo(data.map)
   L.control.scale().addTo(data.map)
   data.legendControl = new L.Control.Legend(config.state.lang, function (uuid) {    
@@ -314,6 +407,7 @@ function initialize() {
       return 'i' + uuid.toLowerCase().replace(/[^a-z0-9\-_]+/, '')
   })
   data.legendControl.addTo(data.map)
+  initDrawControl()
 
 }
 onMounted(() => {
@@ -355,16 +449,19 @@ div[id='map'].mtdt-small .leaflet-control-scale {
 }
 div[id='map'].mtdt-small .leaflet-control .leaflet-control-zoom-in,
 div[id='map'].mtdt-small .leaflet-control .leaflet-control-zoom-out {
-  font-size: 15px;
-  padding:0;
+    font-size: 15px;
+    padding:0;
 }
 div[id='map'].mtdt-small .leaflet-bar a,
 div[id='map'].mtdt-small .leaflet-control a {
-  width: 15px;
-  height: 15px;
-  line-height: 15px;
-  background-size: 14px 14px;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    background-size: 14px 14px;
   
+}
+div[id="map"].mtdt-small .leaflet-control-layers-list {
+    font-size: 0.9em;
 }
 div[id='map'].mtdt-small .leaflet-control-scale-line {
     font-size:9px;
@@ -372,7 +469,7 @@ div[id='map'].mtdt-small .leaflet-control-scale-line {
     padding:2px;
 }
 div[id='map'].mtdt-small .leaflet-right .leaflet-control {
-  margin-right: 2px;
+    margin-right: 2px;
 }
 div[id='map'].mtdt-small .leaflet-control-attribution {
     font-size:9px;
@@ -380,13 +477,13 @@ div[id='map'].mtdt-small .leaflet-control-attribution {
     line-height:1.1;
 }
 div[id="map"] .lfh-control-legend {
- cursor: pointer;
- background: white;
- display:none;
+    cursor: pointer;
+    background: white;
+    display:none;
 }
  div[id="map"].mtdt-small  div.lfh-control-legend a.icon-palette,
  div[id="map"].mtdt-small  div.lfh-control-fullscreen a {
-  padding:1px;
+    padding:1px;
 }
 div[id="map"] .lfh-control-legend img{
   max-height:250px;
