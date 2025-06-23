@@ -381,7 +381,6 @@ function initDrawControl () {
         let layer = e.layer
         let bounds = e.layer.getBounds()
         drawValidBbox(bounds)
-        // self.updateUrl()
     })
     data.map.on(L.Draw.Event.EDITED, function (e) {
   
@@ -390,18 +389,15 @@ function initDrawControl () {
           bounds = layer.getBounds()
         })
         drawValidBbox(bounds)
-        // self.updateUrl()
     })
     
     data.map.on(L.Draw.Event.DELETED , function (e) {
-        var returnedBbox = { 
+        emit('update:modelValue', { 
           north: '',
           south: '',
           east: '',
           west: ''
-        }
-        drawValidBbox(null)
-        // self.updateUrl()
+        })
     })
     data.controlLayer.addOverlay(data.drawnBbox, 'Seleted Area')
 }
@@ -440,6 +436,7 @@ onMounted(() => {
     </div>
 </template>
 <style src="leaflet/dist/leaflet.css" />
+<style src="leaflet-draw/dist/leaflet.draw.css"></style>
 <style>
 
 div[id="fmtLargeMap"] {
@@ -470,12 +467,30 @@ div[id='map'].mtdt-small .leaflet-control .leaflet-control-zoom-out {
     padding:0;
 }
 div[id='map'].mtdt-small .leaflet-bar a,
-div[id='map'].mtdt-small .leaflet-control a {
+div[id='map'].mtdt-small .leaflet-control:not(.leaflet-draw) a {
     width: 15px;
     height: 15px;
     line-height: 15px;
     background-size: 14px 14px;
   
+}
+div[id="map"].mtdt-small .leaflet-control.leaflet-draw a {
+    background-size: 300px 30px;
+}
+div[id='map'].mtdt-small.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-rectangle {
+  background-position: -67px -7px;
+}
+div[id='map'].mtdt-small.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit  {
+  background-position: -157px -7px;
+}
+div[id="map"].mtdt-small.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {
+  background-position: -217px -7px;
+}
+div[id="map"].mtdt-small.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove {
+  background-position: -187px -7px;
+}
+div[id="map"].mtdt-small.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {
+  background-position: -247px -7px;
 }
 div[id="map"].mtdt-small .leaflet-control-layers-list {
     font-size: 0.9em;
