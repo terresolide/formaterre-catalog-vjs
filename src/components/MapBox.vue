@@ -392,8 +392,7 @@ function initDrawControl () {
     })
     
     data.map.on(L.Draw.Event.DELETED , function (e) {
-        emit('update:modelValue', { 
-          north: '',
+        emit('update:modelValue', {north: '',
           south: '',
           east: '',
           west: ''
@@ -467,13 +466,44 @@ div[id='map'].mtdt-small .leaflet-control .leaflet-control-zoom-out {
     padding:0;
 }
 div[id='map'].mtdt-small .leaflet-bar a,
-div[id='map'].mtdt-small .leaflet-control:not(.leaflet-draw) a {
+div[id='map'].mtdt-small .leaflet-control a {
     width: 15px;
     height: 15px;
     line-height: 15px;
     background-size: 14px 14px;
   
 }
+/** leaflet draw **/
+
+/** menu leaflet draw */
+ div[id="map"] .leaflet-container .leaflet-draw-section a {
+   color: #fff;
+   font-weight: 700;
+ }
+div[id="map"] .leaflet-draw-actions li a {
+   color: #fff;
+}
+div[id="map"] .leaflet-draw-actions li {
+  display: block;
+  margin: 0 0 1px 0;
+  border-radius: 0;
+}
+div[id="map"] .leaflet-draw-actions {
+  background: #555;
+  margin-left:5px;
+  padding: 2px;
+  -webkit-border-radius: 0 4px 4px 4px;
+  border-radius: 0 4px 4px 4px;
+}
+div[id="map"] .leaflet-draw-actions li:first-child a{
+  -webkit-border-radius: 0 4px 0 0;
+  border-radius: 0 4px 0 0;
+}
+div[id="map"] .leaflet-draw-actions li:last-child a{
+  -webkit-border-radius: 0 0px 4px 4px;
+  border-radius: 0 0px 4px 4px;
+}
+/** leaflet draw small **/
 div[id="map"].mtdt-small .leaflet-control.leaflet-draw a {
     background-size: 300px 30px;
 }
@@ -492,6 +522,41 @@ div[id="map"].mtdt-small.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-
 div[id="map"].mtdt-small.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {
   background-position: -247px -7px;
 }
+/** menu leaflet draw small **/
+div[id="map"].mtdt-small .leaflet-draw-actions {
+    left: 15px;
+}
+div[id="map"].mtdt-small .leaflet-container .leaflet-draw-section a {
+  color: #fff;
+  font-size: 0.9rem;
+}
+  div[id="map"].mtdt-small .leaflet-draw-actions li a {
+  color: #fff;
+  width:auto;
+  height:20px;
+}
+/** div[id="map"].mtdt-small .leaflet-draw-actions li {
+  display: block;
+  margin: 0 0 1px 0;
+  border-radius: 0;
+}
+div[id="map"].mtdt-small .leaflet-draw-actions {
+  background: #555;
+  margin-left:5px;
+  padding: 2px;
+  -webkit-border-radius: 0 4px 4px 4px;
+  border-radius: 0 4px 4px 4px;
+}
+div[id="map"].mtdt-small .leaflet-draw-actions li:first-child a{
+  -webkit-border-radius: 0 4px 0 0;
+  border-radius: 0 4px 0 0;
+}
+div[id="map"].mtdt-small .leaflet-draw-actions li:last-child a{
+  -webkit-border-radius: 0 0px 4px 4px;
+  border-radius: 0 0px 4px 4px;
+}
+**/
+/** other control **/
 div[id="map"].mtdt-small .leaflet-control-layers-list {
     font-size: 0.9em;
 }
