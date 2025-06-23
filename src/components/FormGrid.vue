@@ -3,6 +3,7 @@
   import { useRoute } from "vue-router"
   import { useConfig } from "@/stores/config.js"
   import MapBox from '@/components/MapBox.vue'
+  import SearchBox from '@/components/SearchBox.vue'
   const config = useConfig()
   const props = defineProps({
     aggregations: Object,
@@ -17,6 +18,7 @@
    <div class="formater-input-group" style="margin: 10px; width: calc(100% - 20px); " :style="{backgroundColor: config.state.lightcolor}"><input id="any" name="any" :placeholder="$t('search')  + '...'">
     <font-awesome-icon icon="fa-solid fa-search"/></div>
    <map-box :list="props.list" v-model="bbox"></map-box>
+   <search-box :color="config.state.primary" header-icon-class="fa-solid fa-earth-americas" type="light" title="zone géographique">blaljfsl</search-box>
 
   </aside>
 </template>
@@ -42,4 +44,3 @@ aside {
   outline: none;
 }
 </style>
-
