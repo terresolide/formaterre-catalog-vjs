@@ -9,14 +9,21 @@ import { useSelection } from '@/stores/selection'
 import { useConfig } from '@/stores/config'
 import DraggableBox from '@/components/DraggableBox.vue'
 
-// initialize window.type for leaflet-draw
+// initialize window.type for leaflet-draw bug
 window.type = true
+
 const getReader = () => import('@/modules/capabilities-reader.js')
 const config = useConfig()
 const map = ref(null)
+
+// east, south, west, north de la bbox dessinée
+const bbox = defineModel('bbox')
+
 const props = defineProps({
   list: Array,
 })
+
+const emit = defineEmits(['update:modelValue'])
 const data = reactive({
   map: null,
   controlLayer: null,
@@ -228,25 +235,26 @@ function drawValidBbox (bounds) {
   if (!bounds) {
     return null
   }
-  let bbox = { north: bounds.getNorth(),
+  let box = { north: bounds.getNorth(),
     south: bounds.getSouth(),
     east: bounds.getEast(),
     west: bounds.getSouthWest().lng
   }
   // valid bbox
-  if (bbox.east > 180 || bbox.west < -180) {
-     var delta = bbox.east - bbox.west
+  if (box.east > 180 || box.west < -180) {
+     var delta = box.east - box.west
      if ( delta > 360) {
-       bbox.east = 180
-       bbox.west = -180
+       box.east = 180
+       box.west = -180
      }else {
-       bbox.west = L.modLng(bbox.west);
-       bbox.west = bbox.west === 180 ? -180 : bbox.west
-       bbox.east = Math.min(bbox.west + delta, 180)
+       box.west = L.modLng(bbox.west);
+       box.west = bbox.west === 180 ? -180 : box.west
+       box.east = Math.min(box.west + delta, 180)
      }
   }
+  bbox.value = bbox
   // draw or redraw if bbox change
-  var bounds = [[bbox.south, bbox.west], [bbox.north, bbox.east]]
+  var bounds = [[box.south, box.west], [box.north, box.east]]
   var rectangle = L.rectangle(bounds, {color: '#ff0000'})
  
   data.drawnBbox.addLayer(rectangle)
@@ -255,7 +263,8 @@ function drawValidBbox (bounds) {
 //         bounds.extend(this.boundsLayer.getBounds())
 //       }
   data.map.fitBounds(bounds, {padding: [20, 20]})
-  return bbox;
+  emit('update:modelValue', box)
+  return box;
 }
 watch(
   () => props.list,

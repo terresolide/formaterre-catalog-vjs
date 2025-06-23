@@ -1,5 +1,5 @@
 <script setup>
-  import { reactive, watch, onMounted } from 'vue'; 
+  import { ref, reactive, watch, onMounted } from 'vue'; 
   import { useRoute } from "vue-router"
   import { useConfig } from "@/stores/config.js"
   import MapBox from '@/components/MapBox.vue'
@@ -8,14 +8,15 @@
     aggregations: Object,
     list: Array
   })
+  const bbox= ref()
 </script>
 
 <template>
   <aside>
-    
+    {{bbox}}
    <div class="formater-input-group" style="margin: 10px; width: calc(100% - 20px); " :style="{backgroundColor: config.state.lightcolor}"><input id="any" name="any" :placeholder="$t('search')  + '...'">
     <font-awesome-icon icon="fa-solid fa-search"/></div>
-   <map-box :list="props.list"></map-box>
+   <map-box :list="props.list" v-model="bbox"></map-box>
 
   </aside>
 </template>
