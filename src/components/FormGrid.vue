@@ -22,7 +22,7 @@
     <font-awesome-icon icon="fa-solid fa-search"/></div>
    <map-box :list="props.list"></map-box>
    <search-box :color="config.state.primary" header-icon-class="fa-solid fa-earth-americas" type="light" title="zone géographique">
-   <!--  <spatial-search></spatial-search> -->
+  <spatial-search :lang="config.state.lang" :color="config.state.lightcolor"></spatial-search> 
    </search-box>
 
   </aside>

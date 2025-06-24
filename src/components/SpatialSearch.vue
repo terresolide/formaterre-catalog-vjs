@@ -1,5 +1,5 @@
 <script setup>
-import {ref, reactive, watch} from 'vue'
+import {computed, onMounted, reactive, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 const {lang,color,defaultBox} = defineProps({
     lang: {
@@ -17,8 +17,8 @@ const {lang,color,defaultBox} = defineProps({
 })
 
 const route = useRoute()
-const router = useRouter()
-
+// const router = useRouter()
+const form = ref()
 const patternLatitude = "[-+]?(90|([1-8]?[0-9])([.][0-9]+)?)"
 const patternLongitude = "[-+]?(180(\.0+)?|((1[0-7][0-9])|([1-9]?[0-9]))([.][0-9]+)?)"
 
@@ -32,25 +32,25 @@ function handleDraw () {
 function handleReset () {
 }
 function validForm () {
-    //  var inputs = this.$el.querySelectorAll('input')
-    //  var valid = true
-    //  inputs.forEach(function (input) {
-    //    valid *= (input.validity.valid)
-    //  })
-    //  if (this.south === "" || this.north === "" || this.east === "" || this.west === "") {
-    //    valid = false
-    //  }
-    //  return valid;
+    var inputs = form.value.querySelectorAll('input')
+    var valid = true
+    inputs.forEach(function (input) {
+      valid *= (input.validity.valid)
+    })
+    if (data.south === "" || data.north === "" || data.east === "" || data.west === "") {
+      valid = false
+    }
+    return valid;
 }
 function validInput (e) {
- // if (e.which === 13) {        
- //   // @todo rendre + sexy le passage à l'autre input
- //   var index = parseInt(e.target.dataset.index)+ 1
- //   var next = this.$el.querySelector('input[data-index="' + index + '"]')
- //   if (next) {
- //     next.focus()
- //   }
- // }
+  if (e.which === 13) {        
+    // @todo rendre + sexy le passage à l'autre input
+    var index = parseInt(e.target.dataset.index)+ 1
+    var next = form.value.querySelector('input[data-index="' + index + '"]')
+    if (next) {
+      next.focus()
+    }
+  }
 }
 function extractBbox (query) {
      if (query.bbox) {
@@ -66,6 +66,9 @@ watch(
     (query) => {
        extractBbox(query)
 })
+onMounted(() => {
+    extractBbox(route.query)
+})
 </script>
 <template>
 <span class="formater-spatial-search" :class="{disable: isDisable}">
@@ -74,27 +77,26 @@ watch(
       <button class="spatial-reset-button" :title="$t('reset')" @click="handleResetLocal"><i class="fa fa-remove"></i></button>
      </div>
      -->
-     <form name="formater-spatial-search" class="formater-spatial-search-content">
-     {{bbox}}
+     <form name="formater-spatial-search" ref="form" class="formater-spatial-search-content">
    
-          <div class="formater-input-group cardinal-center">
+          <div class="formater-input-group cardinal-center" :style="{backgroundColor: color}">
                <span class="right">N</span>
-               <input  type="text" name="north" v-model="data.bbox.north" :pattern="patternLatitude"  :title="$t('titleLatitude')" @keydown="validInput" @change="handleChange" data-index="1" ></input>
+               <input  type="text" name="north"  v-model="data.bbox.north" :pattern="patternLatitude"  :title="$t('titleLatitude')" @keydown="validInput" @change="handleChange" data-index="1" />
           </div>
     
-          <div class="formater-input-group cardinal-left">
+          <div class="formater-input-group cardinal-left" :style="{backgroundColor: color}">
                <span class="right">{{lang === 'en' ? 'W' : 'O'}}</span>
-               <input  type="text" name="west" v-model="data.bbox.west" :pattern="patternLongitude"  :title="$t('titleLongitude')" @keydown="validInput" @change="handleChange" data-index="2" ></input>
+               <input  type="text" name="west" v-model="data.bbox.west" :pattern="patternLongitude"  :title="$t('titleLongitude')" @keydown="validInput" @change="handleChange" data-index="2" />
           </div>
-          <div class="formater-input-group cardinal-right">
+          <div class="formater-input-group cardinal-right" :style="{backgroundColor: color}">
                
-               <input  type="text" name="east" v-model="data.bbox.east" :pattern="patternLongitude"  :title="$t('titleLongitude')" @keydown="validInput" @change="handleChange" data-index="3" >     </input>
+               <input  type="text" name="east"  v-model="data.bbox.east" :pattern="patternLongitude"  :title="$t('titleLongitude')" @keydown="validInput" @change="handleChange" data-index="3" />
                <span class="left">E</span>
           </div>
           
-          <div class="formater-input-group cardinal-center">
+          <div class="formater-input-group cardinal-center" :style="{backgroundColor: color}">
                <span class="right">S</span>
-               <input  type="text" name="south" v-model="data.bbox.south" :pattern="patternLatitude"  :title="$t('titleLatitude')" @keydown="validInput" @change="handleChange" data-index="4" ></input>
+               <input  type="text" name="south"  v-model="data.bbox.south" :pattern="patternLatitude"  :title="$t('titleLatitude')" @keydown="validInput" @change="handleChange" data-index="4" />
           </div>
         
      </form>

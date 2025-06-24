@@ -237,10 +237,10 @@ function validBbox (bounds) {
    router.push({name:route.name, params: route.params, query: query})
    return null
   }
-  let box = { north: bounds.getNorth(),
-    south: bounds.getSouth(),
-    east: bounds.getEast(),
-    west: bounds.getSouthWest().lng
+  let box = { north: Math.round(bounds.getNorth() * 10000) / 10000,
+    south: Math.round(bounds.getSouth() * 10000) / 10000,
+    east: Math.round(bounds.getEast() * 10000) / 10000,
+    west: Math.round(bounds.getWest() * 10000) / 10000
   }
   // valid bbox
   if (box.east > 180 || box.west < -180) {
@@ -272,7 +272,7 @@ function drawBbox (query) {
           
            data.drawnBbox.addLayer(rectangle)
         
-           bounds = data.drawnBbox.getBounds()
+          // bounds = data.drawnBbox.getBounds()
            data.map.fitBounds(bounds)
        } else {
            data.drawnBbox.clearLayers()
@@ -342,8 +342,7 @@ watch(
         data.selectedBbox.setStyle(selectedOptions)
         data.map.fitBounds(data.selectedBbox.getBounds())
         // if layer add legend
-         console.log('ajout legend')
-         addLegend()
+        addLegend()
     }
    
   },
