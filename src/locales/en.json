@@ -1,5 +1,6 @@
 {
     "among": "among",
+    "draw": "Draw",
     "basket": "Basket",
     "catalog": "Catalog | Catalogs",
     "grid_view": "Grid view",
@@ -14,6 +15,8 @@
     "search": "Search",
     "sort_by": "Sort by",
     "text_search": "Text search",
+    "titleLatitude": "Latitude must be a number between -90° and 90° (ex: 65.3)",
+    "titleLongitude": "Longitude must be a number between -180° and 180° (ex: -110.3)",
     "to": "to",
     "update": "Update"
 }

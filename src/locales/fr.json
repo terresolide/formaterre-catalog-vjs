@@ -2,6 +2,7 @@
     "among": "parmi",
     "basket": "Panier",
     "catalog": "Catalogue | Catalogues",
+    "draw": "Dessiner",
     "grid_view": "Vue grille",
     "localize": "Localiser sur la carte",
     "login": "Se connecter",
@@ -14,6 +15,8 @@
     "search": "Rechercher",
     "sort_by": "Trié par",
     "text_search": "Recherche textuelle",
+    "titleLatitude": "La latitude doit être un nombre compris entre -90° et 90° (ex: 65.3)",
+    "titleLongitude": "La longitude doit être comprise entre -180° et 180° (ex: -110.3)",
     "to": "à",
     "update": "Mise à jour"
 }

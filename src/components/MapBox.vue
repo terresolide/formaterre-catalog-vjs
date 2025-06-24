@@ -1,5 +1,6 @@
 <script setup>
-import {ref, reactive, onMounted, watch } from 'vue'
+import { computed, ref, reactive, onMounted, watch } from 'vue'
+import {useRoute, useRouter} from 'vue-router'
 import L from 'leaflet'
 import '@/modules/leaflet.control.mylayers.js'
 import '@/modules/leaflet.control.legend.js'
@@ -14,13 +15,18 @@ window.type = true
 
 const getReader = () => import('@/modules/capabilities-reader.js')
 const config = useConfig()
+const route = useRoute()
 const map = ref(null)
 
 // east, south, west, north de la bbox dessinée
-const bbox = defineModel('bbox')
+const bbox = defineModel()
 
 const props = defineProps({
   list: Array,
+  bbox: {
+      type: Object,
+      default: () => {return {east: '', west: '', north: '', south: ''}}
+  }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -34,6 +40,22 @@ const data = reactive({
   selectedBbox: null, // la bbox sélectionnée parmi toutes
   drawnBbox: null, // la bbox dessinée
   reader: null
+})
+const rectangle = computed((bbox) => {
+    console.log('bbox change')
+    if (!bbox.east) {
+        return
+    }
+     // draw or redraw if bbox change
+  var bounds = [[box.south, box.west], [box.north, box.east]]
+  var rectangle = L.rectangle(bounds, {color: '#ff0000'})
+ 
+  data.drawnBbox.addLayer(rectangle)
+  bounds = data.drawnBbox.getBounds()
+//       if (this.searchArea) {
+//         bounds.extend(this.boundsLayer.getBounds())
+//       }
+  data.map.fitBounds(bounds, {padding: [20, 20]})
 })
 const selectedOptions = {
   color: 'red',
@@ -252,11 +274,11 @@ function drawValidBbox (bounds) {
        box.east = Math.min(box.west + delta, 180)
      }
   }
-  bbox.value = bbox
+
   // draw or redraw if bbox change
   var bounds = [[box.south, box.west], [box.north, box.east]]
   var rectangle = L.rectangle(bounds, {color: '#ff0000'})
- 
+  
   data.drawnBbox.addLayer(rectangle)
   bounds = data.drawnBbox.getBounds()
 //       if (this.searchArea) {
@@ -266,6 +288,11 @@ function drawValidBbox (bounds) {
   emit('update:modelValue', box)
   return box;
 }
+watch(
+    () => route.query,
+    (query) => {
+        console.log(query)
+})
 watch(
   () => props.list,
   (list) => {
@@ -427,6 +454,7 @@ onMounted(() => {
 })
 </script>
 <template>
+ {{bbox}}
     <DraggableBox>
         <div id="fmtLargeMap"></div>
     </DraggableBox>
