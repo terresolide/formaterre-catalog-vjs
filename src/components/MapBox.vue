@@ -23,7 +23,6 @@ const props = defineProps({
   list: Array
 })
 
-const emit = defineEmits(['update:modelValue'])
 const data = reactive({
   map: null,
   controlLayer: null,

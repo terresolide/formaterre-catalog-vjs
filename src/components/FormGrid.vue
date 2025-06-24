@@ -12,18 +12,17 @@
   })
 
   
-  const bbox= ref({north: '', south: '', east: '', west: ''})
+
 
 </script>
 
 <template>
   <aside>
-    {{bbox}}
    <div class="formater-input-group" style="margin: 10px; width: calc(100% - 20px); " :style="{backgroundColor: config.state.lightcolor}"><input id="any" name="any" :placeholder="$t('search')  + '...'">
     <font-awesome-icon icon="fa-solid fa-search"/></div>
-   <map-box :list="props.list" v-model="bbox"></map-box>
+   <map-box :list="props.list"></map-box>
    <search-box :color="config.state.primary" header-icon-class="fa-solid fa-earth-americas" type="light" title="zone géographique">
-     <spatial-search  v-model="bbox"></spatial-search>
+   <!--  <spatial-search></spatial-search> -->
    </search-box>
 
   </aside>

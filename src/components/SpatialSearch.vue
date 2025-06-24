@@ -1,5 +1,6 @@
 <script setup>
-import {reactive, computed} from 'vue'
+import {ref, reactive, watch} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
 const {lang,color,defaultBox} = defineProps({
     lang: {
         type:String,
@@ -14,13 +15,15 @@ const {lang,color,defaultBox} = defineProps({
         default: null
     }
 })
-const bbox = defineModel()
+
+const route = useRoute()
+const router = useRouter()
 
 const patternLatitude = "[-+]?(90|([1-8]?[0-9])([.][0-9]+)?)"
 const patternLongitude = "[-+]?(180(\.0+)?|((1[0-7][0-9])|([1-9]?[0-9]))([.][0-9]+)?)"
 
 const data = reactive({
-    
+    bbox: {west:'', east: '', south: '', north: ''}
 })
 const isDisable = computed(() => {return false})
 
@@ -49,6 +52,20 @@ function validInput (e) {
  //   }
  // }
 }
+function extractBbox (query) {
+     if (query.bbox) {
+           var points = query.bbox.split(',')
+          // box.west + ',' + box.south + ',' + box.east + ',' + box.north
+           data.bbox = {west: points[0], south: points[1], east: points[2], north: points[3]}
+    } else {
+        data.bbox = {west: '', south: '', east: '', north: ''}
+    }
+}
+watch(
+    () => route.query,
+    (query) => {
+       extractBbox(query)
+})
 </script>
 <template>
 <span class="formater-spatial-search" :class="{disable: isDisable}">
@@ -62,22 +79,22 @@ function validInput (e) {
    
           <div class="formater-input-group cardinal-center">
                <span class="right">N</span>
-               <input  type="text" name="north" v-model="bbox.north" :pattern="patternLatitude"  :title="$t('titleLatitude')" @keydown="validInput" @change="handleChange" data-index="1" ></input>
+               <input  type="text" name="north" v-model="data.bbox.north" :pattern="patternLatitude"  :title="$t('titleLatitude')" @keydown="validInput" @change="handleChange" data-index="1" ></input>
           </div>
     
           <div class="formater-input-group cardinal-left">
                <span class="right">{{lang === 'en' ? 'W' : 'O'}}</span>
-               <input  type="text" name="west" v-model="bbox.west" :pattern="patternLongitude"  :title="$t('titleLongitude')" @keydown="validInput" @change="handleChange" data-index="2" ></input>
+               <input  type="text" name="west" v-model="data.bbox.west" :pattern="patternLongitude"  :title="$t('titleLongitude')" @keydown="validInput" @change="handleChange" data-index="2" ></input>
           </div>
           <div class="formater-input-group cardinal-right">
                
-               <input  type="text" name="east" v-model="bbox.east" :pattern="patternLongitude"  :title="$t('titleLongitude')" @keydown="validInput" @change="handleChange" data-index="3" >     </input>
+               <input  type="text" name="east" v-model="data.bbox.east" :pattern="patternLongitude"  :title="$t('titleLongitude')" @keydown="validInput" @change="handleChange" data-index="3" >     </input>
                <span class="left">E</span>
           </div>
           
           <div class="formater-input-group cardinal-center">
                <span class="right">S</span>
-               <input  type="text" name="south" v-model="bbox.south" :pattern="patternLatitude"  :title="$t('titleLatitude')" @keydown="validInput" @change="handleChange" data-index="4" ></input>
+               <input  type="text" name="south" v-model="data.bbox.south" :pattern="patternLatitude"  :title="$t('titleLatitude')" @keydown="validInput" @change="handleChange" data-index="4" ></input>
           </div>
         
      </form>
