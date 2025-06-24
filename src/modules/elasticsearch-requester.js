@@ -173,9 +173,9 @@ export default {
           }
         })
       }
-      if (route.query.box) {
+      if (route.query.bbox) {
         
-        var tab = route.query.box.split(',')
+        var tab = route.query.bbox.split(',')
         if (tab.length === 4) {
           this.parameters.query.bool.filter.push({
             geo_bounding_box: {

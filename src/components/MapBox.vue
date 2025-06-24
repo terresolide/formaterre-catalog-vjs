@@ -16,17 +16,11 @@ window.type = true
 const getReader = () => import('@/modules/capabilities-reader.js')
 const config = useConfig()
 const route = useRoute()
+const router = useRouter()
 const map = ref(null)
 
-// east, south, west, north de la bbox dessinée
-const bbox = defineModel()
-
 const props = defineProps({
-  list: Array,
-  bbox: {
-      type: Object,
-      default: () => {return {east: '', west: '', north: '', south: ''}}
-  }
+  list: Array
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -41,22 +35,7 @@ const data = reactive({
   drawnBbox: null, // la bbox dessinée
   reader: null
 })
-const rectangle = computed((bbox) => {
-    console.log('bbox change')
-    if (!bbox.east) {
-        return
-    }
-     // draw or redraw if bbox change
-  var bounds = [[box.south, box.west], [box.north, box.east]]
-  var rectangle = L.rectangle(bounds, {color: '#ff0000'})
- 
-  data.drawnBbox.addLayer(rectangle)
-  bounds = data.drawnBbox.getBounds()
-//       if (this.searchArea) {
-//         bounds.extend(this.boundsLayer.getBounds())
-//       }
-  data.map.fitBounds(bounds, {padding: [20, 20]})
-})
+
 const selectedOptions = {
   color: 'red',
   fillColor: 'red',
@@ -244,18 +223,20 @@ function addLayerToMap(id, newLayer) {
     newLayer.addTo(data.map)
     newLayer.bringToFront()
     data.layers[id] =  newLayer
-    console.log(newLayer)
     data.controlLayer.addOverlay(newLayer, newLayer.options.layers)
   }
 }
 
-function drawValidBbox (bounds) {
+function validBbox (bounds) {
   if (!data.drawnBbox) {
       return
   }
   data.drawnBbox.clearLayers() 
+  var query = Object.assign({}, query)
   if (!bounds) {
-    return null
+   delete query.bbox
+   router.push({name:route.name, params: route.params, query: query})
+   return null
   }
   let box = { north: bounds.getNorth(),
     south: bounds.getSouth(),
@@ -274,24 +255,34 @@ function drawValidBbox (bounds) {
        box.east = Math.min(box.west + delta, 180)
      }
   }
+  query.bbox = box.west + ',' + box.south + ',' + box.east + ',' + box.north
+  router.push({name:route.name, params: route.params, query: query})
 
-  // draw or redraw if bbox change
-  var bounds = [[box.south, box.west], [box.north, box.east]]
-  var rectangle = L.rectangle(bounds, {color: '#ff0000'})
-  
-  data.drawnBbox.addLayer(rectangle)
-  bounds = data.drawnBbox.getBounds()
-//       if (this.searchArea) {
-//         bounds.extend(this.boundsLayer.getBounds())
-//       }
-  data.map.fitBounds(bounds, {padding: [20, 20]})
-  emit('update:modelValue', box)
   return box;
+}
+
+function drawBbox (query) {
+     if (!data.drawnBbox) {
+         return
+     }
+     if (query.bbox) {
+           var points = query.bbox.split(',')
+           points = points.map(x => parseFloat(x))
+           var bounds = [[points[1], points[0]], [points[3], points[2]]]
+           var rectangle = L.rectangle(bounds, {color: '#ff0000'})
+          
+           data.drawnBbox.addLayer(rectangle)
+        
+           bounds = data.drawnBbox.getBounds()
+           data.map.fitBounds(bounds)
+       } else {
+           data.drawnBbox.clearLayers()
+       }
 }
 watch(
     () => route.query,
     (query) => {
-        console.log(query)
+       drawBbox(query)
 })
 watch(
   () => props.list,
@@ -404,10 +395,9 @@ function initDrawControl () {
     })
     data.controlDraw.addTo(data.map)
     data.map.on(L.Draw.Event.CREATED, function (e) {
-        console.log(e)
         let layer = e.layer
         let bounds = e.layer.getBounds()
-        drawValidBbox(bounds)
+        validBbox(bounds)
     })
     data.map.on(L.Draw.Event.EDITED, function (e) {
   
@@ -415,17 +405,14 @@ function initDrawControl () {
         e.layers.eachLayer(function (layer) {
           bounds = layer.getBounds()
         })
-        drawValidBbox(bounds)
+        validBbox(bounds)
     })
     
     data.map.on(L.Draw.Event.DELETED , function (e) {
-        emit('update:modelValue', {north: '',
-          south: '',
-          east: '',
-          west: ''
-        })
+        validBbox(null)
     })
     data.controlLayer.addOverlay(data.drawnBbox, 'Seleted Area')
+    drawBbox(route.query)
 }
 function initialize() {
   if (data.map) {
@@ -454,7 +441,6 @@ onMounted(() => {
 })
 </script>
 <template>
- {{bbox}}
     <DraggableBox>
         <div id="fmtLargeMap"></div>
     </DraggableBox>
