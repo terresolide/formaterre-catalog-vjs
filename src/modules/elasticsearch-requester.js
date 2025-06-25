@@ -84,13 +84,13 @@ export default {
        
     }, 
     getRecords (event) {
-      
+      console.log(event)
 //       if (this.$store.state.metadata && this.first) {
 //         this.first = false
 //         this.searchSimpleMetadata()
 //         return
 //       }
-      this.$store.commit('searchingChange', true)
+     // this.$store.commit('searchingChange', true)
       // trigger search event like breadcrumb
 //       if (event.detail && typeof event.detail.depth == 'number') {
 //         var depth = event.detail.depth
@@ -138,7 +138,7 @@ export default {
     prepareRequest(route) {
       
       this.initParameters()
-      
+      console.log(route)
       if (route.name === 'Metadata') {
         var aggregations = Object.assign(this.$store.state.aggregations.step2)
        this.parameters.query.bool.filter.push({ term: {parentUuid: route.params.uuid}})
@@ -174,7 +174,7 @@ export default {
         })
       }
       if (route.query.bbox) {
-        
+        console.log(route.query.bbox)
         var tab = route.query.bbox.split(',')
         if (tab.length === 4) {
           this.parameters.query.bool.filter.push({

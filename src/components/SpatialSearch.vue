@@ -17,7 +17,7 @@ const {lang,color,defaultBox} = defineProps({
 })
 
 const route = useRoute()
-// const router = useRouter()
+const router = useRouter()
 const form = ref()
 const patternLatitude = "[-+]?(90|([1-8]?[0-9])([.][0-9]+)?)"
 const patternLongitude = "[-+]?(180(\.0+)?|((1[0-7][0-9])|([1-9]?[0-9]))([.][0-9]+)?)"
@@ -27,9 +27,32 @@ const data = reactive({
 })
 const isDisable = computed(() => {return false})
 
+function createBbox() {
+    if (validForm()) {
+      return [data.bbox.west, data.bbox.south, data.bbox.east, data.bbox.north].join(',')
+    } else {
+      return false
+    }
+}
+function handleChange (e){
+    if(!e || !e.target.validity.valid) {
+      return false;
+    }
+    var bbox = createBbox()
+    if (bbox) {
+        var query = Object.assign({}, route.query)
+        query.bbox = bbox
+        router.push({name: route.name, params: route.params, query: query})
+    }
+   
+    return;
+}
 function handleDraw () {
 }
 function handleReset () {
+    var query = Object.assign({}, route.query)
+    delete  query.bbox 
+    router.push({name: route.name, params: route.params, query: query})
 }
 function validForm () {
     var inputs = form.value.querySelectorAll('input')
@@ -37,7 +60,7 @@ function validForm () {
     inputs.forEach(function (input) {
       valid *= (input.validity.valid)
     })
-    if (data.south === "" || data.north === "" || data.east === "" || data.west === "") {
+    if (data.bbox.south === "" || data.bbox.north === "" || data.bbox.east === "" || data.bbox.west === "") {
       valid = false
     }
     return valid;
@@ -72,11 +95,11 @@ onMounted(() => {
 </script>
 <template>
 <span class="formater-spatial-search" :class="{disable: isDisable}">
-   <!--  <div class="box-toolbar" style="background: none;">
-      <button class="spatial-edit-button" :title="$t('draw')" @click="handleDraw"><i class="fa fa-pencil-square-o"></i></button>
-      <button class="spatial-reset-button" :title="$t('reset')" @click="handleResetLocal"><i class="fa fa-remove"></i></button>
+  <div class="box-toolbar" style="background: none;">
+      <!--   <button class="spatial-edit-button" :title="$t('draw')" @click="handleDraw"><i class="fa fa-pencil-square-o"></i></button>
+     --> <button class="spatial-reset-button" :title="$t('reset')" @click="handleReset"><font-awesome-icon icon="fa-solid fa-close" /></button>
      </div>
-     -->
+     
      <form name="formater-spatial-search" ref="form" class="formater-spatial-search-content">
    
           <div class="formater-input-group cardinal-center" :style="{backgroundColor: color}">

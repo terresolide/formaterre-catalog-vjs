@@ -163,7 +163,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
       getParameters (query) {
         let parameters = this.getDefaultParameters()
         let aggregations = Object.assign(this.aggregations.step1)
-        
+        console.log(query)
         if (query.from) {
             parameters.from = parseInt(query.from) - 1
         }
@@ -191,9 +191,8 @@ export const useElasticsearch = defineStore('elasticsearch', {
             }
             })
         }
-        if (query.box) {
-            
-            var tab = query.box.split(',')
+        if (query.bbox) {
+            var tab = query.bbox.split(',')
             if (tab.length === 4) {
             parameters.query.bool.filter.push({
                 geo_bounding_box: {
