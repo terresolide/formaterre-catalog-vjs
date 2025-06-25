@@ -1,14 +1,31 @@
 <script setup >
-
+import {computed, ref} from 'vue'
 import { useSelection } from '@/stores/selection'
 
 const selection = useSelection()
 
 const isGeodes = false
 const token = null
-const file = null
-const href = 'machin'
+const button = ref()
+
+const file = computed(() => {
+    var filename = selection.download.url.substring(selection.download.url.lastIndexOf('/') + 1)
+    var regex = new RegExp('/\.[^.]+$/')
+    if (filename.match(/\.[^.]+$/)) {
+        return filename
+    } else if (selection.download.mimeType ) {
+        console.log(selection.download.mimeType)
+        switch(selection.download.mimeType.toLowerCase())  {
+            case 'application/zip':
+                return selection.download.title + '.zip'
+                break
+            default:
+                return null
+        }
+      } 
+})
 function close () {
+    selection.setDownload(null)
 }
 function copy2clipboard (e) {
 
@@ -33,9 +50,8 @@ function copy2clipboard (e) {
 }
 function removeTooltip ()
 {
-  var node = null
-  if (node) {
-    node.classList.remove('tooltip-show')
+  if (button) {
+    button.value.classList.remove('tooltip-show')
   }
 }
  
@@ -48,17 +64,18 @@ function removeTooltip ()
   <h3>{{$t('command_line')}}</h3>
  <div >
     <div><b>Archive</b>: {{selection.download.name}}</div>
-                        
-     <!--<div><b>{{$t('command_to_execute')}}:</b></div>
+    <div><b>{{$t('command_to_execute')}}:</b></div>
       <div style="display:inline-block;font-family: monospace;max-height:200px;overflow:scroll;padding:3px;width:calc(100% - 100px);color:#5ddc5d;background:#333;">
-      <template v-if="isGeodes">curl -k -L -H "Authorization:Bearer {{token}}" {{href}} -o {{file}}</template>
-      <template v-else-if="token">curl {{href}}?_bearer={{token}} -o {{file}}</template>
-      <template v-else >curl {{href}}  -o {{file}}</template>
+      <template v-if="isGeodes">curl -k -L -H "Authorization:Bearer {{token}}" {{selection.download.url}} -o {{file}}</template>
+      <template v-else-if="token">curl {{selection.download.url}}?_bearer={{token}} -o {{file}}</template>
+      <template v-else >curl {{selection.download.url}}  -o {{file}}</template>
       </div>
-      <div style="display:inline-block;vertical-align:top;max-width:90px">
-      <a class="fmt-button fa fa-clipboard" @click="copy2clipboard()" :title="$t('copy_clipboard')"> </a>
-    <div class="clipboard-tooltip" @click="removeTooltip">{{$t('copied_clipboard')}}</div>
-    </div>-->
+      <div style="display:inline-block;vertical-align:top;max-width:90px;margin-left:5px;">
+      <button ref="button" @click="copy2clipboard($event)" :title="$t('copy_clipboard')">
+         <font-awesome-icon icon="fa-solid fa-clipboard" /> {{$t('copy')}}
+      </button>
+     <div class="clipboard-tooltip" @click="removeTooltip">{{$t('copied_clipboard')}}</div>
+    </div>
   </div> 
 </div>
 </template>
@@ -87,7 +104,5 @@ function removeTooltip ()
 .fmt-close:hover {
   border-color:black;
 }
-a.tooltip-show + .clipboard-tooltip {
-  display:block;
-}
+
 </style>
