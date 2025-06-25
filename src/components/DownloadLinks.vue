@@ -1,15 +1,14 @@
 <script setup>
 import { computed} from 'vue';
-import {useConfig} from '@/stores/config'
-import {useCatalog} from '@/stores/catalog'
+import {useSelection} from '@/stores/selection'
 const {links, service} = defineProps({
    links: Array,
    service: null
 })
-let config = useConfig()
+const selection = useSelection()
 const isDisable = computed(() => {return false})
-function download(index) {
-    
+function commandLine() {
+    selection.setDownload(links[0])
 }
 
 </script>
@@ -38,7 +37,7 @@ function download(index) {
   </div>
   <!-- téléchargement en ligne de commande si un seul lien-->
   <template v-if="links.length === 1">
-      <div class="mtdt-related-type" :title="$t('command_line')">
+      <div class="mtdt-related-type" :title="$t('command_line')" @click="commandLine">
         <font-awesome-icon icon="fa-solid fa-terminal" />
       </div>
   </template>

@@ -459,6 +459,7 @@ div[id='map'] {
   position: relative;
   height: 100%;
   width: 100%;
+  z-index:1;
 }
 div.map-container {
   height: 200px;

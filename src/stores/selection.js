@@ -4,7 +4,7 @@ export const useSelection = defineStore('selection', {
   state: () => ({
     uuid: null,
     layers: [],
-    download: 'bllll'
+    download: null
   }),
   actions: {
     hasLayer(layer) {
