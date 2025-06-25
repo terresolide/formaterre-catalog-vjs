@@ -35,5 +35,5 @@ let config = useConfig()
               </li>
             </template>
        </ul>    
-       </div> 
+  </div> 
 </template>

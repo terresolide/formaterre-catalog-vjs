@@ -34,18 +34,23 @@ function select() {
     <layer-links :links="props.links.layers" :uuid="uuid" :access="access"></layer-links>
   </template>
   <!-- instrument -->
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-gauge-simple-high" />
-  </div>
+  <!--
+      <div class="mtdt-related-type">
+        <font-awesome-icon icon="fa-solid fa-gauge-simple-high" />
+      </div>
+  -->
   <template v-if="props.links.download && props.links.download.length > 0">
     <download-links :links="props.links.download"></download-links>
   </template>
 
   <!-- commander les données -->
-  <div class="mtdt-related-type">
-    <font-awesome-icon icon="fa-solid fa-pen-to-square" />
-  </div>
-
+   <template v-if="props.links.order && props.links.order.length > 0">
+      <div class="mtdt-related-type">
+       <a :href="props.links.order[0].url" target="_blank" :title="props.links.order[0].name">
+        <font-awesome-icon icon="fa-solid fa-pen-to-square" />
+       </a>
+      </div>
+  </template>
   <template v-if="props.links.links && props.links.links.length > 0">
     <simple-links :links="props.links.links" type="information"></simple-links>
   </template>
