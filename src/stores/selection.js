@@ -4,6 +4,7 @@ export const useSelection = defineStore('selection', {
   state: () => ({
     uuid: null,
     layers: [],
+    download: 'bllll'
   }),
   actions: {
     hasLayer(layer) {
@@ -32,5 +33,8 @@ export const useSelection = defineStore('selection', {
         return true
       }
     },
+    setDownload(obj) {
+        this.download = obj
+    }
   },
 })
