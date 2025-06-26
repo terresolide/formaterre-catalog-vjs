@@ -7,7 +7,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import specific icons */
-import {faAsterisk,faCaretDown,faCaretRight, faCircleDot,faClipboard,faClose,faDownload, faFile, faFolderOpen, faEarthAmericas, faGaugeSimpleHigh, faGrip, faLink, faMagnifyingGlass,faMap, 
+import {faAsterisk,faCalendar,faCaretDown,faCaretRight, faCircleDot,faClipboard,faClose,faDownload, faFile, faFolderOpen, faEarthAmericas, faGaugeSimpleHigh, faGrip, faLink, faMagnifyingGlass,faMap, 
         faPenToSquare,faSatelliteDish, faSearch, faTerminal, faUser} from '@fortawesome/free-solid-svg-icons'
 import { setupI18n, loadLocaleMessages } from './i18n'
 import moment from 'moment'
@@ -16,7 +16,7 @@ import {
    faSquare,
    faSquareCheck
 } from '@fortawesome/free-regular-svg-icons'
-library.add(faAsterisk,faCaretDown,faCaretRight, faCircleDot,faClipboard,faClose,faDownload, faFile, faFolderOpen,faEarthAmericas, faGaugeSimpleHigh, faGrip, faLink, faMagnifyingGlass,faMap,
+library.add(faAsterisk,faCalendar,faCaretDown,faCaretRight, faCircleDot,faClipboard,faClose,faDownload, faFile, faFolderOpen,faEarthAmericas, faGaugeSimpleHigh, faGrip, faLink, faMagnifyingGlass,faMap,
             faPenToSquare,faSatelliteDish, faSearch, faSquare, faSquareCheck, faTerminal, faUser)
 
 let cfg = {}
