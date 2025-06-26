@@ -185,7 +185,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             range: {
             resourceTemporalExtentDateRange: {
                 from: query.start ? query.start : null,
-                to: rquery.end ? query.end : null,
+                to: query.end ? query.end : null,
                 format: 'yyyy-MM-dd'
                 }
             }

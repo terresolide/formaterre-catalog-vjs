@@ -26,17 +26,28 @@
       }
       return null
   })
+  const data = reactive({
+      start: null,
+      end: null
+  })
   function startChange(input) {
      data.start = dateToString(input)
-     if (data.start && data.end && data.start >= data.end) {
+     dateChange('start')
+  }
+  function endChange(input) {
+     data.end = dateToString(input)
+     dateChange('end')
+  }
+  function dateChange(key) {
+      if (data.start && data.end && data.start >= data.end) {
          // error
          return 
      }
      var query = Object.assign({}, route.query)
-     if (data.start) {
-         query.start = data.start
+     if (data[key]) {
+         query[key] = data[key]
      } else {
-         delete query.start
+         delete query[key]
      }
      router.push({name: route.name, params: route.params, query:query})
   }
@@ -49,10 +60,19 @@
       return date.toISOString().split('T')[0]
   
   }
+  onMounted(() => {
+      var query = route.query
+      if (query.start) {
+          data.start = query.start
+          frome.value = new Date(query.start)
+      }
+      if (query.end) {
+          data.end = query.end
+          to.value = new Date(query.end)
+      }
+  })
 </script>
 <template>
-{{frome ? frome.toISOString() : '___'}}
-{{to ? to.toISOString() : '____'}}
  <div style="margin-left:10px;">
     <div>
         <label>{{$t('from')}} </label>
@@ -61,8 +81,8 @@
     </div>
     <div>
         <label>{{$t('to')}} </label>
-        <Datepicker v-model="to" :locale="locale"  
-        :clearable="true" :typeable="true" :upper-limit="now"/>
+        <Datepicker v-model="to" :locale="locale"  inputFormat="dd/MM/yyyy"
+        :clearable="true" :typeable="true" :upper-limit="now" @update:modelValue="endChange"/>
     </div>
   </div>
 </template>
