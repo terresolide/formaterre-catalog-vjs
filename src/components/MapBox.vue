@@ -423,7 +423,8 @@ function initialize() {
   data.controlLayer.addTo(data.map)
   data.bbox = L.featureGroup()
   data.controlLayer.addOverlay(data.bbox, 'Les bbox')
-  new L.Control.Fullscreen('fmtLargeMap', {lang: config.state.lang, mouseWheel: true}).addTo(data.map)
+  var fullscreen = new L.Control.Fullscreen('fmtLargeMap', {lang: config.state.lang, mouseWheel: true})
+  fullscreen.addTo(data.map)
   L.control.scale().addTo(data.map)
   data.legendControl = new L.Control.Legend(config.state.lang, function (uuid) {    
      // create Dom identifier from uuid
