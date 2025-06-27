@@ -14,6 +14,7 @@
     "login": "Login",
     "logout": "Logout",
     "map_view": "Map view",
+    "no_record": "No records match the search",
     "per": "per",
     "popularity": "Popularity",
     "reset": "Reset",

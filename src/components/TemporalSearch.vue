@@ -12,6 +12,14 @@
       color: {
           type: String,
           default: '#ffff00'
+      },
+      dayMin: {
+          type: String,
+          default: null
+      },
+      dayMax: {
+          type: String,
+          default: null
       }
   })
   
@@ -19,6 +27,19 @@
   const to = ref(null)
   const route = useRoute()
   const router = useRouter()
+  
+  const upperLimit = computed(() => {
+      if (props.dayMax) {
+          return new Date(props.dayMax)
+      }
+      return new Date()
+  })
+  const lowerLimit = computed(() => {
+      if (props.dayMin) {
+          return new Date(props.dayMin)
+      }
+      return null
+  })
   const now = new Date()
   const locale = computed(() => {
       if (props.lang === 'fr') {
@@ -79,15 +100,17 @@
     <div>
         <label :style="{backgroundColor:color}">{{$t('from')}} </label>
         <span class="datepicker-container" :class="{error: data.error}" :style="{backgroundColor:color}" >
-            <Datepicker v-model="frome" :locale="locale" :disable-time="true" inputFormat="dd/MM/yyyy"
-            :clearable="true" :typeable="true" :upper-limit="now" @update:modelValue="startChange"/>
+            <Datepicker v-model="frome" :locale="locale" :lower-limit="lowerLimit" :upper-limit="upperLimit"
+            :disable-time="true" inputFormat="dd/MM/yyyy"
+            :clearable="true" :typeable="true" @update:modelValue="startChange"/>
         </span>
     </div>
     <div>
         <label :style="{backgroundColor:color}">{{$t('to')}} </label>
         <span class="datepicker-container" :class="{error: data.error}"  :style="{backgroundColor:color}">
-            <Datepicker v-model="to" :locale="locale"  inputFormat="dd/MM/yyyy"
-            :clearable="true" :typeable="true" :upper-limit="now" @update:modelValue="endChange"/>
+            <Datepicker v-model="to" :locale="locale" :lower-limit="lowerLimit" :upper-limit="upperLimit"
+            :disable-time="true" inputFormat="dd/MM/yyyy"
+            :clearable="true" :typeable="true"  @update:modelValue="endChange"/>
         </span>
     </div>
     <div v-if="data.error" class="error">{{ $t('inconsistent_date')}}</div>

@@ -18,7 +18,6 @@
   watch(  route,
    (route) => {
     elasticsearch.setCatalog(route.name, route.params.catalog)
-    console.log('route change')
     getRecords(route.query)
   }, {flush: 'pre', immediate: true, deep: true})
   onMounted(() => {

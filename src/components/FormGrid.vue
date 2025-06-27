@@ -12,8 +12,9 @@
     list: Array
   })
 
-  
-
+  // daymin et daymax à récupérer (depend du catalogue ou bien de la série parent....)
+ const daymin = '2020-05-10'
+ const daymax = null
 
 </script>
 
@@ -26,7 +27,7 @@
         <spatial-search :lang="config.state.lang" :color="config.state.lightcolor"></spatial-search> 
    </search-box>
    <search-box :color="config.state.primary" header-icon-class="fa-solid fa-calendar" type="light" :title="$t('time_slot')">
-     <temporal-search :lang="config.state.lang" :color="config.state.lightcolor"></temporal-search> --> 
+     <temporal-search :lang="config.state.lang" :color="config.state.lightcolor" :day-min="daymin" :day-max="daymax"></temporal-search> --> 
    </search-box>
 
   </aside>

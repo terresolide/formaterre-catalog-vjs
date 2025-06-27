@@ -14,6 +14,7 @@
     "login": "Se connecter",
     "logout": "Se déconnecter",
     "map_view": "Vue carte",
+    "no_record": "Aucune fiche ne correspond à la recherche",
     "per": "par",
     "popularity": "Popularité",
     "reset": "Initialiser",

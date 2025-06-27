@@ -19,24 +19,26 @@ const {lang,color,defaultBox} = defineProps({
 const route = useRoute()
 const router = useRouter()
 const form = ref()
-const patternLatitude = "[-+]?(90|([1-8]?[0-9])([.][0-9]+)?)"
-const patternLongitude = "[-+]?(180(\.0+)?|((1[0-7][0-9])|([1-9]?[0-9]))([.][0-9]+)?)"
 
 const data = reactive({
     bbox: {west:'', east: '', south: '', north: ''}
 })
 const isDisable = computed(() => {return false})
 
+
 function createBbox() {
-    if (validForm()) {
+      if (parseFloat(data.bbox.west) > parseFloat(data.bbox.east)) {
+          //set invalid
+          return false
+      }
       return [data.bbox.west, data.bbox.south, data.bbox.east, data.bbox.north].join(',')
-    } else {
-      return false
-    }
+    
 }
 function handleChange (e){
-    if(!e || !e.target.validity.valid) {
-      return false;
+    
+    var valid = validForm()
+    if (!valid) {
+        return
     }
     var bbox = createBbox()
     if (bbox) {
@@ -104,22 +106,24 @@ onMounted(() => {
    
           <div class="formater-input-group cardinal-center" :style="{backgroundColor: color}">
                <span class="right">N</span>
-               <input  type="text" name="north"  v-model="data.bbox.north" :pattern="patternLatitude"  :title="$t('titleLatitude')" @keydown="validInput" @change="handleChange" data-index="1" />
+               <input  type="text" name="north"  v-model="data.bbox.north"  :title="$t('titleLatitude')" pattern="[+\-]?(90|[0-8]?[0-9])(\.[0-9]+)?" @keydown="validInput" @change="handleChange" data-index="1" />
           </div>
     
           <div class="formater-input-group cardinal-left" :style="{backgroundColor: color}">
                <span class="right">{{lang === 'en' ? 'W' : 'O'}}</span>
-               <input  type="text" name="west" v-model="data.bbox.west" :pattern="patternLongitude"  :title="$t('titleLongitude')" @keydown="validInput" @change="handleChange" data-index="2" />
+               <input  type="text" name="west" v-model="data.bbox.west"   :title="$t('titleLongitude')" pattern="[+\-]?(180|([0-1]?[0-7][0-9](\.[0-9]+)?)|([0-9]{1,2}(\.[0-9]+)?))" 
+               @keydown="validInput" @change="handleChange" data-index="2" />
           </div>
           <div class="formater-input-group cardinal-right" :style="{backgroundColor: color}">
                
-               <input  type="text" name="east"  v-model="data.bbox.east" :pattern="patternLongitude"  :title="$t('titleLongitude')" @keydown="validInput" @change="handleChange" data-index="3" />
+               <input  type="text" name="east"  v-model="data.bbox.east"   :title="$t('titleLongitude')" pattern="[+\-]?(180|([0-1]?[0-7][0-9](\.[0-9]+)?)|([0-9]{1,2}(\.[0-9]+)?))" 
+                @keydown="validInput" @change="handleChange" data-index="3" />
                <span class="left">E</span>
           </div>
           
           <div class="formater-input-group cardinal-center" :style="{backgroundColor: color}">
                <span class="right">S</span>
-               <input  type="text" name="south"  v-model="data.bbox.south" :pattern="patternLatitude"  :title="$t('titleLatitude')" @keydown="validInput" @change="handleChange" data-index="4" />
+               <input  type="text" name="south"  v-model="data.bbox.south"   :title="$t('titleLatitude')" pattern="[+\-]?(90|[0-8]?[0-9])(\.[0-9]+)?"  @keydown="validInput" @change="handleChange" data-index="4" />
           </div>
         
      </form>
@@ -144,6 +148,10 @@ onMounted(() => {
      background-color: transparent;
      padding: 0 5px;
      outline: none;
+}
+
+input:invalid {
+    color:red;
 }
      
 .formater-spatial-search .formater-input-group span:first-letter {

@@ -15,11 +15,17 @@ const selection = useSelection()
        <command-line :download="selection.download"></command-line>
      </template>
      <div class="wrapper-group-2">
-       <div class="container-flex"> 
-            <template v-for="item in props.list" >
-                 <metadata-box :metadata="item"></metadata-box> 
-            </template>
-        </div>
+       <template v-if="props.list.length > 0">
+           <div class="container-flex"> 
+                <template v-for="item in props.list" >
+                     <metadata-box :metadata="item"></metadata-box> 
+                </template>
+            </div>
+        </template>
+        <template v-else >
+        {{$t('no_record')}}
+          Aucune fiche ne correspond à la recherche
+        </template>
     </div>
 </template>
 <style>

@@ -265,6 +265,7 @@ function drawBbox (query) {
      if (!data.drawnBbox) {
          return
      }
+     data.drawnBbox.clearLayers()
      if (query.bbox) {
            var points = query.bbox.split(',')
            points = points.map(x => parseFloat(x))
@@ -313,10 +314,12 @@ watch(
         }
       }
     })
-    data.bbox.addLayer(L.geoJSON(geojson, { style: currentOptions }))
-    data.bbox.addTo(data.map)
-    var bounds = data.bbox.getBounds()
-    data.map.fitBounds(bounds)
+    if (geojson.features.length > 0) {
+        data.bbox.addLayer(L.geoJSON(geojson, { style: currentOptions }))
+        data.bbox.addTo(data.map)
+        var bounds = data.bbox.getBounds()
+        data.map.fitBounds(bounds)
+    }
   },
 )
 watch(
