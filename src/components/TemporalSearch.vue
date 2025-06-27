@@ -28,7 +28,8 @@
   })
   const data = reactive({
       start: null,
-      end: null
+      end: null,
+      error: null
   })
   function startChange(input) {
      data.start = dateToString(input)
@@ -39,10 +40,11 @@
      dateChange('end')
   }
   function dateChange(key) {
-      if (data.start && data.end && data.start >= data.end) {
-         // error
+     if (data.start && data.end && data.start >= data.end) {
+         data.error = true
          return 
      }
+     data.error = false
      var query = Object.assign({}, route.query)
      if (data[key]) {
          query[key] = data[key]
@@ -73,30 +75,63 @@
   })
 </script>
 <template>
- <div style="margin-left:10px;">
+ <div class="temporal-container">
     <div>
-        <label>{{$t('from')}} </label>
-        <Datepicker v-model="frome" :locale="locale" :disable-time="true" inputFormat="dd/MM/yyyy"
-        :clearable="true" :typeable="true" :upper-limit="now" @update:modelValue="startChange"/>
+        <label :style="{backgroundColor:color}">{{$t('from')}} </label>
+        <span class="datepicker-container" :class="{error: data.error}" :style="{backgroundColor:color}" >
+            <Datepicker v-model="frome" :locale="locale" :disable-time="true" inputFormat="dd/MM/yyyy"
+            :clearable="true" :typeable="true" :upper-limit="now" @update:modelValue="startChange"/>
+        </span>
     </div>
     <div>
-        <label>{{$t('to')}} </label>
-        <Datepicker v-model="to" :locale="locale"  inputFormat="dd/MM/yyyy"
-        :clearable="true" :typeable="true" :upper-limit="now" @update:modelValue="endChange"/>
+        <label :style="{backgroundColor:color}">{{$t('to')}} </label>
+        <span class="datepicker-container" :class="{error: data.error}"  :style="{backgroundColor:color}">
+            <Datepicker v-model="to" :locale="locale"  inputFormat="dd/MM/yyyy"
+            :clearable="true" :typeable="true" :upper-limit="now" @update:modelValue="endChange"/>
+        </span>
     </div>
+    <div v-if="data.error" class="error">{{ $t('inconsistent_date')}}</div>
   </div>
+
 </template>
 <style>
 .v3dp__datepicker {
     display:inline-block;
+}
+.v3dp__datepicker input[type="text"] {
+    border: none;
+  background-color: transparent;
+  padding: 5px 10px;
+  outline: none;
 }
 </style>
 <style scoped>
 label {
     display:inline-block;
     width:30px;
+    padding:2px 0 2px 3px;
+    margin-right:2px;
 }
+
 label:first-letter {
     text-transform:uppercase;
 }
+.temporal-container {
+    margin-left:10px;
+   
+}
+.temporal-container > div{
+    margin-top:5px;
+}
+span.datepicker-container {
+    display:inline-block;
+     min-width:202px;
+}
+span.datepicker-container.error {
+    border: 1px solid darkred;
+}
+.error {
+    color: darkred;
+    text-align: left;
+    }
 </style>

@@ -9,6 +9,7 @@
     "draw": "Dessiner",
     "from": "De",
     "grid_view": "Vue grille",
+    "inconsistent_date": "La date finale doit être strictement supérieure à la date initiale!",
     "localize": "Localiser sur la carte",
     "login": "Se connecter",
     "logout": "Se déconnecter",

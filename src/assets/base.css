@@ -39,6 +39,8 @@
   --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
+  --vdp-hover-bg-color: var(--link);
+  --vdp-selected-bg-color: var(--over);
 }
 
 @media (prefers-color-scheme: dark) {

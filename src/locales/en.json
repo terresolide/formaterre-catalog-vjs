@@ -9,6 +9,7 @@
     "copy": "Copy",
     "from": "From",
     "grid_view": "Grid view",
+    "inconsistent_date": "The final date must be strictly greater than the initial date!",
     "localize": "Localize on the map",
     "login": "Login",
     "logout": "Logout",

@@ -231,7 +231,8 @@ function validBbox (bounds) {
       return
   }
   data.drawnBbox.clearLayers() 
-  var query = Object.assign({}, query)
+  
+  var query = Object.assign({}, route.query)
   if (!bounds) {
    delete query.bbox
    router.push({name:route.name, params: route.params, query: query})
