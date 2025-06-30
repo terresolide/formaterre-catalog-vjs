@@ -69,7 +69,7 @@
       
           <search-box :color="config.state.primary" :header-icon-class="agg.meta.icon" type="light" :title="agg.meta.label[config.state.lang] || agg.meta.label">
                 <template v-if="agg.meta.type === 'dimension'">
-                   <dimension-block :aggregation="agg" />
+                   <dimension-block :name="agg.key" :aggregation="agg" />
                 </template>
                 <template v-else>
                     <aggregation-block :aggregation="agg"></aggregation-block>
