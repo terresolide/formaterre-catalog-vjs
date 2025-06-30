@@ -45,7 +45,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             meta: {
               type: 'facet',
               thesaurus: 'formater-foi-gn',
-              icon: 'fa-solid fa-map-marker',
+              icon: 'fa-solid fa-location-dot',
               label: {fr: "Objet d'intérêt", en: "Feature of Interest"},
               sort: 4
             }

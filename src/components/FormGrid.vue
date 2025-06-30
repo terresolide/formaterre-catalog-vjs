@@ -7,6 +7,7 @@
   import SpatialSearch from '@/components/SpatialSearch.vue'
   import TemporalSearch from '@/components/TemporalSearch.vue'
   import AggregationBlock from '@/components/AggregationBlock.vue'
+  import DimensionBlock from '@/components/DimensionBlock.vue'
   const config = useConfig()
   const route = useRoute()
   const router = useRouter()
@@ -57,24 +58,33 @@
     <input name="any" v-model="data.any" :placeholder="$t('search')  + '...'" @change="textChange">
     <font-awesome-icon icon="fa-solid fa-search"/></div>
    <map-box :list="props.list"></map-box>
-   <search-box :color="config.state.primary" header-icon-class="fa-solid fa-earth-americas" type="light" :title="$t('spatial_extent')">
-        <spatial-search :lang="config.state.lang" :primary="config.state.primary" :color="config.state.lightcolor"></spatial-search> 
-   </search-box>
-   <search-box :color="config.state.primary" header-icon-class="fa-solid fa-calendar" type="light" :title="$t('time_slot')">
-     <temporal-search :lang="config.state.lang" :color="config.state.lightcolor" :day-min="daymin" :day-max="daymax"></temporal-search>  
-   </search-box>
-   <template v-for="agg in props.aggregations">
-   {{agg}}
-      <search-box :color="config.state.primary" :header-icon-class="agg.meta.icon" type="light" :title="agg.meta.label[config.state.lang] || agg.meta.label">
-        <aggregation-block :aggregation="agg"></aggregation-block>
-     </search-box>
-   </template>
+   <div style="height:calc(100% - 300px);overflow-y:scroll;">
+       <search-box :color="config.state.primary" header-icon-class="fa-solid fa-earth-americas" type="light" :title="$t('spatial_extent')">
+            <spatial-search :lang="config.state.lang" :primary="config.state.primary" :color="config.state.lightcolor"></spatial-search> 
+       </search-box>
+       <search-box :color="config.state.primary" header-icon-class="fa-solid fa-calendar" type="light" :title="$t('time_slot')">
+         <temporal-search :lang="config.state.lang" :color="config.state.lightcolor" :day-min="daymin" :day-max="daymax"></temporal-search>  
+       </search-box>
+       <template v-for="agg in props.aggregations">
+      
+          <search-box :color="config.state.primary" :header-icon-class="agg.meta.icon" type="light" :title="agg.meta.label[config.state.lang] || agg.meta.label">
+                <template v-if="agg.meta.type === 'dimension'">
+                   <dimension-block :aggregation="agg" />
+                </template>
+                <template v-else>
+                    <aggregation-block :aggregation="agg"></aggregation-block>
+                </template>
+         </search-box>
+       </template>
+   </div>
   </aside>
 </template>
 <style scoped>
 aside {
   max-width:330px;
   width:330px;
+  height:calc(100vh - 100px);
+  max-height:calc(100vh - 100px);
   float:left;
   border:1px solid grey;
   padding: 10px 0px 0px 0px;
