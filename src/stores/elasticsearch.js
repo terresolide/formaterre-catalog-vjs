@@ -126,9 +126,11 @@ export const useElasticsearch = defineStore('elasticsearch', {
     actions: {
       setCatalog ( routeName, catalogName) {
         this.name = routeName
+        console.log(catalogName)
         if (!catalogName) {
-          this.groupOwner = null
-          return
+            console.log(catalogName)
+            this.groupOwner = null
+            return
         }
         let catalogs = useCatalog()
         let catalog = catalogs.getCatalog(catalogName)
@@ -162,7 +164,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
       },
       getParameters (query) {
         let parameters = this.getDefaultParameters()
-        let aggregations = Object.assign(this.aggregations.step1)
+        let aggregations = Object.assign({},this.aggregations.step1)
         console.log(query)
         if (query.from) {
             parameters.from = parseInt(query.from) - 1
@@ -223,7 +225,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             }
             parameters.query.bool.must.push(term)
         }
-      
+        console.log(this.groupOwner)
         if (this.groupOwner) {
             parameters.query.bool.filter.push({term: {groupOwner: this.groupOwner }})
             delete aggregations['groupOwner']
