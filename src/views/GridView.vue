@@ -29,7 +29,13 @@
   function getRecords (query) {
     elasticsearch.getRecords(query)
     .then(json => {
-        data.aggregations = Object.values(json.aggregations).sort((a,b) => {
+        var aggregations = []
+        for(var key in json.aggregations) {
+            var agg = json.aggregations[key]
+            agg.key = key
+            aggregations.push(agg)
+        }
+        data.aggregations = aggregations.sort((a,b) => {
             if (a.meta.sort - b.meta.sort > 0) {
                 return 1
             } else {
