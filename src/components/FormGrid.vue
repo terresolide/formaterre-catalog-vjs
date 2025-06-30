@@ -20,14 +20,33 @@
  const data = reactive({
      any: null
  })
-function reset () {
+ function initFromQuery (query) {
+    if (query.any) {
+        data.any = query.any
+    } else {
+        data.any = null
+    }
+ }
+ function reset () {
     if (route.query && Object.keys(route.query).length > 0) { 
         router.push({name: route.name, params: route.params})
     }
-}
-function textChange(e) {
+ }
+ function textChange(e) {
     console.log(e)
-}
+    console.log(data.any)
+    var query = Object.assign({}, route.query)
+    if (data.any) {
+        query.any = data.any
+    } else {
+        delete query.any
+    }
+    router.push({name: route.name, params: route.params, query:query})
+ }
+ watch(() => route.query,
+       (query) => {initFromQuery(query)}
+ )
+ onMounted(() => {initFromQuery(route.query) })
 </script>
 
 <template>
