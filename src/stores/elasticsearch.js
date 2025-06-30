@@ -17,7 +17,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             },
             meta: {
               type: 'dimension',
-              icon: 'fa fa-database',
+              icon: 'fa-solid fa-database',
               label: {fr: 'Catalogue', en: 'Catalog'},
               sort: 0
             }
@@ -31,7 +31,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             meta: {
               type: 'facet',
               thesaurus: 'formater-discipline',
-              icon: 'fa fa-graduation-cap',
+              icon: 'fa-solid fa-graduation-cap',
               label: 'Discipline',
               sort: 2
             }
@@ -45,7 +45,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             meta: {
               type: 'facet',
               thesaurus: 'formater-foi-gn',
-              icon: 'fa fa-map-marker',
+              icon: 'fa-solid fa-map-marker',
               label: {fr: "Objet d'intérêt", en: "Feature of Interest"},
               sort: 4
             }
@@ -58,7 +58,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             meta: {
               type: 'dimension',
               thesaurus: 'formater-distributor',
-              icon: 'fa fa-users',
+              icon: 'fa-solid fa-users',
               label: {fr: 'Distributeur', en: 'Distributor'},
               sort: 1
             }
@@ -75,7 +75,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
               thesaurus: 'formater-platform-gn',
               label: {fr: 'Plateforme', en: 'Platform'},
               sort: 3,
-              icon: 'fa fa-rocket'
+              icon: 'fa-solid fa-rocket'
             } 
           }
         }, 

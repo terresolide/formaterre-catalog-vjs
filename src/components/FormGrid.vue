@@ -6,6 +6,7 @@
   import SearchBox from '@/components/SearchBox.vue'
   import SpatialSearch from '@/components/SpatialSearch.vue'
   import TemporalSearch from '@/components/TemporalSearch.vue'
+  import AggregationBlock from '@/components/AggregationBlock.vue'
   const config = useConfig()
   const route = useRoute()
   const router = useRouter()
@@ -60,9 +61,14 @@
         <spatial-search :lang="config.state.lang" :primary="config.state.primary" :color="config.state.lightcolor"></spatial-search> 
    </search-box>
    <search-box :color="config.state.primary" header-icon-class="fa-solid fa-calendar" type="light" :title="$t('time_slot')">
-     <temporal-search :lang="config.state.lang" :color="config.state.lightcolor" :day-min="daymin" :day-max="daymax"></temporal-search> --> 
+     <temporal-search :lang="config.state.lang" :color="config.state.lightcolor" :day-min="daymin" :day-max="daymax"></temporal-search>  
    </search-box>
-
+   <template v-for="agg in props.aggregations">
+   {{agg}}
+      <search-box :color="config.state.primary" :header-icon-class="agg.meta.icon" type="light" :title="agg.meta.label[config.state.lang] || agg.meta.label">
+        <aggregation-block :aggregation="agg"></aggregation-block>
+     </search-box>
+   </template>
   </aside>
 </template>
 <style scoped>

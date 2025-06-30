@@ -1,7 +1,13 @@
 <script setup>
+const {aggregation} = defineProps({
+    aggregation: {
+        type: Object,
+        default: null
+    }
+})
 </script>
 <template>
-  aggregations
+  {{aggregation}}
 </template>
 <style>
 </style>
