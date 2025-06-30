@@ -1,7 +1,11 @@
 <script setup>
 import {computed} from 'vue'
 import {useCatalog} from '@/stores/catalog'
-const {aggregation} = defineProps({
+const {name, aggregation} = defineProps({
+    name: {
+        type: String,
+        default: null
+    },
     aggregation: {
         type: Object,
         default: null
