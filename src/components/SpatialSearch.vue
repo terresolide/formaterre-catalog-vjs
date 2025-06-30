@@ -99,7 +99,7 @@ onMounted(() => {
 <span class="formater-spatial-search" :class="{disable: isDisable}">
   <div class="box-toolbar" style="background: none;">
       <!--   <button class="spatial-edit-button" :title="$t('draw')" @click="handleDraw"><i class="fa fa-pencil-square-o"></i></button>
-     --> <button class="spatial-reset-button" :title="$t('reset')" @click="handleReset"><font-awesome-icon icon="fa-solid fa-close" /></button>
+     --> <button class="spatial-reset-button" :title="$t('reset')" :style="{background:color}" @click="handleReset"><font-awesome-icon icon="fa-solid fa-close" /></button>
      </div>
      
      <form name="formater-spatial-search" ref="form" class="formater-spatial-search-content">

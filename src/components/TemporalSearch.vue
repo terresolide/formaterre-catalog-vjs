@@ -1,5 +1,5 @@
 <script setup>
-  import {computed, reactive, onMounted, ref} from 'vue'
+  import {computed, reactive, onMounted, ref, watch} from 'vue'
   import {useRoute, useRouter} from 'vue-router'
   import Datepicker from 'vue3-datepicker'
   import { fr } from 'date-fns/locale'
@@ -83,17 +83,23 @@
       return date.toISOString().split('T')[0]
   
   }
-  onMounted(() => {
-      var query = route.query
-      if (query.start) {
-          data.start = query.start
-          frome.value = new Date(query.start)
-      }
-      if (query.end) {
-          data.end = query.end
-          to.value = new Date(query.end)
-      }
-  })
+  function initFromQuery(query) {
+        if (query.start) {
+            data.start = query.start
+            frome.value = new Date(query.start)
+        } else {
+            frome.value = null
+        }
+        if (query.end) {
+            data.end = query.end
+            to.value = new Date(query.end)
+        } else {
+            to.value = null
+        }
+  }
+  watch(() => route.query,
+        (query) => {initFromQuery(query)})
+  onMounted(() => {initFromQuery(route.query) })
 </script>
 <template>
  <div class="temporal-container">

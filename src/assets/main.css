@@ -16,5 +16,40 @@ a,
   transition: 0.4s;
   padding: 3px;
 }
-
+button,
+input[type="button"] {
+    margin: 0 0 3px 7px;
+    padding: 3px 12px;
+    text-align: center;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    font-size: 16px;
+    line-height: 1.7;
+    border: None;
+    background:var(--link);
+    color: #fff;
+    text-decoration: none;
+    vertical-align: top;
+    cursor: pointer;
+    pointer-events: auto;
+    box-sizing: border-box;
+    box-shadow: 0 1px 5px rgba(0,0,0,.65);
+    opacity:0.9;
+}
+button:hover,
+input[type="button"]:hover {
+	opacity:1;
+}
+button:disabled,
+input[type="button"]:disabled,
+button.disabled,
+input[type="button"].disabled{
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.center {
+    text-align:center;
+}
 

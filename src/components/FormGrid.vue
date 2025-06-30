@@ -1,12 +1,14 @@
 <script setup>
   import { ref, reactive, watch, onMounted } from 'vue'; 
-  import { useRoute } from "vue-router"
+  import { useRoute, useRouter } from "vue-router"
   import { useConfig } from "@/stores/config.js"
   import MapBox from '@/components/MapBox.vue'
   import SearchBox from '@/components/SearchBox.vue'
   import SpatialSearch from '@/components/SpatialSearch.vue'
   import TemporalSearch from '@/components/TemporalSearch.vue'
   const config = useConfig()
+  const route = useRoute()
+  const router = useRouter()
   const props = defineProps({
     aggregations: Object,
     list: Array
@@ -15,12 +17,24 @@
   // daymin et daymax à récupérer (depend du catalogue ou bien de la série parent....)
  const daymin = '2020-05-10'
  const daymax = null
-
+ const data = reactive({
+     any: null
+ })
+function reset () {
+    if (route.query && Object.keys(route.query).length > 0) { 
+        router.push({name: route.name, params: route.params})
+    }
+}
+function textChange(e) {
+    console.log(e)
+}
 </script>
 
 <template>
   <aside>
-   <div class="formater-input-group" style="margin: 10px; width: calc(100% - 20px); " :style="{backgroundColor: config.state.lightcolor}"><input id="any" name="any" :placeholder="$t('search')  + '...'">
+  <div class="center"><button @click="reset" :style="{background: config.state.primary}">{{$t('reset')}}</button></div>
+   <div class="formater-input-group" style="margin: 10px; width: calc(100% - 20px); " :style="{backgroundColor: config.state.lightcolor}">
+    <input name="any" v-model="data.any" :placeholder="$t('search')  + '...'" @change="textChange">
     <font-awesome-icon icon="fa-solid fa-search"/></div>
    <map-box :list="props.list"></map-box>
    <search-box :color="config.state.primary" header-icon-class="fa-solid fa-earth-americas" type="light" :title="$t('spatial_extent')">
@@ -38,10 +52,11 @@ aside {
   width:330px;
   float:left;
   border:1px solid grey;
-  padding: 0px 0px 0px 0px;
+  padding: 10px 0px 0px 0px;
   border: 1px solid #ccc;
   box-shadow: 1px 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
+
 .formater-input-group input[name="any"] {
   line-height: 35px;
   height: 35px;
