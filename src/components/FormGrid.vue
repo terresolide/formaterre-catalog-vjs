@@ -65,14 +65,14 @@
        <search-box :color="config.state.primary" header-icon-class="fa-solid fa-calendar" type="light" :title="$t('time_slot')">
          <temporal-search :lang="config.state.lang" :color="config.state.lightcolor" :day-min="daymin" :day-max="daymax"></temporal-search>  
        </search-box>
-       <template v-for="agg in props.aggregations">
+       <template v-for="agg, key in props.aggregations">
       
           <search-box :color="config.state.primary" :header-icon-class="agg.meta.icon" type="light" :title="agg.meta.label[config.state.lang] || agg.meta.label">
                 <template v-if="agg.meta.type === 'dimension'">
-                   <dimension-block :name="agg.key" :aggregation="agg" />
+                   <dimension-block :name="key" :aggregation="agg" />
                 </template>
                 <template v-else>
-                    <aggregation-block :aggregation="agg"></aggregation-block>
+                    <aggregation-block :name="key" :aggregation="agg"></aggregation-block>
                 </template>
          </search-box>
        </template>

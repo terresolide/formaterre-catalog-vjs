@@ -124,155 +124,291 @@ export const useElasticsearch = defineStore('elasticsearch', {
         "th_formater-platform-gn", "th_formaterre-product-gn", "th_ron.default", "th_polarisation.default", "overview","link"]
     }),
     actions: {
-      setCatalog ( routeName, catalogName) {
-        this.name = routeName
-        console.log(catalogName)
-        if (!catalogName) {
+        setCatalog ( routeName, catalogName) {
+            this.name = routeName
             console.log(catalogName)
-            this.groupOwner = null
-            return
-        }
-        let catalogs = useCatalog()
-        let catalog = catalogs.getCatalog(catalogName)
-        console.log(catalog)
-        if (catalog) {
-          this.groupOwner = catalog.id
-        }
-      },
-      getDefaultParameters () {
-        let config = useConfig()
-        return {
-            from: 0,
-            size: config.state.size,
-            _source: {
-              includes: this.includes
-            },
-            sort: [ {popularity: "desc"}, {changeDate: "desc"}],
-            query: {
-              bool: {
-                  filter: [{
-                      term: {isTemplate: 'n'}
-                  },  {
-                      terms: {resourceType: ['dataset', 'series']}
-                  }],
-                  must_not: {
-                      exists: {field: 'parentUuid'}
-                  }
-              }
+            if (!catalogName) {
+                console.log(catalogName)
+                this.groupOwner = null
+                return
             }
-        }
-      },
-      getParameters (query) {
-        let parameters = this.getDefaultParameters()
-        let aggregations = Object.assign({},this.aggregations.step1)
-        console.log(query)
-        if (query.from) {
-            parameters.from = parseInt(query.from) - 1
-        }
-        if (query.to) {
-            parameters.size = parseInt(query.to) - parameters.from
-        }
-        if (query.sortBy) {
-            console.log(query.sortBy)
-            // this.parameters.sort = [{changeDate: 'desc'}, {popularity: desc}]
-            if (query.sortBy === 'changeDate') {
-            parameters.sort.reverse()
-            } 
-            // else if (route.query.sortBy === 'title') {
-            //   this.parameters.sort.unshift({'resourceTitleObject.fre': {order: 'asc'}})
-            // }
-        }
-        if (query.start || query.end) {
-            parameters.query.bool.filter.push({
-            range: {
-            resourceTemporalExtentDateRange: {
-                from: query.start ? query.start : null,
-                to: query.end ? query.end : null,
-                format: 'yyyy-MM-dd'
+            let catalogs = useCatalog()
+            let catalog = catalogs.getCatalog(catalogName)
+            console.log(catalog)
+            if (catalog) {
+              this.groupOwner = catalog.id
+            }
+        },
+        getDefaultParameters () {
+            let config = useConfig()
+            return {
+                from: 0,
+                size: config.state.size,
+                _source: {
+                  includes: this.includes
+                },
+                sort: [ {popularity: "desc"}, {changeDate: "desc"}],
+                query: {
+                  bool: {
+                      filter: [{
+                          term: {isTemplate: 'n'}
+                      },  {
+                          terms: {resourceType: ['dataset', 'series']}
+                      }],
+                      must_not: {
+                          exists: {field: 'parentUuid'}
+                      }
+                  }
                 }
             }
-            })
-        }
-        if (query.bbox) {
-            var tab = query.bbox.split(',')
-            if (tab.length === 4) {
-            parameters.query.bool.filter.push({
-                geo_bounding_box: {
-                location: {
-                    bottom_left: {
-                    lat: parseFloat(tab[1]),
-                    lon: parseFloat(tab[0])
-                    },
-                    top_right: {
-                    lat: parseFloat(tab[3]),
-                    lon: parseFloat(tab[2])
+        },
+        getParameters (query) {
+            let parameters = this.getDefaultParameters()
+            let aggregations = Object.assign({},this.aggregations.step1)
+            console.log(query)
+            if (query.from) {
+                parameters.from = parseInt(query.from) - 1
+            }
+            if (query.to) {
+                parameters.size = parseInt(query.to) - parameters.from
+            }
+            if (query.sortBy) {
+                console.log(query.sortBy)
+                // this.parameters.sort = [{changeDate: 'desc'}, {popularity: desc}]
+                if (query.sortBy === 'changeDate') {
+                parameters.sort.reverse()
+                } 
+                // else if (route.query.sortBy === 'title') {
+                //   this.parameters.sort.unshift({'resourceTitleObject.fre': {order: 'asc'}})
+                // }
+            }
+            if (query.start || query.end) {
+                parameters.query.bool.filter.push({
+                range: {
+                resourceTemporalExtentDateRange: {
+                    from: query.start ? query.start : null,
+                    to: query.end ? query.end : null,
+                    format: 'yyyy-MM-dd'
                     }
                 }
+                })
+            }
+            if (query.bbox) {
+                var tab = query.bbox.split(',')
+                if (tab.length === 4) {
+                parameters.query.bool.filter.push({
+                    geo_bounding_box: {
+                    location: {
+                        bottom_left: {
+                        lat: parseFloat(tab[1]),
+                        lon: parseFloat(tab[0])
+                        },
+                        top_right: {
+                        lat: parseFloat(tab[3]),
+                        lon: parseFloat(tab[2])
+                        }
+                    }
+                    }
+                })
                 }
+            }
+            if (query.any) {
+                var words = query.any.trim().split(/(\s+)/)
+                words = words.filter(function (w) { return w.trim().length > 0;})
+                var any = words.join(' AND ')
+                var term = {query_string: {
+                fields: ["resourceTitleObject.*", "resourceAbstractObject.*", "lineageObject.*", "tag", "uuid", "resourceIdentifier"],
+                query: any
+                }}
+                if (!parameters.query.bool.must) {
+                parameters.query.bool.must = []
+                }
+                parameters.query.bool.must.push(term)
+            }
+            console.log(this.groupOwner)
+            if (this.groupOwner) {
+                parameters.query.bool.filter.push({term: {groupOwner: this.groupOwner }})
+                delete aggregations['groupOwner']
+            }
+            
+            for(var key in aggregations) {
+                if (query [key]) {
+                if (aggregations[key].meta.type === 'dimension') {
+                    var terms = {}
+                    var q = decodeURIComponent(query[key])
+                    var values = q.split('+or+')
+                    terms[aggregations[key].terms.field] = values
+                    parameters.query.bool.filter.push({terms: terms})
+                } else {
+                    var term = {}
+                    term[aggregations[key].terms.field] = decodeURIComponent(query[key])
+                    parameters.query.bool.filter.push({term: term})
+                }
+                }
+            }
+            parameters.aggregations = aggregations
+            return parameters
+        },
+        getRecords (query) {
+            const config = useConfig()
+            let api = config.state.geonetwork +  '/srv/api/search/records/_search?bucket=metadata'
+            let parameters = this.getParameters(query)
+            return new Promise((successCallback, failureCallback) => {
+              fetch(api, 
+                {
+                    headers: {'Accept': 'application/json', 'Content-type': 'application/json'},
+                    method: 'POST',
+                    body: JSON.stringify(parameters)
+                }
+              ).then(rep => rep.json())
+              .then(json => {
+                if (successCallback) {
+                    successCallback(json)
+                }
+               }).catch(err => {
+                if (failureCallback) {
+                    failureCallback(err)
+                }
+               })
+            })    
+        },
+        treatmentAggregations (aggs) {
+            var aggregations = []
+            var promises = []
+            var aggregations = []
+            for(var key in aggs) {
+                if (aggs[key].buckets.length > 0) {
+                    aggs[key].key = key
+                    aggregations.push(aggs[key]) 
+                }
+            }
+            aggregations.sort(function (a,b) { return a.meta.sort - b.meta.sort})
+            for(var key in aggregations) {
+                promises.push(this.prepareAggregation(aggregations[key]))
+            }
+            Promise.all(promises)
+            .then((values) => {
+                var data = { dimension: values}
+                data.depth = this.depth
+                var event = new CustomEvent('fmt:dimensionEvent', {detail:  data})
+                document.dispatchEvent(event)
             })
-            }
+            
+
+        },
+        translate(thesaurus, uris) {
+            var self = this
+            return new Promise(function (resolve, reject) {
+                var id = uris.join(',')
+                var lang = self.$store.state.lang === 'fr' ? 'fre' : 'eng'
+                var url = self.$store.state.geonetwork + 'srv/api/registries/vocabularies/keyword?id=' + encodeURIComponent(id) + '&thesaurus=' + thesaurus + '&lang=' + lang
+                self.$http.get(url, {headers: {'accept': 'application/json'}})
+                .then(resp => {
+                    resolve(resp.body)
+                })
+            })
+          
+        },
+        prepareAggregation(agg) {
+            var self = this
+            return new Promise(function (resolve, reject) {
+                var label = agg.key
+                var lang = self.$store.state.lang
+                if (agg.meta && agg.meta.label) {
+                    label = agg.meta.label[lang] ? agg.meta.label[lang] : agg.meta.label
+                }
+                var aggStore = self.aggregations[agg.key]
+                var tab = aggStore.terms.field.split('.')
+                var isKey = tab.length > 1 && tab[1] === 'key'
+                var aggregation = {
+                    '@name': agg.key,
+                    type: isKey ? 'associative' : 'simple',
+                    label: label,
+                    meta: agg.meta,
+                    category: []
+                }
+                
+                var type = (agg.meta && agg.meta.type) || 'dimension'
+                
+                var buckets = agg.buckets
+                var gnGroups = self.$gn.groups
+                var lang = self.$store.state.lang
+                var toTranslate = []
+                var thesaurus = agg.meta.thesaurus || null
+                
+                
+                buckets.forEach(function (item, index) {
+                
+                    // buckets[index].keys = keys
+                    buckets[index]['@value'] = item.key
+                    if (type === 'dimension') {
+                        if (agg.key === 'groupOwner') {
+                           var label = gnGroups[item.key].label[lang]
+                        } else {
+                           var label = item.key
+                        }
+                        aggregation.category.push({
+                          '@name': label,
+                          '@label': label,
+                          '@value': item.key,
+                          '@count': item.doc_count
+                        })
+                    } else if (type === 'select' && !isKey ) {
+                       console.log(label)
+                       console.log(item)
+                       aggregation.category.push( item['@value'] )
+                    } else {
+                        var keys = item.key.split('^')
+                        var uri = keys.pop()
+                        toTranslate.push(uri)
+                        buckets[index].parent = keys.join('^')
+                        buckets[index].length = keys.length
+                        buckets[index]['@name'] = item.key
+                        buckets[index]['@label'] = item.key
+                        buckets[index]['@value'] = uri
+                        buckets[index]['@count'] = item.doc_count
+                        delete item.doc_count
+                    }
+                })
+                // translate
+                
+                if (!isKey) {
+                  resolve(aggregation)
+                  return
+                }
+                self.translate(thesaurus, toTranslate)
+                .then(translated => {
+                    buckets.forEach(function (item, index) {
+                      if (translated[item['@value']]) {
+                        if (translated[item['@value']].label) {
+                            buckets[index]['@label'] = translated[item['@value']].label
+                        } else {
+                            buckets[index]['@label'] = translated[item['@value']]
+                        }
+                      }
+                    })
+                    if (type === 'select') {
+                        var category = []
+                        buckets.forEach(function(item) {
+                            category.push({ '@value': item['@value'], '@label': item['@label'] })
+                        })
+                    } else {
+                        const arrayToTree = (arr, parent = '') =>
+                        arr.filter(item => item.parent === parent)
+                        .map(child => { 
+                            var category = arrayToTree(arr, child.key)
+                            if (category.length > 0) {
+                                child.category = category
+                            }
+                            return child
+                        });
+                        var category = arrayToTree(buckets)
+                    }
+                    aggregation.category = category
+                    resolve(aggregation)
+                })
+            
+            })    
         }
-        if (query.any) {
-            var words = query.any.trim().split(/(\s+)/)
-            words = words.filter(function (w) { return w.trim().length > 0;})
-            var any = words.join(' AND ')
-            var term = {query_string: {
-            fields: ["resourceTitleObject.*", "resourceAbstractObject.*", "lineageObject.*", "tag", "uuid", "resourceIdentifier"],
-            query: any
-            }}
-            if (!parameters.query.bool.must) {
-            parameters.query.bool.must = []
-            }
-            parameters.query.bool.must.push(term)
-        }
-        console.log(this.groupOwner)
-        if (this.groupOwner) {
-            parameters.query.bool.filter.push({term: {groupOwner: this.groupOwner }})
-            delete aggregations['groupOwner']
-        }
-      
-        for(var key in aggregations) {
-            if (query [key]) {
-            if (aggregations[key].meta.type === 'dimension') {
-                var terms = {}
-                var q = decodeURIComponent(query[key])
-                var values = q.split('+or+')
-                terms[aggregations[key].terms.field] = values
-                parameters.query.bool.filter.push({terms: terms})
-            } else {
-                var term = {}
-                term[aggregations[key].terms.field] = decodeURIComponent(query[key])
-                parameters.query.bool.filter.push({term: term})
-            }
-            }
-        }
-        parameters.aggregations = aggregations
-        return parameters
-      },
-      getRecords (query) {
-        const config = useConfig()
-        let api = config.state.geonetwork +  '/srv/api/search/records/_search?bucket=metadata'
-        let parameters = this.getParameters(query)
-        return new Promise((successCallback, failureCallback) => {
-          fetch(api, 
-            {
-                headers: {'Accept': 'application/json', 'Content-type': 'application/json'},
-                method: 'POST',
-                body: JSON.stringify(parameters)
-            }
-          ).then(rep => rep.json())
-          .then(json => {
-            if (successCallback) {
-                successCallback(json)
-            }
-           }).catch(err => {
-            if (failureCallback) {
-                failureCallback(err)
-            }
-           })
-        })
-        
-      }
-      
     }
   })

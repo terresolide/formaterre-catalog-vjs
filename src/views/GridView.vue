@@ -29,19 +29,15 @@
   function getRecords (query) {
     elasticsearch.getRecords(query)
     .then(json => {
-        var aggregations = []
-        for(var key in json.aggregations) {
-            var agg = json.aggregations[key]
-            agg.key = key
-            aggregations.push(agg)
-        }
-        data.aggregations = aggregations.sort((a,b) => {
-            if (a.meta.sort - b.meta.sort > 0) {
-                return 1
-            } else {
-                return -1
-            }
-        })
+        data.aggregations = Object.fromEntries(
+            Object.entries(json.aggregations).sort(([,a],[,b]) => {
+                if (a.meta.sort - b.meta.sort > 0) {
+                    return 1
+                } else {
+                    return -1
+                }
+            })
+        )
         if (json.hits && json.hits.hits) {
           data.list = json.hits.hits
           data.pagination.count = json.hits.hits.length
