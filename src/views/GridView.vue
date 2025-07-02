@@ -29,21 +29,15 @@
   function getRecords (query) {
     elasticsearch.getRecords(query)
     .then(json => {
-        data.aggregations = Object.fromEntries(
-            Object.entries(json.aggregations).sort(([,a],[,b]) => {
-                if (a.meta.sort - b.meta.sort > 0) {
-                    return 1
-                } else {
-                    return -1
-                }
-            })
-        )
         if (json.hits && json.hits.hits) {
           data.list = json.hits.hits
           data.pagination.count = json.hits.hits.length
           data.pagination.total = json.hits.total.value
           data.pagination.relation = json.hits.total.relation
         }
+        return elasticsearch.treatmentAggregations(json.aggregations)
+    }).then(values => {
+        console.log(values)
     })
   }
 </script>

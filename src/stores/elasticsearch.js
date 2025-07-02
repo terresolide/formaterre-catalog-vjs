@@ -255,41 +255,45 @@ export const useElasticsearch = defineStore('elasticsearch', {
             let api = config.state.geonetwork +  '/srv/api/search/records/_search?bucket=metadata'
             let parameters = this.getParameters(query)
             return new Promise((successCallback, failureCallback) => {
-              fetch(api, 
+                fetch(api, 
                 {
                     headers: {'Accept': 'application/json', 'Content-type': 'application/json'},
                     method: 'POST',
                     body: JSON.stringify(parameters)
                 }
-              ).then(rep => rep.json())
-              .then(json => {
-                this.treatmentAggregations(json.aggregations)
-                .then(agg => {
+                ).then(rep => rep.json())
+                .then(json => {
                     if (successCallback) {
-                        json.aggregations = agg
                         successCallback(json)
                     }
+                }).catch(err => {
+                    if (failureCallback) {
+                        failureCallback(err)
+                    }
                 })
-               }).catch(err => {
-                if (failureCallback) {
-                    failureCallback(err)
-                }
-               })
             })    
         },
         treatmentAggregations (aggs) {
+                 
+            aggs = aggregations = Object.fromEntries(
+                Object.entries(aggs).sort(([,a],[,b]) => {
+                    if (a.meta.sort - b.meta.sort > 0) {
+                        return 1
+                    } else {
+                        return -1
+                    }
+                })
+            )
             var aggregations = []
             var promises = []
-            var aggregations = []
             for(var key in aggs) {
-                if (aggs[key].buckets.length > 0) {
-                    aggs[key].key = key
-                    aggregations.push(aggs[key]) 
+                if (aggs[key].buckets.length === 0) {
+                    delete aggs[key]
                 }
             }
-            aggregations.sort(function (a,b) { return a.meta.sort - b.meta.sort})
-            for(var key in aggregations) {
-                promises.push(this.prepareAggregation(aggregations[key]))
+           //  aggregations.sort(function (a,b) { return a.meta.sort - b.meta.sort})
+            for(var key in aggs) {
+                promises.push(this.prepareAggregation(key, aggs[key]))
             }
             return new Promise((successCallback, failureCallback) => 
                 Promise.all(promises)
@@ -307,7 +311,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             return new Promise(function (resolve, reject) {
                 var id = uris.join(',')
                 var lang = config.state.lang === 'fr' ? 'fre' : 'eng'
-                var url = config.state.geonetwork + 'srv/api/registries/vocabularies/keyword?id=' + encodeURIComponent(id) + '&thesaurus=' + thesaurus + '&lang=' + lang
+                var url = config.state.geonetwork + '/srv/api/registries/vocabularies/keyword?id=' + encodeURIComponent(id) + '&thesaurus=' + thesaurus + '&lang=' + lang
                 fetch(url, {headers: {'accept': 'application/json'}})
                 .then(resp => resp.json())
                 .then(json => {
@@ -316,21 +320,21 @@ export const useElasticsearch = defineStore('elasticsearch', {
             })
           
         },
-        prepareAggregation(agg) {
+        prepareAggregation(key, agg) {
             var self = this
             let config = useConfig()
             return new Promise(function (resolve, reject) {
-                var label = agg.key
+                var label = key
                 var lang = config.state.lang
                 if (agg.meta && agg.meta.label) {
                     label = agg.meta.label[lang] ? agg.meta.label[lang] : agg.meta.label
                 }
-                console.log(agg.key)
-                var aggStore = self.aggregations[self.step][agg.key]
+                console.log(key)
+                var aggStore = self.aggregations[self.step][key]
                 var tab = aggStore.terms.field.split('.')
                 var isKey = tab.length > 1 && tab[1] === 'key'
                 var aggregation = {
-                    '@name': agg.key,
+                    key: key,
                     type: isKey ? 'associative' : 'simple',
                     label: label,
                     meta: agg.meta,
@@ -340,50 +344,47 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 var type = (agg.meta && agg.meta.type) || 'dimension'
                 
                 var buckets = agg.buckets
-                var lang = config.state.lang
                 let catalog = useCatalog()
-                let groups = catalog.list
+                let groups = catalog.groups
                 console.log(groups)
+                
                 var toTranslate = []
                 var thesaurus = agg.meta.thesaurus || null
                 
                 
                 buckets.forEach(function (item, index) {
-                
-                    // buckets[index].keys = keys
                     buckets[index]['@value'] = item.key
                     if (type === 'dimension') {
                         if (agg.key === 'groupOwner') {
                           
-                           var label = groups[item.key].label[lang]
+                            var label = groups[item.key].label[lang]
                         } else {
-                           var label = item.key
+                            var label = item.key
                         }
                         aggregation.category.push({
-                          '@name': label,
-                          '@label': label,
-                          '@value': item.key,
-                          '@count': item.doc_count
+                            label: label,
+                            key: item.key,
+                            count: item.doc_count
                         })
                     } else if (type === 'select' && !isKey ) {
                        console.log(label)
                        console.log(item)
-                       aggregation.category.push( item['@value'] )
+                       aggregation.category.push( item.key )
                     } else {
                         var keys = item.key.split('^')
                         var uri = keys.pop()
                         toTranslate.push(uri)
                         buckets[index].parent = keys.join('^')
                         buckets[index].length = keys.length
-                        buckets[index]['@name'] = item.key
-                        buckets[index]['@label'] = item.key
-                        buckets[index]['@value'] = uri
-                        buckets[index]['@count'] = item.doc_count
+                        buckets[index].key = item.key
+                        buckets[index].label  = item.key
+                        buckets[index].uri = uri
+                        buckets[index].count = item.doc_count
                         delete item.doc_count
                     }
                 })
                 // translate
-                
+                console.log(toTranslate)
                 if (!isKey) {
                   resolve(aggregation)
                   return
@@ -391,18 +392,18 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 self.translate(thesaurus, toTranslate)
                 .then(translated => {
                     buckets.forEach(function (item, index) {
-                      if (translated[item['@value']]) {
-                        if (translated[item['@value']].label) {
-                            buckets[index]['@label'] = translated[item['@value']].label
+                      if (translated[item.uri]) {
+                        if (translated[item.uri].label) {
+                            buckets[index].label = translated[item.uri].label
                         } else {
-                            buckets[index]['@label'] = translated[item['@value']]
+                            buckets[index].label = translated[item.uri]
                         }
                       }
                     })
                     if (type === 'select') {
                         var category = []
                         buckets.forEach(function(item) {
-                            category.push({ '@value': item['@value'], '@label': item['@label'] })
+                            category.push({ uri: item.uri, label: item.label })
                         })
                     } else {
                         const arrayToTree = (arr, parent = '') =>

@@ -4,6 +4,7 @@ import {useConfig} from './config'
 export const useCatalog = defineStore('catalog', {
   state: () => ({
     list: [],
+    groups: null,
     initialized: false,
     current: null
   }),
@@ -16,6 +17,7 @@ export const useCatalog = defineStore('catalog', {
             .then(json => {
                 this.initialized = true
                 this.list = json
+                this.getGroups()
             })
         }
     },
@@ -36,6 +38,16 @@ export const useCatalog = defineStore('catalog', {
     },
     getCurrent () {
       return this.current
+    },
+    getGroups () {
+        var self = this
+        if (!this.groups) {
+            this.groups = {}
+            this.list.forEach(function (o) {
+                self.groups[o.id] = 0
+            })
+        }
+        return this.groups
     }
   }
 })
