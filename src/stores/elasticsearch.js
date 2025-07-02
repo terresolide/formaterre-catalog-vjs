@@ -7,6 +7,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
       catalogId: null,
       uuid: null,
       groupOwner: null,
+      step: 'step1',
       aggregations: {
         step1: {
           groupOwner: {
@@ -176,7 +177,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 console.log(query.sortBy)
                 // this.parameters.sort = [{changeDate: 'desc'}, {popularity: desc}]
                 if (query.sortBy === 'changeDate') {
-                parameters.sort.reverse()
+                    parameters.sort.reverse()
                 } 
                 // else if (route.query.sortBy === 'title') {
                 //   this.parameters.sort.unshift({'resourceTitleObject.fre': {order: 'asc'}})
@@ -184,13 +185,13 @@ export const useElasticsearch = defineStore('elasticsearch', {
             }
             if (query.start || query.end) {
                 parameters.query.bool.filter.push({
-                range: {
-                resourceTemporalExtentDateRange: {
-                    from: query.start ? query.start : null,
-                    to: query.end ? query.end : null,
-                    format: 'yyyy-MM-dd'
+                    range: {
+                    resourceTemporalExtentDateRange: {
+                        from: query.start ? query.start : null,
+                        to: query.end ? query.end : null,
+                        format: 'yyyy-MM-dd'
+                        }
                     }
-                }
                 })
             }
             if (query.bbox) {
@@ -262,9 +263,13 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
               ).then(rep => rep.json())
               .then(json => {
-                if (successCallback) {
-                    successCallback(json)
-                }
+                this.treatmentAggregations(json.aggregations)
+                .then(agg => {
+                    if (successCallback) {
+                        json.aggregations = agg
+                        successCallback(json)
+                    }
+                })
                }).catch(err => {
                 if (failureCallback) {
                     failureCallback(err)
@@ -286,38 +291,42 @@ export const useElasticsearch = defineStore('elasticsearch', {
             for(var key in aggregations) {
                 promises.push(this.prepareAggregation(aggregations[key]))
             }
-            Promise.all(promises)
-            .then((values) => {
-                var data = { dimension: values}
-                data.depth = this.depth
-                var event = new CustomEvent('fmt:dimensionEvent', {detail:  data})
-                document.dispatchEvent(event)
-            })
-            
+            return new Promise((successCallback, failureCallback) => 
+                Promise.all(promises)
+                .then((values) => {
+                    successCallback(values)
+                }).catch(err => {
+                    failureCallback(err)
+                })
+            )
 
         },
         translate(thesaurus, uris) {
             var self = this
+            let config = useConfig()
             return new Promise(function (resolve, reject) {
                 var id = uris.join(',')
-                var lang = self.$store.state.lang === 'fr' ? 'fre' : 'eng'
-                var url = self.$store.state.geonetwork + 'srv/api/registries/vocabularies/keyword?id=' + encodeURIComponent(id) + '&thesaurus=' + thesaurus + '&lang=' + lang
-                self.$http.get(url, {headers: {'accept': 'application/json'}})
-                .then(resp => {
-                    resolve(resp.body)
+                var lang = config.state.lang === 'fr' ? 'fre' : 'eng'
+                var url = config.state.geonetwork + 'srv/api/registries/vocabularies/keyword?id=' + encodeURIComponent(id) + '&thesaurus=' + thesaurus + '&lang=' + lang
+                fetch(url, {headers: {'accept': 'application/json'}})
+                .then(resp => resp.json())
+                .then(json => {
+                    resolve(json)
                 })
             })
           
         },
         prepareAggregation(agg) {
             var self = this
+            let config = useConfig()
             return new Promise(function (resolve, reject) {
                 var label = agg.key
-                var lang = self.$store.state.lang
+                var lang = config.state.lang
                 if (agg.meta && agg.meta.label) {
                     label = agg.meta.label[lang] ? agg.meta.label[lang] : agg.meta.label
                 }
-                var aggStore = self.aggregations[agg.key]
+                console.log(agg.key)
+                var aggStore = self.aggregations[self.step][agg.key]
                 var tab = aggStore.terms.field.split('.')
                 var isKey = tab.length > 1 && tab[1] === 'key'
                 var aggregation = {
@@ -331,8 +340,10 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 var type = (agg.meta && agg.meta.type) || 'dimension'
                 
                 var buckets = agg.buckets
-                var gnGroups = self.$gn.groups
-                var lang = self.$store.state.lang
+                var lang = config.state.lang
+                let catalog = useCatalog()
+                let groups = catalog.list
+                console.log(groups)
                 var toTranslate = []
                 var thesaurus = agg.meta.thesaurus || null
                 
@@ -343,7 +354,8 @@ export const useElasticsearch = defineStore('elasticsearch', {
                     buckets[index]['@value'] = item.key
                     if (type === 'dimension') {
                         if (agg.key === 'groupOwner') {
-                           var label = gnGroups[item.key].label[lang]
+                          
+                           var label = groups[item.key].label[lang]
                         } else {
                            var label = item.key
                         }
