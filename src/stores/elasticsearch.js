@@ -355,7 +355,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 buckets.forEach(function (item, index) {
                     buckets[index]['@value'] = item.key
                     if (type === 'dimension') {
-                        if (agg.key === 'groupOwner') {
+                        if (key === 'groupOwner') {
                           
                             var label = groups[item.key].label[lang]
                         } else {
