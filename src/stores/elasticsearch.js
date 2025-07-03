@@ -28,7 +28,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             terms:{
               field: 'th_formater-discipline_tree.key',
               order: {_key: 'asc'},
-              size: 10
+              size: 30
             },
             meta: {
               type: 'facet',
@@ -231,17 +231,17 @@ export const useElasticsearch = defineStore('elasticsearch', {
             
             for(var key in aggregations) {
                 if (query [key]) {
-                if (aggregations[key].meta.type === 'dimension') {
-                    var terms = {}
-                    var q = decodeURIComponent(query[key])
-                    var values = q.split(',')
-                    terms[aggregations[key].terms.field] = values
-                    parameters.query.bool.filter.push({terms: terms})
-                } else {
-                    var term = {}
-                    term[aggregations[key].terms.field] = decodeURIComponent(query[key])
-                    parameters.query.bool.filter.push({term: term})
-                }
+                    if (aggregations[key].meta.type === 'dimension') {
+                        var terms = {}
+                        var q = decodeURIComponent(query[key])
+                        var values = q.split(',')
+                        terms[aggregations[key].terms.field] = values
+                        parameters.query.bool.filter.push({terms: terms})
+                    } else {
+                        var term = {}
+                        term[aggregations[key].terms.field] = decodeURIComponent(query[key]).split(',')
+                        parameters.query.bool.filter.push({terms: term})
+                    }
                 }
             }
             parameters.aggregations = aggregations
