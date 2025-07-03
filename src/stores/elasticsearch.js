@@ -8,6 +8,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
       uuid: null,
       groupOwner: null,
       step: 'step1',
+      reset: null,
       aggregations: {
         step1: {
           groupOwner: {
@@ -126,12 +127,15 @@ export const useElasticsearch = defineStore('elasticsearch', {
     }),
     actions: {
         setCatalog ( routeName, catalogName) {
+            var catal = catalogName ? catalogName.toLowerCase() : null
+            var reset = routeName !== this.name
             this.name = routeName
+            this.groupOwner = null
             let catalogs = useCatalog()
+            this.reset = reset || catal !== catalogs.getName()
             let catalog = catalogs.setCatalog(catalogName)
-            console.log(catalog)
             if (catalog) {
-              this.groupOwner = catalog.id
+                this.groupOwner = catalog.id
             }
         },
         getDefaultParameters () {
@@ -288,13 +292,16 @@ export const useElasticsearch = defineStore('elasticsearch', {
             for(var key in aggs) {
                 promises.push(this.prepareAggregation(key, aggs[key]))
             }
+            var self = this
             return new Promise((successCallback, failureCallback) => 
                 Promise.all(promises)
                 .then((values) => {
                     var aggregations = {}
                     values.forEach(function (v) {
+                        v.reset = self.reset
                         aggregations[v.key] = v
                     })
+                    self.reset = false
                     successCallback(aggregations)
                 }).catch(err => {
                     failureCallback(err)

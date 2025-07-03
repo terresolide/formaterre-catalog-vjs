@@ -6,8 +6,7 @@ export const useCatalog = defineStore('catalog', {
     list: [],
     groups: null,
     initialized: false,
-    current: null,
-    reset: false
+    current: null
   }),
   actions: {
     async init () {
@@ -22,7 +21,7 @@ export const useCatalog = defineStore('catalog', {
             })
         }
     },
-    setCatalog (name) {
+    setCatalog (name, reset) {      
         if (!name) {
            this.current = null
         } else {
@@ -54,6 +53,16 @@ export const useCatalog = defineStore('catalog', {
             })
         }
         return this.groups
+    },
+    getName () {
+        if (this.current) {
+            return this.current.name.toLowerCase()
+        } else {
+            return null
+        }
+    },
+    setReset (reset) {
+        this.reset = reset
     }
   }
 })

@@ -62,11 +62,12 @@ function select(key) {
     
 }
 function merge (agg) {
-    if (data.reset || !data.aggregation) {
+    if (agg.reset || !data.aggregation) {
          data.aggregation = agg
          data.reset = false
     } else {
         // merge agg with data.aggregation
+        data.aggregation.reset = agg.reset
         data.aggregation.category.forEach(function (dim, index) {
             data.aggregation.category[index].count = 0
         })
