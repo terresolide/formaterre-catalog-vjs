@@ -105,7 +105,7 @@ onMounted(() => {merge(aggregation)})
         <label> {{dim.label}} </label>
         <span>({{dim.count}})</span>
         <template v-if="dim.category">
-           <aggregation-block :key="key" :aggregation="dim"></aggregation-block>
+           <aggregation-block :name="name" :aggregation="dim"></aggregation-block>
         </template>
     </div>
 </template>
