@@ -17,7 +17,8 @@ const router = useRouter()
 const catalog = useCatalog()
 
 const data = reactive({
-    aggregation: null
+    aggregation: null,
+    reset: false
 })
 const dimensions = computed(() => {
     aggregation.category.sort((a, b) => {
@@ -61,7 +62,7 @@ function select(key) {
     
 }
 function merge (agg) {
-    if (agg.reset || !data.aggregation) {
+    if (data.reset || !data.aggregation) {
          data.aggregation = agg
     } else {
         // merge agg with data.aggregation
@@ -89,6 +90,12 @@ watch(
     () => aggregation,
     agg => {merge(agg)}
 )
+// watch( route,
+//    (route, oldroute) => {
+//     if (oldroute.name !== route.name) {
+//         data.reset = true
+//     }
+// })
 onMounted(() => {merge(aggregation)})
 </script>
 <template>

@@ -227,10 +227,10 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 parameters.query.bool.must.push(term)
             }
             console.log(this.groupOwner)
-            // if (this.groupOwner) {
-            //     parameters.query.bool.filter.push({term: {groupOwner: this.groupOwner }})
-            //     delete aggregations['groupOwner']
-            // }
+            if (this.groupOwner) {
+                parameters.query.bool.filter.push({term: {groupOwner: this.groupOwner }})
+                delete aggregations['groupOwner']
+            }
             
             for(var key in aggregations) {
                 if (query [key]) {
