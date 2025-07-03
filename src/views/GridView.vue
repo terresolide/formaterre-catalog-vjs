@@ -38,6 +38,7 @@
         return elasticsearch.treatmentAggregations(json.aggregations)
     }).then(values => {
         console.log(values)
+        data.aggregations = values
     })
   }
 </script>

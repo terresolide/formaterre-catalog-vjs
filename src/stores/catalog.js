@@ -44,7 +44,7 @@ export const useCatalog = defineStore('catalog', {
         if (!this.groups) {
             this.groups = {}
             this.list.forEach(function (o) {
-                self.groups[o.id] = 0
+                self.groups[o.id] = o
             })
         }
         return this.groups

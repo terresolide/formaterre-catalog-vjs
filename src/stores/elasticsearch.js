@@ -227,17 +227,17 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 parameters.query.bool.must.push(term)
             }
             console.log(this.groupOwner)
-            if (this.groupOwner) {
-                parameters.query.bool.filter.push({term: {groupOwner: this.groupOwner }})
-                delete aggregations['groupOwner']
-            }
+            // if (this.groupOwner) {
+            //     parameters.query.bool.filter.push({term: {groupOwner: this.groupOwner }})
+            //     delete aggregations['groupOwner']
+            // }
             
             for(var key in aggregations) {
                 if (query [key]) {
                 if (aggregations[key].meta.type === 'dimension') {
                     var terms = {}
                     var q = decodeURIComponent(query[key])
-                    var values = q.split('+or+')
+                    var values = q.split(',')
                     terms[aggregations[key].terms.field] = values
                     parameters.query.bool.filter.push({terms: terms})
                 } else {
@@ -357,7 +357,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                     if (type === 'dimension') {
                         if (key === 'groupOwner') {
                           
-                            var label = groups[item.key].label[lang]
+                            var label = groups[parseInt(item.key)].name
                         } else {
                             var label = item.key
                         }
