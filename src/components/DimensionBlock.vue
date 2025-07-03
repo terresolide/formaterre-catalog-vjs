@@ -93,15 +93,32 @@ onMounted(() => {merge(aggregation)})
 </script>
 <template>
     <div v-if="data.aggregation" v-for="dim in data.aggregation.category" @click="select(dim.key)">
-        <template v-if="selected.indexOf(dim.key) >=0">
-            <font-awesome-icon icon="fa-regular fa-square-check" />
-        </template>
-        <template v-else>
-            <font-awesome-icon icon="fa-regular fa-square" />
-        </template>
+        <span>
+            <template v-if="selected.indexOf(dim.key) >=0">
+                <font-awesome-icon icon="fa-regular fa-square-check" />
+            </template>
+            <template v-else>
+                <font-awesome-icon icon="fa-regular fa-square" />
+            </template>
+        </span>
         <label> {{dim.label}} </label>
-        <div>({{dim.count}})</div>
+        <span>({{dim.count}})</span>
     </div>
 </template>
-<style>
+<style scoped>
+div {
+    margin-left:10px;
+}
+span {
+    display:inline-block;
+}
+div span:first-child {
+    width:25px;
+}
+label {
+    margin-right:10px;
+}
+div span:last-child {
+    color:#555;
+}
 </style>
