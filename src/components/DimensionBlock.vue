@@ -1,5 +1,5 @@
 <script setup>
-import {computed, reactive, watch} from 'vue'
+import {computed, onMounted,reactive, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {useCatalog} from '@/stores/catalog'
 const {name, aggregation} = defineProps({
@@ -17,7 +17,7 @@ const router = useRouter()
 const catalog = useCatalog()
 
 const data = reactive({
-    dimensions: {}
+    aggregation: null
 })
 const dimensions = computed(() => {
     aggregation.category.sort((a, b) => {
@@ -43,14 +43,14 @@ function select(key) {
         if (selected.value.length === 1) {
             delete query[name]
         } else {
-            var sel = selected.value.filter(f => f.key != key)
+            var sel = selected.value.filter(f => f != key)
             query[name] = sel.join(',')
         }
     } else {
         // add to route
         if (selected.value.length > 0) {
             var sel = selected.value
-            sel.push(key)
+            sel.push(key + '')
             
         } else {
             var sel = [key]
@@ -60,23 +60,39 @@ function select(key) {
     router.push({name: route.name, params: route.params, query: query})
     
 }
-watch(() => aggregation,
-    agg => {
-        if (agg.reset) {
-            data.aggregation = aggregation
-            data.aggregation.category.sort((a, b) => {
-                if (a.label > b.label) {
-                    return 1
-                }
-                return -1
-            })
-        } else {
-            // merge agg avec data.aggregation
+function merge (agg) {
+    if (agg.reset || !data.aggregation) {
+         data.aggregation = agg
+    } else {
+        // merge agg with data.aggregation
+        data.aggregation.category.forEach(function (dim, index) {
+            data.aggregation.category[index].count = 0
+        })
+        agg.category.forEach(function(dim) {
+            var index = data.aggregation.category.findIndex(d => d.key === dim.key)
+            if (index >= 0) {
+                data.aggregation.category[index].count = dim.count
+            } else {
+                data.aggregation.category.push(dim)
+            }
+        })
+    }
+
+    data.aggregation.category.sort((a, b) => {
+        if (a.label > b.label) {
+            return 1
         }
-})
+        return -1
+    })
+}
+watch(
+    () => aggregation,
+    agg => {merge(agg)}
+)
+onMounted(() => {merge(aggregation)})
 </script>
 <template>
-    <div v-for="dim in dimensions.category" @click="select(dim.key)">
+    <div v-if="data.aggregation" v-for="dim in data.aggregation.category" @click="select(dim.key)">
         <template v-if="selected.indexOf(dim.key) >=0">
             <font-awesome-icon icon="fa-regular fa-square-check" />
         </template>
