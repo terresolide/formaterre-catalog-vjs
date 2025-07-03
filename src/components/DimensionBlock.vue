@@ -64,6 +64,7 @@ function select(key) {
 function merge (agg) {
     if (data.reset || !data.aggregation) {
          data.aggregation = agg
+         data.reset = false
     } else {
         // merge agg with data.aggregation
         data.aggregation.category.forEach(function (dim, index) {
@@ -90,12 +91,12 @@ watch(
     () => aggregation,
     agg => {merge(agg)}
 )
-// watch( route,
-//    (route, oldroute) => {
-//     if (oldroute.name !== route.name) {
-//         data.reset = true
-//     }
-// })
+watch( route,
+   (route, oldroute) => {
+    if (oldroute.name !== route.name) {
+        data.reset = true
+    }
+})
 onMounted(() => {merge(aggregation)})
 </script>
 <template>
