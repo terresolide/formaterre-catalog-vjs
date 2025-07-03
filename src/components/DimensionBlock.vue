@@ -20,16 +20,7 @@ const data = reactive({
     aggregation: null,
     reset: false
 })
-const dimensions = computed(() => {
-    aggregation.category.sort((a, b) => {
-        if (a.label > b.label) {
-            return 1
-        }
-        return -1
-    })
-    return aggregation
-    
-})
+
 const selected = computed(() => {
     if (!route.query[name]) {
         return []
@@ -37,7 +28,6 @@ const selected = computed(() => {
     return route.query[name].split(',')
 })
 function select(key) {
-    console.log(selected)
     var query = Object.assign({}, route.query)
     if (selected.value.indexOf(key) >= 0) {
         // remove from route
