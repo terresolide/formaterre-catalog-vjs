@@ -2,6 +2,7 @@
 import {computed, onMounted,reactive, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {useCatalog} from '@/stores/catalog'
+import AggregationBlock from '@/components/AggregationBlock.vue'
 const {name, aggregation} = defineProps({
     name: {
         type: String,
@@ -20,16 +21,7 @@ const data = reactive({
     aggregation: null,
     reset: false
 })
-const dimensions = computed(() => {
-    aggregation.category.sort((a, b) => {
-        if (a.label > b.label) {
-            return 1
-        }
-        return -1
-    })
-    return aggregation
-    
-})
+
 const selected = computed(() => {
     if (!route.query[name]) {
         return []
@@ -112,6 +104,9 @@ onMounted(() => {merge(aggregation)})
         </span>
         <label> {{dim.label}} </label>
         <span>({{dim.count}})</span>
+        <template v-if="dim.category">
+           <aggregation-block :key="key" :aggregation="dim"></aggregation-block>
+        </template>
     </div>
 </template>
 <style scoped>
