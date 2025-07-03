@@ -127,14 +127,8 @@ export const useElasticsearch = defineStore('elasticsearch', {
     actions: {
         setCatalog ( routeName, catalogName) {
             this.name = routeName
-            console.log(catalogName)
-            if (!catalogName) {
-                console.log(catalogName)
-                this.groupOwner = null
-                return
-            }
             let catalogs = useCatalog()
-            let catalog = catalogs.getCatalog(catalogName)
+            let catalog = catalogs.setCatalog(catalogName)
             console.log(catalog)
             if (catalog) {
               this.groupOwner = catalog.id
@@ -226,7 +220,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
                 parameters.query.bool.must.push(term)
             }
-            console.log(this.groupOwner)
             if (this.groupOwner) {
                 parameters.query.bool.filter.push({term: {groupOwner: this.groupOwner }})
                 delete aggregations['groupOwner']
@@ -275,7 +268,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
         },
         treatmentAggregations (aggs) {
                  
-            aggs = aggregations = Object.fromEntries(
+            aggs = Object.fromEntries(
                 Object.entries(aggs).sort(([,a],[,b]) => {
                     if (a.meta.sort - b.meta.sort > 0) {
                         return 1
@@ -298,7 +291,11 @@ export const useElasticsearch = defineStore('elasticsearch', {
             return new Promise((successCallback, failureCallback) => 
                 Promise.all(promises)
                 .then((values) => {
-                    successCallback(values)
+                    var aggregations = {}
+                    values.forEach(function (v) {
+                        aggregations[v.key] = v
+                    })
+                    successCallback(aggregations)
                 }).catch(err => {
                     failureCallback(err)
                 })
