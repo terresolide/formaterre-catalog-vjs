@@ -107,6 +107,7 @@ onMounted(() => {merge(aggregation)})
 <style scoped>
 div {
     margin-left:10px;
+    line-height:1.3;
 }
 span {
     display:inline-block;

@@ -333,7 +333,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 if (agg.meta && agg.meta.label) {
                     label = agg.meta.label[lang] ? agg.meta.label[lang] : agg.meta.label
                 }
-                console.log(key)
                 var aggStore = self.aggregations[self.step][key]
                 var tab = aggStore.terms.field.split('.')
                 var isKey = tab.length > 1 && tab[1] === 'key'
@@ -350,14 +349,13 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 var buckets = agg.buckets
                 let catalog = useCatalog()
                 let groups = catalog.groups
-                console.log(groups)
                 
                 var toTranslate = []
                 var thesaurus = agg.meta.thesaurus || null
                 
                 
                 buckets.forEach(function (item, index) {
-                    buckets[index]['@value'] = item.key
+                    
                     if (type === 'dimension') {
                         if (key === 'groupOwner') {
                           
@@ -388,7 +386,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
                     }
                 })
                 // translate
-                console.log(toTranslate)
                 if (!isKey) {
                   resolve(aggregation)
                   return
