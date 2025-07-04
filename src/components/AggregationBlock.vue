@@ -28,15 +28,28 @@ const selected = computed(() => {
     }
     return route.query[name].split(',')
 })
+const uris = computed(() => {
+     if (!route.query[name]) {
+        return []
+    }
+    return route.query[name].split(/,|\^/)
+})
 function select(key) {
     console.log(selected)
     var query = Object.assign({}, route.query)
-    if (selected.value.indexOf(key) >= 0) {
-        // remove from route
-        if (selected.value.length === 1) {
+   
+    var find = selected.value.findIndex(v => v.indexOf(key) >= 0)
+    console.log('index est ' + find)
+    if (find >= 0) {
+        var tab = key.split('^')
+        var sel = selected.value.filter(v => v.indexOf(key)< 0)
+        console.log(sel)
+        if (tab.length === 1 && sel.length === 0) {
             delete query[name]
+            
         } else {
-            var sel = selected.value.filter(f => f != key)
+            tab.pop()
+            sel.push(tab.join('^'))
             query[name] = sel.join(',')
         }
     } else {
@@ -93,21 +106,25 @@ watch( route,
 onMounted(() => {merge(aggregation)})
 </script>
 <template>
-    <div v-if="data.aggregation" v-for="dim in data.aggregation.category" @click="select(dim.key)">
-        <span>
-            <template v-if="selected.indexOf(dim.key) >=0">
-                <font-awesome-icon icon="fa-regular fa-square-check" />
-            </template>
-            <template v-else>
-                <font-awesome-icon icon="fa-regular fa-square" />
-            </template>
+    <div v-if="data.aggregation" v-for="dim in data.aggregation.category" :key="dim.key" >
+        <span @click="select(dim.key)">
+            <span class="icon">
+                <template v-if="uris.includes(dim.uri)">
+                    <font-awesome-icon icon="fa-regular fa-square-check" />
+                </template>
+                <template v-else>
+                    <font-awesome-icon icon="fa-regular fa-square" />
+                </template>
+            </span>
+            <label>{{dim.label}}</label>
+            <span v-if="dim.count">({{dim.count}})</span>
         </span>
-        <label> {{dim.label}} </label>
-        <span>({{dim.count}})</span>
         <template v-if="dim.category">
-           <aggregation-block :name="name" :aggregation="dim"></aggregation-block>
+            <aggregation-block :name="name" :aggregation="dim"></aggregation-block>
         </template>
+        
     </div>
+ 
 </template>
 <style scoped>
 div {
@@ -116,7 +133,7 @@ div {
 span {
     display:inline-block;
 }
-div span:first-child {
+div span.icon {
     width:25px;
 }
 label {
