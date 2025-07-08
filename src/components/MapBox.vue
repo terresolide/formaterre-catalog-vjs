@@ -52,7 +52,7 @@ const currentOptions = {
 const selection = useSelection()
 
 function addLayer(layer) {
-  
+
   var metaId = layer.uuid
   console.log(metaId)
   // voir comment passer le token quand authentifié
@@ -112,7 +112,7 @@ function addLayer(layer) {
           opacity: 0.5
         }
       }
-      
+
       addWTSLayer(layer, metaId)
       break
     case 'XXX':
@@ -194,7 +194,7 @@ function addWMSLayer(layerObj, metaId) {
   // Add legend if there is specific legend with the layer and only one metadata
  // if (layerObj.options.legend && selection.uuid && layerObj.options.uuid === selection.uuid ) {
  //    data.legendControl.addLegend(selection.uuid, layerObj.id, layerObj.options.legend.src)
- //  } 
+ //  }
  // } else if (data.selectedMetadata && data.selectedMetadata.legend) {
  //   data.legendControl.addLegend(data.selectedMetadata.id, '0', data.selectedMetadata.legend)
  // }
@@ -218,7 +218,7 @@ function addLegend () {
 }
 function addLayerToMap(id, newLayer) {
   if (newLayer) {
-     
+
     newLayer.addTo(data.map)
     newLayer.bringToFront()
     data.layers[id] =  newLayer
@@ -230,8 +230,8 @@ function validBbox (bounds) {
   if (!data.drawnBbox) {
       return
   }
-  data.drawnBbox.clearLayers() 
-  
+  data.drawnBbox.clearLayers()
+
   var query = Object.assign({}, route.query)
   if (!bounds) {
    delete query.bbox
@@ -271,9 +271,9 @@ function drawBbox (query) {
            points = points.map(x => parseFloat(x))
            var bounds = [[points[1], points[0]], [points[3], points[2]]]
            var rectangle = L.rectangle(bounds, {color: '#ff0000'})
-          
+
            data.drawnBbox.addLayer(rectangle)
-        
+
           // bounds = data.drawnBbox.getBounds()
            data.map.fitBounds(bounds)
        } else {
@@ -332,7 +332,7 @@ watch(
     if (!uuid) {
       data.selectedBbox = null
       data.map.fitBounds(data.bbox.getBounds())
-      
+
       return
     }
     var layers = data.bbox.getLayers()
@@ -340,7 +340,7 @@ watch(
         return
     }
     layers = layers[0].getLayers()
-        
+
     data.selectedBbox = layers.find((ly) => ly.feature.id === uuid)
     if (data.selectedBbox) {
         data.selectedBbox.setStyle(selectedOptions)
@@ -348,14 +348,13 @@ watch(
         // if layer add legend
         addLegend()
     }
-   
+
   },
 )
 watch(
   () => selection.layers,
   (layers) => {
     var onMap = layers.map(l => l.id)
-    console.log(onMap)
     // remove layers
     for(var key in data.layers) {
         if (onMap.indexOf(key) < 0) {
@@ -365,7 +364,7 @@ watch(
             // data.legendControl.removeLegend(key)
         }
     }
-    // add new layers 
+    // add new layers
     layers.forEach(function (layer) {
       if (!data.layers[layer.id]) {
           addLayer(layer)
@@ -402,14 +401,14 @@ function initDrawControl () {
         validBbox(bounds)
     })
     data.map.on(L.Draw.Event.EDITED, function (e) {
-  
+
         let bounds
         e.layers.eachLayer(function (layer) {
           bounds = layer.getBounds()
         })
         validBbox(bounds)
     })
-    
+
     data.map.on(L.Draw.Event.DELETED , function (e) {
         validBbox(null)
     })
@@ -430,7 +429,7 @@ function initialize() {
   var fullscreen = new L.Control.Fullscreen('fmtLargeMap', {lang: config.state.lang, mouseWheel: true})
   fullscreen.addTo(data.map)
   L.control.scale().addTo(data.map)
-  data.legendControl = new L.Control.Legend(config.state.lang, function (uuid) {    
+  data.legendControl = new L.Control.Legend(config.state.lang, function (uuid) {
      // create Dom identifier from uuid
       // first character must be letter and character other than "_" and "-" are forbidden
       return 'i' + uuid.toLowerCase().replace(/[^a-z0-9\-_]+/, '')
@@ -489,7 +488,7 @@ div[id='map'].mtdt-small .leaflet-control a {
     height: 15px;
     line-height: 15px;
     background-size: 14px 14px;
-  
+
 }
 /** leaflet draw **/
 

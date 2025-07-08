@@ -1,5 +1,5 @@
 <script setup>
-  import { reactive, watch, onMounted } from 'vue'; 
+  import { reactive, watch, onMounted } from 'vue';
   import { useRoute } from "vue-router"
   import { useElasticsearch } from '@/stores/elasticsearch';
   import MetadataList from '@/components/MetadataList.vue'
@@ -37,7 +37,6 @@
         }
         return elasticsearch.treatmentAggregations(json.aggregations)
     }).then(values => {
-        console.log(values)
         data.aggregations = values
     })
   }
@@ -45,8 +44,8 @@
 
 <template>
   <main>
-    <FormGrid :aggregations="data.aggregations" :list="data.list"></FormGrid> 
-    <div class="grid-content"> 
+    <FormGrid :aggregations="data.aggregations" :list="data.list"></FormGrid>
+    <div class="grid-content">
       <div style="text-align:center;margin:15px 0;">
         <PageNavigation :tot="data.pagination"></PageNavigation>
       </div>
@@ -56,7 +55,6 @@
 </template>
 <style scoped>
 div.grid-content {
-  
   max-width: calc(100% - 330px);
   margin-left:330px;
 }

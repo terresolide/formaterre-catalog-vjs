@@ -19,9 +19,7 @@ const from = computed(() => {
   }
 })
 const to = computed(() => {
-  console.log(from)
-  console.log(pagination.tot.count)
-  return from.value + pagination.tot.count - 1 
+  return from.value + pagination.tot.count - 1
 })
 
 // const config.state.size.value = computed(() => {

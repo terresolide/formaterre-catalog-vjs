@@ -42,7 +42,6 @@
         this._map = map
         var self = this
         this.resizeObserver = new ResizeObserver((elem) => {
-            console.log('resize')
             self._map.invalidateSize()
         })
         this._nodeSmall = map._container.parentNode

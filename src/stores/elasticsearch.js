@@ -71,16 +71,16 @@ export const useElasticsearch = defineStore('elasticsearch', {
               field: 'th_formater-platform-gn_tree.key',
               order: {_key: 'asc'},
               size: 50
-            }, 
+            },
             meta: {
               type: 'facet',
               thesaurus: 'formater-platform-gn',
               label: {fr: 'Plateforme', en: 'Platform'},
               sort: 3,
               icon: 'fa-solid fa-rocket'
-            } 
+            }
           }
-        }, 
+        },
         step2: {
           productType: {
              terms: {
@@ -164,7 +164,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
         getParameters (query) {
             let parameters = this.getDefaultParameters()
             let aggregations = Object.assign({},this.aggregations.step1)
-            console.log(query)
             if (query.from) {
                 parameters.from = parseInt(query.from) - 1
             }
@@ -176,7 +175,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 // this.parameters.sort = [{changeDate: 'desc'}, {popularity: desc}]
                 if (query.sortBy === 'changeDate') {
                     parameters.sort.reverse()
-                } 
+                }
                 // else if (route.query.sortBy === 'title') {
                 //   this.parameters.sort.unshift({'resourceTitleObject.fre': {order: 'asc'}})
                 // }
@@ -228,7 +227,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 parameters.query.bool.filter.push({term: {groupOwner: this.groupOwner }})
                 delete aggregations['groupOwner']
             }
-            
+
             for(var key in aggregations) {
                 if (query [key]) {
                     if (aggregations[key].meta.type === 'dimension') {
@@ -252,7 +251,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             let api = config.state.geonetwork +  '/srv/api/search/records/_search?bucket=metadata'
             let parameters = this.getParameters(query)
             return new Promise((successCallback, failureCallback) => {
-                fetch(api, 
+                fetch(api,
                 {
                     headers: {'Accept': 'application/json', 'Content-type': 'application/json'},
                     method: 'POST',
@@ -268,10 +267,10 @@ export const useElasticsearch = defineStore('elasticsearch', {
                         failureCallback(err)
                     }
                 })
-            })    
+            })
         },
         treatmentAggregations (aggs) {
-                 
+
             aggs = Object.fromEntries(
                 Object.entries(aggs).sort(([,a],[,b]) => {
                     if (a.meta.sort - b.meta.sort > 0) {
@@ -293,7 +292,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 promises.push(this.prepareAggregation(key, aggs[key]))
             }
             var self = this
-            return new Promise((successCallback, failureCallback) => 
+            return new Promise((successCallback, failureCallback) =>
                 Promise.all(promises)
                 .then((values) => {
                     var aggregations = {}
@@ -322,7 +321,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                     resolve(json)
                 })
             })
-          
+
         },
         prepareAggregation(key, agg) {
             var self = this
@@ -343,22 +342,22 @@ export const useElasticsearch = defineStore('elasticsearch', {
                     meta: agg.meta,
                     category: []
                 }
-                
+
                 var type = (agg.meta && agg.meta.type) || 'dimension'
-                
+
                 var buckets = agg.buckets
                 let catalog = useCatalog()
                 let groups = catalog.groups
-                
+
                 var toTranslate = []
                 var thesaurus = agg.meta.thesaurus || null
-                
-                
+
+
                 buckets.forEach(function (item, index) {
-                    
+
                     if (type === 'dimension') {
                         if (key === 'groupOwner') {
-                          
+
                             var label = groups[parseInt(item.key)].name
                         } else {
                             var label = item.key
@@ -409,7 +408,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                     } else {
                         const arrayToTree = (arr, parent = '') =>
                         arr.filter(item => item.parent === parent)
-                        .map(child => { 
+                        .map(child => {
                             var category = arrayToTree(arr, child.key)
                             if (category.length > 0) {
                                 child.category = category
@@ -421,8 +420,8 @@ export const useElasticsearch = defineStore('elasticsearch', {
                     aggregation.category = category
                     resolve(aggregation)
                 })
-            
-            })    
+
+            })
         }
     }
   })

@@ -45,21 +45,20 @@ const uris = computed(() => {
     return route.query[name].split(/,|\^/)
 })
 function select(key) {
-    console.log(selected)
     var query = Object.assign({}, route.query)
-   
+
     var find = selected.value.findIndex(v => v.indexOf(key) >= 0)
-    console.log('index est ' + find)
     if (find >= 0) {
         var tab = key.split('^')
         var sel = selected.value.filter(v => v.indexOf(key)< 0)
-        console.log(sel)
         if (tab.length === 1 && sel.length === 0) {
             delete query[name]
-            
+
         } else {
             tab.pop()
-            sel.push(tab.join('^'))
+            if (tab.length > 0) {
+              sel.push(tab.join('^'))
+            }
             query[name] = sel.join(',')
         }
     } else {
@@ -76,18 +75,17 @@ function select(key) {
                     keyin += '^' + tab[i]
                 }
                 sel = sel.filter(v => keyin.indexOf(v) < 0)
-                
+
             }
             sel.push(key + '')
-            
+
         } else {
             var sel = [key]
         }
         query[name] = sel.join(',')
     }
-    console.log(sel)
     router.push({name: route.name, params: route.params, query: query})
-    
+
 }
 
 function resetCount() {
@@ -95,9 +93,38 @@ function resetCount() {
         data.aggregation.category[index].count = 0
     })
 }
+function resetCategory(category) {
+  category.forEach(function (dim, index) {
+     category[index].count = 0
+     if (dim.category) {
+       category[index].category = resetCategory(dim.category)
+     }
+
+  })
+  return category
+}
+function mergeCategory (old, newcat) {
+   newcat.forEach(function (cat) {
+     console.log(cat.label)
+     console.log(cat.count)
+     var index = old.findIndex(c => c.key === cat.key)
+     console.log('trouvé index = ' + index)
+     if (index >= 0) {
+       old[index].count = cat.count
+     } else {
+       old.push(cat)
+     }
+     if (old[index].category && cat.category) {
+       old[index].category = mergeCategory(old[index].category, cat.category)
+     }
+   })
+   return old
+
+}
 function merge (agg) {
-    
+
     if (agg.reset || !data.aggregation) {
+         console.log('initialise aggregation')
          data.aggregation = agg
          data.reset = false
     } else {
@@ -105,19 +132,24 @@ function merge (agg) {
         data.aggregation.reset = agg.reset
         if (root) {
             // init count
-            data.aggregation.category.forEach(function (dim, index) {
-                data.aggregation.category[index].count = 0
-            })
+            // data.aggregation.category.forEach(function (dim, index) {
+            //    data.aggregation.category[index].count = 0
+            // })
+            console.log('root = ' + root)
+            var category = resetCategory(data.aggregation.category)
+            category = mergeCategory(category, agg.category)
+            console.log(category)
+            data.aggregation.category = category
             data.initCount = data.initCount + 1
         }
-        agg.category.forEach(function(dim) {
+        /* agg.category.forEach(function(dim) {
             var index = data.aggregation.category.findIndex(d => d.key === dim.key)
             if (index >= 0) {
                 data.aggregation.category[index].count = dim.count
             } else {
                 data.aggregation.category.push(dim)
             }
-        })
+        }) */
     }
 
     data.aggregation.category.sort((a, b) => {
@@ -130,10 +162,9 @@ function merge (agg) {
 watch(
     () => aggregation,
     agg => {merge(agg)}
-)
+, {flush: 'pre', immediate: true, deep: true})
 watch(
-    () => count,
-    count => {resetCount()})
+    () => count,count => {resetCount()})
 watch( route,
    (route, oldroute) => {
     if (oldroute.name !== route.name) {
@@ -160,13 +191,13 @@ onMounted(() => {merge(aggregation)})
             <label>{{dim.label}}</label>
             <span v-if="dim.count" class="count">({{dim.count}})</span>
         </span>
-        
+
         <template v-if="dim.category">
             <aggregation-block :name="name" :root="false" :count="data.initCount" :aggregation="dim"></aggregation-block>
         </template>
-        
+
     </div>
- 
+
 </template>
 <style scoped>
 div {
