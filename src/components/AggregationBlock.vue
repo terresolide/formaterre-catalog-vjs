@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted,reactive, watch} from 'vue'
+import {computed, getCurrentInstance, onMounted,reactive, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {useCatalog} from '@/stores/catalog'
 import AggregationBlock from '@/components/AggregationBlock.vue'
@@ -24,9 +24,8 @@ const {name, aggregation, root, count} = defineProps({
 const route = useRoute()
 const router = useRouter()
 // const catalog = useCatalog()
-
 const data = reactive({
-    aggregation: null,
+    category: null,
     reset: false,
     initCount: 0,
     show: root
@@ -88,83 +87,89 @@ function select(key) {
 
 }
 
-function resetCount() {
-    data.aggregation.category.forEach(function (dim, index) {
-        data.aggregation.category[index].count = 0
+function resetCount (agg) {
+    data.category.forEach(function (dim, index) {
+        var find = agg.category.findIndex(v => v.key === dim.key)
+        if (find < 0) {
+          data.category[index].count = 0
+          if (dim.category) {
+            data.category[index].category = resetCategory(dim.category)
+          }
+        }
     })
 }
+
 function resetCategory(category) {
   category.forEach(function (dim, index) {
-     category[index].count = 0
-     if (dim.category) {
-       category[index].category = resetCategory(dim.category)
-     }
+    category[index].count = 0
+    if (dim.category) {
+      category[index].category = resetCategory(dim.category)
+    }
 
   })
   return category
 }
-function mergeCategory (old, newcat) {
-   newcat.forEach(function (cat) {
-     console.log(cat.label)
-     console.log(cat.count)
-     var index = old.findIndex(c => c.key === cat.key)
-     console.log('trouvé index = ' + index)
-     if (index >= 0) {
-       old[index].count = cat.count
-     } else {
-       old.push(cat)
-     }
-     if (old[index].category && cat.category) {
-       old[index].category = mergeCategory(old[index].category, cat.category)
-     }
-   })
-   return old
-
-}
 function merge (agg) {
-
-    if (agg.reset || !data.aggregation) {
+    if (root) {
+      console.log(agg)
+    }
+    if (agg.reset || !data.category) {
          console.log('initialise aggregation')
-         data.aggregation = agg
+         data.category = agg.category
          data.reset = false
     } else {
         // merge agg with data.aggregation
-        data.aggregation.reset = agg.reset
+        data.reset = agg.reset
+        resetCount(agg)
         if (root) {
-            // init count
-            // data.aggregation.category.forEach(function (dim, index) {
-            //    data.aggregation.category[index].count = 0
-            // })
+          data.initCount = data.initCount + 1
+        }
+        /*    // init count
+             data.aggregation.category.forEach(function (dim, index) {
+               data.aggregation.category[index].count = 0
+             })
             console.log('root = ' + root)
             var category = resetCategory(data.aggregation.category)
             category = mergeCategory(category, agg.category)
             console.log(category)
             data.aggregation.category = category
             data.initCount = data.initCount + 1
+        */
+        if (name === 'discipline') {
+          console.log(agg)
         }
-        /* agg.category.forEach(function(dim) {
-            var index = data.aggregation.category.findIndex(d => d.key === dim.key)
-            if (index >= 0) {
-                data.aggregation.category[index].count = dim.count
-            } else {
-                data.aggregation.category.push(dim)
+        agg.category.forEach(function(dim) {
+            var index = data.category.findIndex(d => d.key === dim.key)
+            if (name === 'discipline') {
+              console.log(dim.label)
+              console.log(dim.count)
             }
-        }) */
+            if (index >= 0) {
+                data.category[index] = dim
+            } else {
+                data.category.push(dim)
+            }
+        })
     }
 
-    data.aggregation.category.sort((a, b) => {
+    data.category.sort((a, b) => {
         if (a.label > b.label) {
             return 1
         }
         return -1
     })
+    if (name === 'discipline') {
+      console.log(data.category)
+    }
 }
 watch(
     () => aggregation,
-    agg => {merge(agg)}
+    agg => {
+      merge(agg)
+     // const instance = getCurrentInstance()
+     // instance.proxy.forceUpdate()
+    }
 , {flush: 'pre', immediate: true, deep: true})
-watch(
-    () => count,count => {resetCount()})
 watch( route,
    (route, oldroute) => {
     if (oldroute.name !== route.name) {
@@ -178,7 +183,7 @@ onMounted(() => {merge(aggregation)})
         <template v-if="data.show">-</template>
         <template v-else>+</template>
     </span>
-    <div v-if="data.aggregation" v-for="dim in data.aggregation.category" v-show="data.show" :key="dim.key" >
+    <div v-if="data.category" v-for="dim in data.category" v-show="data.show" :key="dim.key" >
         <span @click="select(dim.key)">
             <span class="icon">
                 <template v-if="uris.includes(dim.uri)">

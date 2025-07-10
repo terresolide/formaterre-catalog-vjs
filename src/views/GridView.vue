@@ -12,6 +12,7 @@
       count: 0,
       total: 0
     },
+    count: 0,
     aggregations: []
   })
   const route = useRoute()
@@ -23,10 +24,12 @@
   }, {flush: 'pre', immediate: true, deep: true})
   onMounted(() => {
     console.log('--- ON MOUNTED  DANS GRID VIEW ---')
-    elasticsearch.setCatalog(route.name, route.params.catalog)
-    getRecords(route.query)
+    // elasticsearch.setCatalog(route.name, route.params.catalog)
+    // getRecords(route.query)
   })
   function getRecords (query) {
+    console.log('--passe n° ', data.count)
+    data.count++
     elasticsearch.getRecords(query)
     .then(json => {
         if (json.hits && json.hits.hits) {
