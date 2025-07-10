@@ -110,40 +110,18 @@ function resetCategory(category) {
   return category
 }
 function merge (agg) {
-    if (root) {
-      console.log(agg)
-    }
+
     if (agg.reset || !data.category) {
-         console.log('initialise aggregation')
+        // console.log('initialise aggregation')
          data.category = agg.category
          data.reset = false
     } else {
         // merge agg with data.aggregation
         data.reset = agg.reset
         resetCount(agg)
-        if (root) {
-          data.initCount = data.initCount + 1
-        }
-        /*    // init count
-             data.aggregation.category.forEach(function (dim, index) {
-               data.aggregation.category[index].count = 0
-             })
-            console.log('root = ' + root)
-            var category = resetCategory(data.aggregation.category)
-            category = mergeCategory(category, agg.category)
-            console.log(category)
-            data.aggregation.category = category
-            data.initCount = data.initCount + 1
-        */
-        if (name === 'discipline') {
-          console.log(agg)
-        }
+
         agg.category.forEach(function(dim) {
             var index = data.category.findIndex(d => d.key === dim.key)
-            if (name === 'discipline') {
-              console.log(dim.label)
-              console.log(dim.count)
-            }
             if (index >= 0) {
                 data.category[index] = dim
             } else {
@@ -158,9 +136,9 @@ function merge (agg) {
         }
         return -1
     })
-    if (name === 'discipline') {
+    /* if (name === 'discipline') {
       console.log(data.category)
-    }
+    } */
 }
 watch(
     () => aggregation,
