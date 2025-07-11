@@ -35,8 +35,7 @@
     }
  }
  function textChange(e) {
-    console.log(e)
-    console.log(data.any)
+
     var query = Object.assign({}, route.query)
     if (data.any) {
         query.any = data.any

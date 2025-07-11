@@ -12,24 +12,51 @@
       count: 0,
       total: 0
     },
-    count: 0,
+    reset: false,
+    oldroute: null,
     aggregations: []
   })
   const route = useRoute()
-  watch(  route,
-   (route) => {
-    console.log('--- WATCH ROUTE DANS GRID VIEW ---')
-    elasticsearch.setCatalog(route.name, route.params.catalog)
-    getRecords(route.query)
-  }, {flush: 'pre', immediate: true, deep: true})
+  function mergeAggregations (aggregations) {
+    if (Object.keys(data.aggregations).length === 0 || data.reset) {
+      data.aggregations = aggregations
+      data.reset = false
+      return aggregations
+    }
+    for (var key in aggregations) {
+      if (data.aggregations[key]) {
+        data.aggregations[key] = aggregations[key]
+      } else {
+        data.aggregations[key].category = []
+      }
+    }
+    return data.aggregations
+
+  }
+  watch(() => route,
+   (newroute) => {
+      console.log('--- WATCH ROUTE DANS GRID VIEW ---')
+
+      if (data.oldroute) {
+        console.log(data.oldroute.name)
+        console.log(newroute.name)
+        if (data.oldroute.name !== newroute.name || (newroute.params.catalog && newroute.params.catalog !== data.oldroute.params.catalog)) {
+          console.log('--- RESET ---')
+          data.reset = true
+
+        }
+      }
+      data.oldroute = Object.assign({},newroute)
+      elasticsearch.setCatalog(newroute.name, newroute.params.catalog)
+      getRecords(newroute.query)
+  }, {immediate: true, deep: true})
   onMounted(() => {
     console.log('--- ON MOUNTED  DANS GRID VIEW ---')
     // elasticsearch.setCatalog(route.name, route.params.catalog)
     // getRecords(route.query)
   })
   function getRecords (query) {
-    console.log('--passe n° ', data.count)
-    data.count++
+
     elasticsearch.getRecords(query)
     .then(json => {
         if (json.hits && json.hits.hits) {
@@ -40,7 +67,7 @@
         }
         return elasticsearch.treatmentAggregations(json.aggregations)
     }).then(values => {
-        data.aggregations = values
+        mergeAggregations(values)
     })
   }
 </script>

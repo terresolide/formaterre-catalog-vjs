@@ -15,10 +15,6 @@ const {name, aggregation, root, count} = defineProps({
     root: {
         type: Boolean,
         default: true
-    },
-    count: {
-        type: Number,
-        default: 0
     }
 })
 const route = useRoute()
@@ -136,9 +132,6 @@ function merge (agg) {
         }
         return -1
     })
-    /* if (name === 'discipline') {
-      console.log(data.category)
-    } */
 }
 watch(
     () => aggregation,
@@ -150,7 +143,7 @@ watch(
 , {flush: 'pre', immediate: true, deep: true})
 watch( route,
    (route, oldroute) => {
-    if (oldroute.name !== route.name) {
+    if (oldroute && (oldroute.name !== route.name || route.params.catalog !== oldroute.params.catalog)) {
         data.reset = true
     }
 })
@@ -176,7 +169,7 @@ onMounted(() => {merge(aggregation)})
         </span>
 
         <template v-if="dim.category">
-            <aggregation-block :name="name" :root="false" :count="data.initCount" :aggregation="dim"></aggregation-block>
+            <aggregation-block :name="name" :root="false"  :aggregation="dim"></aggregation-block>
         </template>
 
     </div>
