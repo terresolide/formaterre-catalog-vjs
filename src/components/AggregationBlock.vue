@@ -3,7 +3,7 @@ import {computed, getCurrentInstance, onMounted,reactive, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {useCatalog} from '@/stores/catalog'
 import AggregationBlock from '@/components/AggregationBlock.vue'
-const {name, aggregation, root, count} = defineProps({
+const {name, aggregation, root, comparator } = defineProps({
     name: {
         type: String,
         default: null
@@ -27,7 +27,7 @@ const data = reactive({
     category: null,
     reset: false,
     initCount: 0,
-    comparator: 'or',
+    isOr: true,
     oldroute: null,
     show: root
 })
@@ -39,15 +39,32 @@ const selected = computed(() => {
 
     return route.query[name].split(/,|\+|%2B/)
 })
+const logicalComparator = computed(() => {
+  if (root) {
+    return data.isOr ? 'or' : 'and'
+  } else {
+    return  comparator
+  }
+
+})
 const uris = computed(() => {
      if (!route.query[name]) {
         return []
     }
-    return route.query[name].split(/,|\^|%2B/)
+    return route.query[name].split(/,|\^|%2B|\+/)
 })
+function changeComparator() {
+  var query = Object.assign({}, route.query)
+  var comp = data.isOr ? ',' : '+'
+  var oldComp = data.isOr ? '+' : ','
+  if (query[name]) {
+    query[name] = query[name].replace(oldComp, comp)
+    router.push({name: route.name, params: route.params, query: query})
+  }
+}
 function select(key) {
     var query = Object.assign({}, route.query)
-
+    var comp = logicalComparator.value === 'or' ? ',' : '+'
     var find = selected.value.findIndex(v => v.indexOf(key) >= 0)
     if (find >= 0) {
         var tab = key.split('^')
@@ -60,7 +77,7 @@ function select(key) {
             if (tab.length > 0) {
               sel.push(tab.join('^'))
             }
-            query[name] = sel.join(',')
+            query[name] = sel.join(comp)
         }
     } else {
         // add to route
@@ -83,7 +100,7 @@ function select(key) {
         } else {
             var sel = [key]
         }
-        query[name] = sel.join(',')
+        query[name] = sel.join(comp)
     }
     router.push({name: route.name, params: route.params, query: query})
 
@@ -154,8 +171,9 @@ watch(
     }
 })*/
 onMounted(() => {
+  data.isOr = true
   if (root && route.query[name]) {
-    data.comparator = route.query[name].indexOf('+') >= 0 ? 'and' : 'or'
+    data.isOr = route.query[name].indexOf(',') >= 0
   }
 
 })
@@ -166,12 +184,12 @@ onMounted(() => {
         <template v-else>+</template>
     </span>
     <template v-if="root">
-      <div>
-        <input type="radio" v-model="data.comparator" value="or" /> Or
-        <input type="radio" v-model="data.comparator" value="and" /> And
+      <div class="comparator">
+        <span><input type="radio" v-model="data.isOr" :value="true"  @change="changeComparator"/> {{$t('or')}} </span>
+        <span><input type="radio" v-model="data.isOr" :value="false" @change="changeComparator" /> {{$t('and')}}</span>
       </div>
     </template>
-  {{selected}}
+
     <div v-if="data.category" v-for="dim in data.category" v-show="data.show" :key="dim.key" >
         <span @click="select(dim.key)">
             <span class="icon">
@@ -194,6 +212,13 @@ onMounted(() => {
 
 </template>
 <style scoped>
+div.comparator {
+  text-align:center;
+}
+div.comparator span {
+  display:inline-block;
+  margin: 5px 10px 5px 5px;
+}
 div {
     margin-left:10px;
     line-height:1.2;

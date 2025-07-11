@@ -237,18 +237,21 @@ export const useElasticsearch = defineStore('elasticsearch', {
                         terms[aggregations[key].terms.field] = values
                         parameters.query.bool.filter.push({terms: terms})
                     } else {
-                        // AND
-                        var terms = decodeURIComponent(query[key]).split('+')
-                        terms.forEach(function(t) {
+                        if (query[key].indexOf('+') === -1) {
+                            // OR
                             var term = {}
-                            term[aggregations[key].terms.field] = t
-                            parameters.query.bool.filter.push({term: term})
-                        })
+                            term[aggregations[key].terms.field] = decodeURIComponent(query[key]).split(',')
+                            parameters.query.bool.filter.push({terms: term})
+                        } else {
+                            // AND
+                            var terms = decodeURIComponent(query[key]).split('+')
+                            terms.forEach(function (t) {
+                                var term = {}
+                                term[aggregations[key].terms.field] = t
+                                parameters.query.bool.filter.push({term: term})
+                            })
 
-                        // OR
-                       /* var term = {}
-                        term[aggregations[key].terms.field] = decodeURIComponent(query[key]).split(',')
-                        parameters.query.bool.filter.push({terms: term}) */
+                        }
                     }
                 }
             }

@@ -1,5 +1,6 @@
 {
     "among": "parmi",
+    "and": "Et",
     "basket": "Panier",
     "catalog": "Catalogue | Catalogues",
     "command_line": "Télécharger en ligne de commande",
@@ -15,6 +16,7 @@
     "logout": "Se déconnecter",
     "map_view": "Vue carte",
     "no_record": "Aucune fiche ne correspond à la recherche",
+    "or": "Ou",
     "per": "par",
     "popularity": "Popularité",
     "reset": "Initialiser",

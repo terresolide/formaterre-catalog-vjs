@@ -1,5 +1,6 @@
 {
     "among": "among",
+    "and": "And",
     "draw": "Draw",
     "basket": "Basket",
     "catalog": "Catalog | Catalogs",
@@ -15,6 +16,7 @@
     "logout": "Logout",
     "map_view": "Map view",
     "no_record": "No records match the search",
+    "or": "Or",
     "per": "per",
     "popularity": "Popularity",
     "reset": "Reset",
