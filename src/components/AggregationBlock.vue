@@ -15,6 +15,9 @@ const {name, aggregation, root, count} = defineProps({
     root: {
         type: Boolean,
         default: true
+    },
+    comparator: {
+        type: String,
     }
 })
 const route = useRoute()
@@ -24,6 +27,8 @@ const data = reactive({
     category: null,
     reset: false,
     initCount: 0,
+    comparator: 'or',
+    oldroute: null,
     show: root
 })
 
@@ -31,13 +36,14 @@ const selected = computed(() => {
     if (!route.query[name]) {
         return []
     }
-    return route.query[name].split(',')
+
+    return route.query[name].split(/,|\+|%2B/)
 })
 const uris = computed(() => {
      if (!route.query[name]) {
         return []
     }
-    return route.query[name].split(/,|\^/)
+    return route.query[name].split(/,|\^|%2B/)
 })
 function select(key) {
     var query = Object.assign({}, route.query)
@@ -107,13 +113,14 @@ function resetCategory(category) {
 }
 function merge (agg) {
 
-    if (agg.reset || !data.category) {
+    if ( !data.category ||
+        (data.oldroute &&
+        (data.oldroute.name !== route.name || (route.params.catalog && route.params.catalog !== data.oldroute.params.catalog))
+        )) {
         // console.log('initialise aggregation')
          data.category = agg.category
-         data.reset = false
     } else {
         // merge agg with data.aggregation
-        data.reset = agg.reset
         resetCount(agg)
 
         agg.category.forEach(function(dim) {
@@ -137,23 +144,34 @@ watch(
     () => aggregation,
     agg => {
       merge(agg)
-     // const instance = getCurrentInstance()
-     // instance.proxy.forceUpdate()
+      data.oldroute = Object.assign({},route)
     }
 , {flush: 'pre', immediate: true, deep: true})
-watch( route,
-   (route, oldroute) => {
+/** watch( route,
+   (route) => {
     if (oldroute && (oldroute.name !== route.name || route.params.catalog !== oldroute.params.catalog)) {
         data.reset = true
     }
+})*/
+onMounted(() => {
+  if (root && route.query[name]) {
+    data.comparator = route.query[name].indexOf('+') >= 0 ? 'and' : 'or'
+  }
+
 })
-onMounted(() => {merge(aggregation)})
 </script>
 <template>
     <span v-if="!root" @click="data.show = !data.show" class="expand" >
         <template v-if="data.show">-</template>
         <template v-else>+</template>
     </span>
+    <template v-if="root">
+      <div>
+        <input type="radio" v-model="data.comparator" value="or" /> Or
+        <input type="radio" v-model="data.comparator" value="and" /> And
+      </div>
+    </template>
+  {{selected}}
     <div v-if="data.category" v-for="dim in data.category" v-show="data.show" :key="dim.key" >
         <span @click="select(dim.key)">
             <span class="icon">
@@ -169,7 +187,7 @@ onMounted(() => {merge(aggregation)})
         </span>
 
         <template v-if="dim.category">
-            <aggregation-block :name="name" :root="false"  :aggregation="dim"></aggregation-block>
+            <aggregation-block :name="name" :root="false" :comparator="data.comparator" :aggregation="dim"></aggregation-block>
         </template>
 
     </div>

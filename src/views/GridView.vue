@@ -38,8 +38,6 @@
       console.log('--- WATCH ROUTE DANS GRID VIEW ---')
 
       if (data.oldroute) {
-        console.log(data.oldroute.name)
-        console.log(newroute.name)
         if (data.oldroute.name !== newroute.name || (newroute.params.catalog && newroute.params.catalog !== data.oldroute.params.catalog)) {
           console.log('--- RESET ---')
           data.reset = true

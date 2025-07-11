@@ -238,7 +238,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                         parameters.query.bool.filter.push({terms: terms})
                     } else {
                         // AND
-                        var terms = decodeURIComponent(query[key]).split(',')
+                        var terms = decodeURIComponent(query[key]).split('+')
                         terms.forEach(function(t) {
                             var term = {}
                             term[aggregations[key].terms.field] = t
