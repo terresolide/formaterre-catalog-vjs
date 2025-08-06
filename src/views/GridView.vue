@@ -5,6 +5,8 @@
   import MetadataList from '@/components/MetadataList.vue'
   import FormGrid from '@/components/FormGrid.vue'
   import PageNavigation from '@/components/PageNavigation.vue'
+  import MetadataPage from '@/components/MetadataPage.vue'
+  
   const elasticsearch = useElasticsearch()
   let data = reactive({
     list: [],
@@ -14,7 +16,8 @@
     },
     reset: false,
     oldroute: null,
-    aggregations: []
+    aggregations: [],
+    metadata: null
   })
   const route = useRoute()
   function mergeAggregations (aggregations) {
@@ -73,12 +76,24 @@
 <template>
   <main>
     <FormGrid :aggregations="data.aggregations" :list="data.list"></FormGrid>
-    <div class="grid-content">
-      <div style="text-align:center;margin:15px 0;">
-        <PageNavigation :tot="data.pagination"></PageNavigation>
-      </div>
-      <MetadataList :list="data.list"></MetadataList>
-    </div>
+    <template v-if="route.params.id">
+       <metadata-page :metadata="data.metadata">
+            <div class="grid-content">
+              <div style="text-align:center;margin:15px 0;">
+                <PageNavigation :tot="data.pagination"></PageNavigation>
+              </div>
+              <MetadataList :list="data.list"></MetadataList>
+            </div>
+       </metadata-page>
+    </template>
+    <template v-else>
+        <div class="grid-content">
+          <div style="text-align:center;margin:15px 0;">
+            <PageNavigation :tot="data.pagination"></PageNavigation>
+          </div>
+          <MetadataList :list="data.list"></MetadataList>
+        </div>
+    </template>
   </main>
 </template>
 <style scoped>
