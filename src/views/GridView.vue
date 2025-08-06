@@ -48,7 +48,7 @@
         }
       }
       data.oldroute = Object.assign({},newroute)
-      elasticsearch.setCatalog(newroute.name, newroute.params.catalog)
+      elasticsearch.setCatalog(newroute.name, newroute.params.catalog, newroute.params.id)
       getRecords(newroute.query)
   }, {immediate: true, deep: true})
   onMounted(() => {
@@ -78,7 +78,7 @@
     <FormGrid :aggregations="data.aggregations" :list="data.list"></FormGrid>
     <template v-if="route.params.id">
        <metadata-page :metadata="data.metadata">
-            <div class="grid-content">
+            <div>
               <div style="text-align:center;margin:15px 0;">
                 <PageNavigation :tot="data.pagination"></PageNavigation>
               </div>

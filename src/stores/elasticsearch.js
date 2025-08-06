@@ -126,11 +126,12 @@ export const useElasticsearch = defineStore('elasticsearch', {
         "th_formater-platform-gn", "th_formaterre-product-gn", "th_ron.default", "th_polarisation.default", "overview","link"]
     }),
     actions: {
-        setCatalog ( routeName, catalogName) {
+        setCatalog ( routeName, catalogName, metadataId) {
             var catal = catalogName ? catalogName.toLowerCase() : null
             var reset = routeName !== this.name
             this.name = routeName
             this.groupOwner = null
+            this.uuid = metadataId
             let catalogs = useCatalog()
             this.reset = reset || catal !== catalogs.getName()
             let catalog = catalogs.setCatalog(catalogName)
@@ -164,6 +165,10 @@ export const useElasticsearch = defineStore('elasticsearch', {
         getParameters (query) {
             let parameters = this.getDefaultParameters()
             let aggregations = Object.assign({},this.aggregations.step1)
+            if (this.uuid) {
+                parameters.query.bool.filter.push({term: {parentUuid: this.uuid}})
+                delete parameters.query.bool.must_not
+            }
             if (query.from) {
                 parameters.from = parseInt(query.from) - 1
             }
