@@ -1,6 +1,7 @@
 <script setup>
 import {reactive} from 'vue'
-  import { useConfig } from "@/stores/config.js"
+import { useConfig } from "@/stores/config.js"
+import ExportLinks from '@/components/ExportLinks.vue'
 const {metadata,color} = defineProps({
     metadata: {
         type: Object,
@@ -35,11 +36,11 @@ const data = reactive({
               </div> -->
                 
         </h1> 
-         <hr style="border:1px solid grey;margin:0 -10px 20px -10px;"/>
+        <hr />
         <div class="mtdt-tabs">
              <div v-for="(tab,index) in tabs" class="mtdt-tab" :class="{'selected': data.currentTab === index}" @click="data.currentTab = index">{{$t(index)}}</div>
          
-            <!-- <formater-export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></formater-export-links> -->
+          <export-links v-if="metadata && metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
         </div>
     
         <slot></slot>
@@ -47,6 +48,10 @@ const data = reactive({
 
 </template>
 <style scoped>
+.metadata-content hr {
+    border:1px solid grey;
+    margin:0 -10px 0px -10px;
+}
 div.metadata-content {
   max-width: calc(100% - 340px);
   padding: 0 10px;
@@ -59,5 +64,21 @@ div.metadata-content {
   border: 1px solid #ccc;
   border-radius: 0 0 5px 5px;
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
+div.mtdt-tab,
+.mtdt-tab-export{
+  display:inline-block;
+  padding: 5px 10px;
+  border:1px dotted grey;
+  border-top:0px;
+  background: #eee;
+  cursor: pointer;
+}
+div.mtdt-tab:hover,
+.mtdt-tab-export:hover{
+   background: #ccc;
+}
+div.mtdt-tab.selected{
+  background: #ddd;
 }
 </style>

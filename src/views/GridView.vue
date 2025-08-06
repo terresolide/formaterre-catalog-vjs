@@ -49,6 +49,7 @@
       }
       data.oldroute = Object.assign({},newroute)
       elasticsearch.setCatalog(newroute.name, newroute.params.catalog, newroute.params.id)
+      getMetadata(newroute.params.id)
       getRecords(newroute.query)
   }, {immediate: true, deep: true})
   onMounted(() => {
@@ -56,6 +57,16 @@
     // elasticsearch.setCatalog(route.name, route.params.catalog)
     // getRecords(route.query)
   })
+  
+  function getMetadata(uuid) {
+      if (!uuid) {
+          data.metadata = null
+      }
+      elasticsearch.getMetadata(uuid)
+      .then(meta => {
+          data.metadata = meta
+      })
+  }
   function getRecords (query) {
 
     elasticsearch.getRecords(query)

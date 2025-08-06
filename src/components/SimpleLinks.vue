@@ -1,7 +1,7 @@
 <script setup>
-import { computed} from 'vue';
+// import { computed} from 'vue';
 import {useConfig} from '@/stores/config'
-import {useCatalog} from '@/stores/catalog'
+// import {useCatalog} from '@/stores/catalog'
 const props = defineProps({
    links: {
        type: Array,

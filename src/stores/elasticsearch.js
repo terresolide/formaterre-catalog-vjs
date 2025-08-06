@@ -263,6 +263,28 @@ export const useElasticsearch = defineStore('elasticsearch', {
             parameters.aggregations = aggregations
             return parameters
         },
+        getMetadata (uuid) {
+            
+            var headers =  {
+              'accept': 'application/json',
+            }
+            const config = useConfig()
+            let url = config.state.geonetwork +  '/srv/api/records/' + this.uuid
+            return new Promise((successCallback, failureCallback) => {
+                fetch(url, {headers:headers})
+                .then(resp => resp.json())
+                .then(json => {
+                    if (successCallback) {
+                        successCallback(json)
+                    }
+                }).catch(err => {
+                    if (failureCallback) {
+                        failureCallback(err)
+                    }
+                })
+            })
+
+        },
         getRecords (query) {
             const config = useConfig()
             let api = config.state.geonetwork +  '/srv/api/search/records/_search?bucket=metadata'

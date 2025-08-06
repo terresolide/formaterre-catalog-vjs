@@ -193,8 +193,6 @@ const metadata = computed(() => {
                 </h3>
             </router-link>
             <div class="element-description">
-            {{catalog}}
-            {{metadata}}
                 <div v-if="metadata.quicklook || metadata.status" style="display:block;float:left;max-width:120px;text-align:center;">
                     <img :src="metadata.quicklook.src" :title="metadata.quicklook.title" v-if="metadata.quicklook"/>
                      <div class="mtdt-status" v-if="metadata.status"  
