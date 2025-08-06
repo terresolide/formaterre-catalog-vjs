@@ -14,6 +14,16 @@ const props = defineProps({
 const catalog = computed(() => {
     return catalogs.getCurrent()
 })
+const linkMetadata = computed(() => {
+    var link = {name:'metadata', params: {id: props.metadata._source.uuid }}
+    if (route.params.catalog) {
+        link.name = 'catalog-metadata'
+        link.params.catalog = route.params.catalog
+    }
+    console.log(link)
+    return link
+    
+})
 function treatmentLinks (list, id) {
     var links = {}
     list.forEach((lk, index) => {
@@ -175,11 +185,16 @@ const metadata = computed(() => {
     <div class="element-metadata-flex" >
        
         <a class="service-link" >
-            <h3 :style="{background: config.state.emphasis}">
-                <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
-                <div >{{metadata.title}}</div>
-            </h3>
+            <router-link class="service-link" :to="linkMetadata">
+                <h3 :style="{background: config.state.emphasis}">
+                
+                    <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
+                    <div >{{metadata.title}}</div>
+                </h3>
+            </router-link>
             <div class="element-description">
+            {{catalog}}
+            {{metadata}}
                 <div v-if="metadata.quicklook || metadata.status" style="display:block;float:left;max-width:120px;text-align:center;">
                     <img :src="metadata.quicklook.src" :title="metadata.quicklook.title" v-if="metadata.quicklook"/>
                      <div class="mtdt-status" v-if="metadata.status"  
