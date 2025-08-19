@@ -184,10 +184,9 @@ const metadata = computed(() => {
 <template>
     <div class="element-metadata-flex" >
        
-        <a class="service-link" >
+       
             <router-link class="service-link" :to="linkMetadata">
                 <h3 :style="{background: config.state.emphasis}">
-                
                     <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
                     <div >{{metadata.title}}</div>
                 </h3>
@@ -220,7 +219,7 @@ const metadata = computed(() => {
                 <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:4px;width:calc(100% - 100px);">
                   <related-links :uuid="metadata.id" :links="metadata.links"></related-links></div>
             </div>
-        </a>
+      
     </div>
 </template>
 <style scoped>
@@ -228,6 +227,7 @@ div.mtdt-center {
     display:inline-block;
     width:90px;
     max-width:90px;
+    text-align:left;
 }
 div.mtdt-center img {
     vertical-align:middle;
@@ -295,6 +295,9 @@ div.element-metadata-flex {
   line-height: 130px;
   }
    div.element-metadata-flex  div.element-description{
+    line-height: 1.1;
+    text-align: justify;
+    font-size: 0.9em;
     max-height:165px;
     overflow:hidden;
     padding: 5px;
@@ -328,11 +331,12 @@ div.element-metadata-flex {
   position: absolute;
   margin: 0 2px;
   right:-5px;
-  bottom:0;
+  bottom:1px;
   width:100%;
   min-height: 28px;
   -webkit-box-sizing: content-box;
   box-sizing: content-box;
+  background:white;
   overflow:visible;
 }
  div.element-metadata-flex .mtdt-footer > div{
