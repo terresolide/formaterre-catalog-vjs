@@ -155,9 +155,13 @@ span.disabled,
 }
 .mtdt-related-metadata .mtdt-expand ul {
   display: inline;
+  margin-top:4px;
 }
 .element-metadata-flex .mtdt-expand ul li {
   word-break: break-word;
+  line-height:1;
+  padding-bottom:3px;
+  font-size:0.9rem;
 }
 .mtdt-related-metadata .mtdt-expand ul li {
   word-break: break-word;

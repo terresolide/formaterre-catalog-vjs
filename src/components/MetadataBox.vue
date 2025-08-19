@@ -238,6 +238,10 @@ const metadata = computed(() => {
                 </div>
                 <temporal-extent v-for="extent in metadata.temporalExtents" :extent="extent"></temporal-extent>
                 <div v-html="metadata.description"></div>
+                <div v-for="item in metadata.thesaurus" >
+                    <label :style="{color: config.state.primary}">{{ item.label }}: </label> 
+                    <span v-for="value in item.values">{{ value }} </span>
+                </div>
                 
             </div>
             <div class="mtdt-footer">
