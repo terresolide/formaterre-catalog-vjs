@@ -185,7 +185,7 @@ const metadata = computed(() => {
     <div class="element-metadata-flex" >
        
        
-            <router-link class="service-link" :to="linkMetadata">
+            <router-link class="service-link" :to="linkMetadata" >
                 <h3 :style="{background: config.state.emphasis}">
                     <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
                     <div >{{metadata.title}}</div>
@@ -223,6 +223,11 @@ const metadata = computed(() => {
     </div>
 </template>
 <style scoped>
+a.service-link {
+    height:auto;
+    margin:0;
+    padding:0;
+    }
 div.mtdt-center {
     display:inline-block;
     width:90px;
@@ -263,7 +268,7 @@ div.element-metadata-flex {
   
   }
  div.element-metadata-flex h3 {
-    margin: -25px -10px 5px -10px;
+    margin: 0px -10px 0px -10px;
     padding: 5px;
     color: white;
     text-align: left;
