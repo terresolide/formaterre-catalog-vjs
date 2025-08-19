@@ -3,6 +3,7 @@ import {computed} from 'vue'
 import { useRoute,RouterLink} from 'vue-router'
 import {useConfig} from '@/stores/config'
 import {useCatalog} from '@/stores/catalog'
+import {useElasticsearch} from '@/stores/elasticsearch'
 import TemporalExtent from '@/components/TemporalExtent.vue'
 import RelatedLinks from '@/components/RelatedLinks.vue'
 let config = useConfig()
@@ -20,10 +21,43 @@ const linkMetadata = computed(() => {
         link.name = 'catalog-metadata'
         link.params.catalog = route.params.catalog
     }
-    console.log(link)
     return link
     
 })
+const elasticsearch = useElasticsearch()
+function treatmentThesaurus (source) {
+    console.log(elasticsearch)
+    var thesaurus = {}
+    for(var step in elasticsearch.aggregations) {
+       for (var key in elasticsearch.aggregations[step]) {
+          if (elasticsearch.aggregations[step][key].meta.thesaurus) {
+           var th = 'th_' + elasticsearch.aggregations[step][key].meta.thesaurus
+        } else {
+          var field = elasticsearch.aggregations[step][key].terms.field
+          var tab = field.split('.')
+          var th =  tab[0]
+          
+        }
+        if (source[th] && source[th].forEach) {
+            var label = elasticsearch.aggregations[step][key].meta.label
+            if (elasticsearch.aggregations[step][key].meta.thesaurus) {
+                var th = 'th_' + elasticsearch.aggregations[step][key].meta.thesaurus
+            } else {
+                var field = elasticsearch.aggregations[step][key].terms.field
+                var tab = field.split('.')
+                var th =  tab[0]
+            }
+            var lang = config.state.lang
+            console.log(lang)
+            if (elasticsearch.aggregations[step][key].meta.label[lang]) {
+              label = elasticsearch.aggregations[step][key].meta.label[lang]
+            }
+            thesaurus[th] = {label: label, values: source[th].map(x => config.tr(x))}
+        }
+       }
+    }
+    return thesaurus
+}
 function treatmentLinks (list, id) {
     var links = {}
     list.forEach((lk, index) => {
@@ -133,6 +167,7 @@ function treatmentLinks (list, id) {
    }
 const metadata = computed(() => {
     let source = props.metadata._source
+    console.log(source)
     let meta = {
          id: source.uuid, 
          title: config.tr(source.resourceTitleObject),
@@ -175,7 +210,8 @@ const metadata = computed(() => {
     if (source['th_formater-distributor']) {
         meta.provider = config.getProvider(source['th_formater-distributor'][0].link)
     }
-  
+    meta.thesaurus = treatmentThesaurus(source)
+    console.log(meta.thesaurus)
     meta.links = treatmentLinks(source.link, meta.id)
     return meta
 })
@@ -202,6 +238,7 @@ const metadata = computed(() => {
                 </div>
                 <temporal-extent v-for="extent in metadata.temporalExtents" :extent="extent"></temporal-extent>
                 <div v-html="metadata.description"></div>
+                
             </div>
             <div class="mtdt-footer">
                 <div  class="mtdt-center">
