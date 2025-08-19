@@ -26,7 +26,6 @@ const linkMetadata = computed(() => {
 })
 const elasticsearch = useElasticsearch()
 function treatmentThesaurus (source) {
-    console.log(elasticsearch)
     var thesaurus = {}
     for(var step in elasticsearch.aggregations) {
        for (var key in elasticsearch.aggregations[step]) {
@@ -48,7 +47,6 @@ function treatmentThesaurus (source) {
                 var th =  tab[0]
             }
             var lang = config.state.lang
-            console.log(lang)
             if (elasticsearch.aggregations[step][key].meta.label[lang]) {
               label = elasticsearch.aggregations[step][key].meta.label[lang]
             }
@@ -167,7 +165,6 @@ function treatmentLinks (list, id) {
    }
 const metadata = computed(() => {
     let source = props.metadata._source
-    console.log(source)
     let meta = {
          id: source.uuid, 
          title: config.tr(source.resourceTitleObject),
@@ -211,7 +208,6 @@ const metadata = computed(() => {
         meta.provider = config.getProvider(source['th_formater-distributor'][0].link)
     }
     meta.thesaurus = treatmentThesaurus(source)
-    console.log(meta.thesaurus)
     meta.links = treatmentLinks(source.link, meta.id)
     return meta
 })
