@@ -1,6 +1,6 @@
 <script setup>
   import { reactive, watch, onMounted } from 'vue';
-  import { useRoute } from "vue-router"
+  import { useRoute, useRouter } from "vue-router"
   import { useElasticsearch } from '@/stores/elasticsearch';
   import MetadataList from '@/components/MetadataList.vue'
   import FormGrid from '@/components/FormGrid.vue'
@@ -21,6 +21,7 @@
     metadata: null
   })
   const route = useRoute()
+  const router = useRouter()
   function mergeAggregations (aggregations) {
     if (Object.keys(data.aggregations).length === 0 || data.reset) {
       data.aggregations = aggregations
@@ -74,6 +75,14 @@
           
       })
   }
+  function close () {
+    let lastPath = router.options.history.state.back;
+    if (lastPath) {
+        router.back()
+    } else {
+        router.push({name:'grid'})
+    }
+  }
   function getRecords (query) {
 
     elasticsearch.getRecords(query)
@@ -95,7 +104,7 @@
   <main>
     <FormGrid :aggregations="data.aggregations" :list="data.list"></FormGrid>
     <template v-if="route.params.id">
-       <metadata-page :metadata="data.metadata">
+       <metadata-page :metadata="data.metadata" @close="close">
             <div>
               <div style="text-align:center;margin:15px 0;">
                 <PageNavigation :tot="data.pagination"></PageNavigation>
