@@ -1,5 +1,5 @@
 <script setup>
-import {reactive} from 'vue'
+import {computed, reactive} from 'vue'
 import { useConfig } from "@/stores/config.js"
 import ExportLinks from '@/components/ExportLinks.vue'
 const {metadata,color} = defineProps({
@@ -12,6 +12,7 @@ const {metadata,color} = defineProps({
         default: '#fff000'
     }
 })
+
 const config = useConfig()
 const tabs = {
     description: 'description',
@@ -39,7 +40,7 @@ const data = reactive({
         <hr />
         <div class="mtdt-tabs">
              <div v-for="(tab,index) in tabs" class="mtdt-tab" :class="{'selected': data.currentTab === index}" @click="data.currentTab = index">{{$t(index)}}</div>
-         
+         {{metadata}}
           <export-links v-if="metadata && metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
         </div>
     

@@ -215,47 +215,45 @@ const metadata = computed(() => {
 </script>
 <template>
     <div class="element-metadata-flex" >
+        <router-link class="service-link" :to="linkMetadata" >
+            <h3 :style="{background: config.state.emphasis}">
+                <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
+                <div >{{metadata.title}}</div>
+            </h3>
+        </router-link>
+        <div class="element-description">
+            <div v-if="metadata.quicklook || metadata.status" style="display:block;float:left;max-width:120px;text-align:center;">
+                <img :src="metadata.quicklook.src" :title="metadata.quicklook.title" v-if="metadata.quicklook"/>
+                 <div class="mtdt-status" v-if="metadata.status"  
+                 :style="{color: config.state.primary, borderColor: config.state.primary}">
+                    {{metadata.status.label}}
+                 </div>
        
-       
-            <router-link class="service-link" :to="linkMetadata" >
-                <h3 :style="{background: config.state.emphasis}">
-                    <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
-                    <div >{{metadata.title}}</div>
-                </h3>
-            </router-link>
-            <div class="element-description">
-                <div v-if="metadata.quicklook || metadata.status" style="display:block;float:left;max-width:120px;text-align:center;">
-                    <img :src="metadata.quicklook.src" :title="metadata.quicklook.title" v-if="metadata.quicklook"/>
-                     <div class="mtdt-status" v-if="metadata.status"  
-                     :style="{color: config.state.primary, borderColor: config.state.primary}">
-                        {{metadata.status.label}}
-                     </div>
-           
-                </div>
-                <temporal-extent v-for="extent in metadata.temporalExtents" :extent="extent"></temporal-extent>
-                <div v-html="metadata.description"></div>
-                <div v-for="item in metadata.thesaurus" >
-                    <label :style="{color: config.state.primary}">{{ item.label }}: </label> 
-                    <span v-for="value in item.values">{{ value }} </span>
-                </div>
-                
             </div>
-            <div class="mtdt-footer">
-                <div  class="mtdt-center">
-                    <template v-if="!catalog">
-                      <router-link :to="{name: 'catalog-grid', params: {catalog: metadata.catalog.name.toLowerCase()}}" :title="metadata.catalog.name">
-                        <img :src="config.state.api + '/images/harvesting/' + metadata.catalog.logo"   height="31" />
-                      </router-link>
-                    </template>
-                    <template v-else-if="metadata.provider">
-                       <a :href="metadata.provider.href" :title="metadata.provider.title[config.state.lang]" target="_blank">
-                        <img :src="metadata.provider.logo"  />
-                       </a>
-                    </template>
-                </div>
-                <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:4px;width:calc(100% - 100px);">
-                  <related-links :uuid="metadata.id" :links="metadata.links"></related-links></div>
+            <temporal-extent v-for="extent in metadata.temporalExtents" :extent="extent"></temporal-extent>
+            <div v-html="metadata.description"></div>
+            <div v-for="item in metadata.thesaurus" >
+                <label :style="{color: config.state.primary}">{{ item.label }}: </label> 
+                <span v-for="value in item.values">{{ value }} </span>
             </div>
+            
+        </div>
+        <div class="mtdt-footer">
+            <div  class="mtdt-center">
+                <template v-if="!catalog">
+                  <router-link :to="{name: 'catalog-grid', params: {catalog: metadata.catalog.name.toLowerCase()}}" :title="metadata.catalog.name">
+                    <img :src="config.state.api + '/images/harvesting/' + metadata.catalog.logo"   height="31" />
+                  </router-link>
+                </template>
+                <template v-else-if="metadata.provider">
+                   <a :href="metadata.provider.href" :title="metadata.provider.title[config.state.lang]" target="_blank">
+                    <img :src="metadata.provider.logo"  />
+                   </a>
+                </template>
+            </div>
+            <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:4px;width:calc(100% - 100px);">
+              <related-links :uuid="metadata.id" :links="metadata.links"></related-links></div>
+        </div>
       
     </div>
 </template>

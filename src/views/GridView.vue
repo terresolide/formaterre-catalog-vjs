@@ -6,7 +6,7 @@
   import FormGrid from '@/components/FormGrid.vue'
   import PageNavigation from '@/components/PageNavigation.vue'
   import MetadataPage from '@/components/MetadataPage.vue'
-  
+  const getMetaConverter = () => import('@/modules/metadataConverter.js') 
   const elasticsearch = useElasticsearch()
   let data = reactive({
     list: [],
@@ -14,6 +14,7 @@
       count: 0,
       total: 0
     },
+    converter: null,
     reset: false,
     oldroute: null,
     aggregations: [],
@@ -64,7 +65,13 @@
       }
       elasticsearch.getMetadata(uuid)
       .then(meta => {
-          data.metadata = meta
+          getMetaConverter()
+          .then(converter => {
+              data.converter = converter.default
+              console.log(data.converter)
+              data.metadata = data.converter.transform(meta)
+           })
+          
       })
   }
   function getRecords (query) {
