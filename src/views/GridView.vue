@@ -68,9 +68,9 @@
       .then(meta => {
           getMetaConverter()
           .then(converter => {
-              data.converter = converter.default
+              data.converter = converter.default()
               console.log(data.converter)
-              data.metadata = data.converter.transform(meta)
+              data.metadata = data.converter.transform(uuid, meta)
            })
           
       })

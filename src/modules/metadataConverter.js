@@ -2,20 +2,32 @@
 * Convert json iso19139 metadata to readable json
 **/
 import {JSONPath} from 'jsonpath'
-console.log(JSONPath)
-export default {
-    JSONPATH: null,
-    transform (json) {
+import {useConfig} from '@/stores/config.js'
+export default function (attrs) {
+    let config = useConfig()
+    let JSONPATH = new JSONPath()
+    function transform (uuid, json) {
         var metadata = {}
-        var idLang = 'fre'
-        this.JSONPATH = new JSONPath()
+        console.log(config)
+        if (config.state.geonetwork) {
+          if (json.logo) {
+            metadata.logo = config.state.geonetwork + json.logo.replace(/^\//, '')
+          }
+          metadata.exportLinks = {
+              xml: config.state.geonetwork + 'srv/api/records/'+ uuid + '/formatters/xml?attachment=true',
+              pdf: config.state.geonetwork + 'srv/api/records/'+ uuid + '/formatters/xsl-view?root=div&output=pdf'
+          }
+        }
+        var idLang = config.locale
+           
 
-        metadata.title = this.extractFromLangs(
-             this.JSONPATH.query(json, "$..['gmd:citation']['gmd:CI_Citation']['gmd:title']"),
+
+        metadata.title = extractFromLangs(
+             JSONPATH.query(json, "$..['gmd:citation']['gmd:CI_Citation']['gmd:title']"),
              idLang)
       
-        var description = this.extractFromLangs(
-            this.JSONPATH.query(json, "$..['gmd:abstract']"),
+        var description = extractFromLangs(
+            JSONPATH.query(json, "$..['gmd:abstract']"),
             idLang)
         if (description && Array.isArray(description)) {
           description = description[0]
@@ -23,34 +35,34 @@ export default {
            description = ''
         }
         metadata.description = description.replace(/(?:\\[rn]|[\r\n])/g, '<br />')
-        metadata.credit = this.extractFromLangs(json['gmd:credit'], idLang)
-        metadata.purpose = this.extractFromLangs(json['gmd:purpose'], idLang)
+        metadata.credit = extractFromLangs(json['gmd:credit'], idLang)
+        metadata.purpose = extractFromLangs(json['gmd:purpose'], idLang)
         if (metadata.purpose) {
           metadata.purpose = metadata.purpose.replace(/(?:\\[rn]|[\r\n])/g, '<br />')
         }
         var dataInfo = json['gmd:identificationInfo']['gmd:MD_DataIdentification']
-        metadata.status = this.JSONPATH.query(json,"$..['gmd:status']['gmd:MD_ProgressCode']['@codeListValue']")[0]
-        metadata.identifier = this.JSONPATH.query(json, "$..['gmd:identifier']..['gco:CharacterString']['#text']")[0]
+        metadata.status = JSONPATH.query(json,"$..['gmd:status']['gmd:MD_ProgressCode']['@codeListValue']")[0]
+        metadata.identifier = JSONPATH.query(json, "$..['gmd:identifier']..['gco:CharacterString']['#text']")[0]
         // metadata.dataCenter =
         if (dataInfo['gmd:topicCategory']) {
         metadata.topicCat = dataInfo['gmd:topicCategory']['gmd:MD_TopicCategoryCode']
         }
-        this.extractKeywords(metadata, dataInfo['gmd:descriptiveKeywords'], idLang)
-        metadata.images = this.extractImages(dataInfo['gmd:graphicOverview'], idLang)
-        var constraints = this.extractConstraints(
-            this.JSONPATH.query(dataInfo, "$..['gmd:resourceConstraints']..['gmd:MD_LegalConstraints']"),
+        extractKeywords(metadata, dataInfo['gmd:descriptiveKeywords'], idLang)
+        metadata.images = extractImages(dataInfo['gmd:graphicOverview'], idLang)
+        var constraints = extractConstraints(
+            JSONPATH.query(dataInfo, "$..['gmd:resourceConstraints']..['gmd:MD_LegalConstraints']"),
             idLang)
         if (constraints) {
           metadata.legalConstraints = constraints
         }
-        var constraints = this.extractConstraints(
-            this.JSONPATH.query(dataInfo, "$..['gmd:resourceConstraints']..['gmd:MD_Constraints']"),
+        var constraints = extractConstraints(
+            JSONPATH.query(dataInfo, "$..['gmd:resourceConstraints']..['gmd:MD_Constraints']"),
             idLang)
         if (constraints) {
           metadata.constraints = constraints
         }
-        var contacts = this.extractContacts(
-            this.JSONPATH.query(dataInfo, "$..['gmd:CI_ResponsibleParty']"),
+        var contacts = extractContacts(
+            JSONPATH.query(dataInfo, "$..['gmd:CI_ResponsibleParty']"),
             'resource',
             idLang)
         metadata.contacts = {resource:{}}
@@ -62,14 +74,14 @@ export default {
           }
         })
      
-        this.extractExtent(metadata, dataInfo['gmd:extent'])
-        this.extractDates(metadata,  this.JSONPATH.query(dataInfo, "$..['gmd:citation']..['gmd:CI_Date']"))
-        this.extractAssociation(metadata, dataInfo['gmd:aggregationInfo'])
-        this.extractResolution(metadata, dataInfo['gmd:spatialResolution'])
-        this.extractSpatialRepresentation(metadata, dataInfo['gmd:spatialRepresentationType'])
+        extractExtent(metadata, dataInfo['gmd:extent'])
+        extractDates(metadata,  JSONPATH.query(dataInfo, "$..['gmd:citation']..['gmd:CI_Date']"))
+        extractAssociation(metadata, dataInfo['gmd:aggregationInfo'])
+        extractResolution(metadata, dataInfo['gmd:spatialResolution'])
+        extractSpatialRepresentation(metadata, dataInfo['gmd:spatialRepresentationType'])
         return metadata
-    },
-    extractAddress (json) {
+    }
+    function extractAddress (json) {
         if (json === undefined) {
           return null
         }
@@ -83,10 +95,9 @@ export default {
         if (address.length == 0) {
           return null
         } 
-        // var cp = JSONPATH.query(json, "$..['gmd")
         return address.join(',')
-    },
-    extractAssociation (metadata, json) {
+    }
+    function extractAssociation (metadata, json) {
         if (!json || json === undefined) {
           return
         }
@@ -111,8 +122,8 @@ export default {
               })
             }
         })
-    },
-    extractBboxJson (json) {
+    }
+    function extractBboxJson (json) {
         if (json === undefined) {
           return null
         }
@@ -121,8 +132,8 @@ export default {
         var lngmin = json['gmd:westBoundLongitude']['gco:Decimal']['#text']
         var lngmax = json['gmd:eastBoundLongitude']['gco:Decimal']['#text']
         return [lngmin, latmin, lngmax, latmax].join('|')
-    },
-    extractConstraints (json, idLang) {
+    }
+    function extractConstraints (json, idLang) {
         if (!json) {
         return null
         }
@@ -130,55 +141,53 @@ export default {
         if (!json || json.length === 0) {
         return null
         }
-        var _this = this
         json.forEach (function (node) {
         var list = node['gmd:otherConstraints']
         if (list ) {
           var list = !list.forEach ? [list] : list
           list.forEach(function (constraint) {
-            constraints.push(_this.extractFromLangs(constraint, idLang))
+            constraints.push(extractFromLangs(constraint, idLang))
           })
         }
         var list = node['gmd:useLimitation']
         if (list ) {
           var list = !list.forEach ? [list] : list
           list.forEach(function (constraint) {
-            constraints.push(_this.extractFromLangs(constraint, idLang))
+            constraints.push(extractFromLangs(constraint, idLang))
           })
         }
         })
         return constraints
-    },
-    extractContacts (json, type, idLang) {
+    }
+    function extractContacts (json, type, idLang) {
         var contacts = []
         if (!json) {
           return contacts
         }
         if (json.length > 0) {
-          var _this = this
           json.forEach (function (jsoncontact) {
-             contacts.push(_this.extractContact(jsoncontact, type, idLang))
+             contacts.push(extractContact(jsoncontact, type, idLang))
           })
         } else {
-          contacts.push(this.extractContact(json, type, idLang))
+          contacts.push(extractContact(json, type, idLang))
         }
         return contacts
-    },
-    extractContact (json, type, idLang) {
-        var role = this.JSONPATH.query(json, "$..['gmd:CI_RoleCode']['@codeListValue']")[0]
-        var organisationNode  = this.JSONPATH.query(json, "$..['gmd:organisationName']" )[0]
-        var organisation = this.extractFromLangs(organisationNode, idLang)
-        var organisationLink = this.extractHref(organisationNode)
-        var nameNode = this.JSONPATH.query(json, "$..['gmd:individualName']" )[0]
-        var name = this.extractFromLangs(nameNode, idLang)
-        var individualLink = this.extractHref(nameNode)
-            // this.JSONPATH.query(json, "$..['gmd:individualName']['gco:CharacterString']" )[0]
-        var email = this.JSONPATH.query(json, "$..['gmd:electronicMailAddress']..['#text']")[0]
-        var address = this.extractAddress(this.JSONPATH.query(json, "$..['gmd:CI_Address']")[0])
+    }
+    function extractContact (json, type, idLang) {
+        var role = JSONPATH.query(json, "$..['gmd:CI_RoleCode']['@codeListValue']")[0]
+        var organisationNode  = JSONPATH.query(json, "$..['gmd:organisationName']" )[0]
+        var organisation = extractFromLangs(organisationNode, idLang)
+        var organisationLink = extractHref(organisationNode)
+        var nameNode = JSONPATH.query(json, "$..['gmd:individualName']" )[0]
+        var name = extractFromLangs(nameNode, idLang)
+        var individualLink = extractHref(nameNode)
+            // JSONPATH.query(json, "$..['gmd:individualName']['gco:CharacterString']" )[0]
+        var email = JSONPATH.query(json, "$..['gmd:electronicMailAddress']..['#text']")[0]
+        var address = extractAddress(JSONPATH.query(json, "$..['gmd:CI_Address']")[0])
         var position = null
         return [role, type, organisation, name, email, position, null, address, organisationLink, individualLink]
-    },
-    extractDates (metadata, json) {
+    }
+    function extractDates (metadata, json) {
         if (!json || json === 'undefined' || json.length === 0) {
           return
         }
@@ -187,40 +196,38 @@ export default {
           var value = jsonDate['gmd:date']['gco:Date'] ? jsonDate['gmd:date']['gco:Date']['#text'] : jsonDate['gmd:date']['gco:DateTime']['#text']
           metadata[key + 'Date'] = value
         })
-    },
-    extractDistributionInfo (metadata, json, idLang) {
+    }
+    function extractDistributionInfo (metadata, json, idLang) {
         var json2 = json['gmd:MD_Distribution']['gmd:distributionFormat'] || {}
-        this.extractFormat(metadata, json2, idLang)
-        this.extractLinks (metadata, json, idLang) 
-    },
-    extractExtent (metadata, json) {
-        console.log(json)
-        var _this = this
-        var start = this.JSONPATH.query(json, "$..['gml:beginPosition']")
+        extractFormat(metadata, json2, idLang)
+        extractLinks (metadata, json, idLang) 
+    }
+    function extractExtent (metadata, json) {
+
+        var start = JSONPATH.query(json, "$..['gml:beginPosition']")
         if (start.length > 0) {
           metadata.tempExtentBegin = start[0]
         }
-        var end = this.JSONPATH.query(json, "$..['gml:endPosition']")
+        var end = JSONPATH.query(json, "$..['gml:endPosition']")
         if (end.length > 0) {
           metadata.tempExtentEnd = end[0]
         }
-        var geographics = this.JSONPATH.query(json, "$..['gmd:EX_GeographicBoundingBox']")
+        var geographics = JSONPATH.query(json, "$..['gmd:EX_GeographicBoundingBox']")
         if (geographics.length === 0) {
           return
         }
         if (geographics.length > 1) {
           metadata.geobox = []
           geographics.forEach(function (boxjson) {
-            metadata.geobox.push(_this.extractBboxJson(boxjson))
+            metadata.geobox.push(extractBboxJson(boxjson))
           })
         } else {
-          metadata.geobox = this.extractBboxJson(geographics[0])
+          metadata.geobox = extractBboxJson(geographics[0])
         }
-    },
-    extractFormat (metadata, json, idLang) {
+    }
+    function extractFormat (metadata, json, idLang) {
         var formats = []
-        var _this = this
-        var nodes = this.JSONPATH.query(json, "$..['gmd:MD_Format']")
+        var nodes = JSONPATH.query(json, "$..['gmd:MD_Format']")
         if (nodes === undefined) {
           return formats
         }
@@ -228,16 +235,16 @@ export default {
           nodes = [nodes]
         }
         nodes.forEach(function (format) {
-           formats.push(_this.extractFromLangs(format['gmd:name'], idLang))
+           formats.push(extractFromLangs(format['gmd:name'], idLang))
         })
         metadata.format = formats
-    },
+    }
     /**
      * Extract needed role to use fonctionnality
      * from api description like
      * search=free;view=MACHIN_V;download=MACHIN_VD
      **/
-    extractAccessFromDescription (description) {
+    function extractAccessFromDescription (description) {
         if (!description) {
           return {search:'free', view: 'UNKNOWN', download: 'UNKOWN'}
         }
@@ -250,24 +257,24 @@ export default {
           }
         })
         return access
-    },
-    extractHref (json) {
+    }
+    function extractHref (json) {
         if (json === undefined) {
           return null
         }
-        var values = this.JSONPATH.query(json, "$..['gmx:Anchor']['@xlink:href']")
+        var values = JSONPATH.query(json, "$..['gmx:Anchor']['@xlink:href']")
         if (values.length > 0) {
           return values[0]
         }
         return null
-    },
-    extractFromLangs(json, idLang) {
+    }
+    function extractFromLangs(json, idLang) {
         var value = null
         if (json === undefined) {
           return null
         }
         if (idLang) {
-          var values = this.JSONPATH.query(json, "$..['gmd:LocalisedCharacterString']")
+          var values = JSONPATH.query(json, "$..['gmd:LocalisedCharacterString']")
           if (values.length > 0) {
             values.forEach(function (node) {
               if (node['@locale'] === '#' + idLang && node['#text']) {
@@ -281,10 +288,9 @@ export default {
           value = json['gco:CharacterString']? json['gco:CharacterString']['#text'] : (json['gmx:Anchor'] ? json['gmx:Anchor']['#text'] : null)
         }
         return value
-    },
-    extractImages (json, idLang) {
+    }
+    function extractImages (json, idLang) {
         var images = []
-        var _this = this
         if (json === undefined) {
           return null
         }
@@ -294,23 +300,22 @@ export default {
         json.forEach(function (image) {
          if (image['gmd:MD_BrowseGraphic']['gmd:fileName']['gco:CharacterString']) {
           var file = image['gmd:MD_BrowseGraphic']['gmd:fileName']['gco:CharacterString']['#text']
-          var description = _this.extractFromLangs(image['gmd:MD_BrowseGraphic']['gmd:fileDescription'], idLang)
+          var description = extractFromLangs(image['gmd:MD_BrowseGraphic']['gmd:fileDescription'], idLang)
           images.push(['overview', file, description ? description : ''])
           }
         })
         return images
-    },
-    extractKeywords (metadata, json, idLang) {
+    }
+    function extractKeywords (metadata, json, idLang) {
     
         var keywords = []
-        var _this = this
         if (json) 
         json.forEach(function (keynode) {
             var list = keynode['gmd:MD_Keywords']['gmd:keyword']
             var thesaurus = keynode['gmd:thesaurusName']
             var isDataCenter = false
             if (keynode['gmd:MD_Keywords']['gmd:thesaurusName']) {
-              var name = _this.JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:title']..['#text']")
+              var name = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:title']..['#text']")
               if (name && name[0] && name[0].indexOf('Distributor') >= 0) {
                 isDataCenter = true
               }
@@ -319,12 +324,12 @@ export default {
               list = [list]
             }
             list.forEach (function (node) {
-              var keywd = _this.extractFromLangs(node, idLang)
+              var keywd = extractFromLangs(node, idLang)
               if (keywd) {
-                keywords.push(_this.extractFromLangs(node, idLang))
+                keywords.push(extractFromLangs(node, idLang))
                 if (isDataCenter) {
                   // extract link
-                  var link = _this.JSONPATH.query(node, "$..['gmx:Anchor']['@xlink:href']")
+                  var link = JSONPATH.query(node, "$..['gmx:Anchor']['@xlink:href']")
                   if (link.length > 0) {
                     metadata.dataCenter = link[0]
                     metadata.cds = link[0].substring(link[0].lastIndexOf('#') + 1)
@@ -334,19 +339,18 @@ export default {
             })
         })
         metadata.keyword = keywords
-    }, 
-    extractLineage(metadata, json, idLang) {
+    } 
+    function extractLineage(metadata, json, idLang) {
         metadata.lineage = 'un tesst curiosité'
-        var statements = this.JSONPATH.query(json, "$..['gmd:statement']")
+        var statements = JSONPATH.query(json, "$..['gmd:statement']")
         var sentences = []
-        var _this = this
         statements.forEach(function (statement) {
-          sentences.push(_this.extractFromLangs(statement, idLang))
+          sentences.push(extractFromLangs(statement, idLang))
         })
         metadata.lineage = sentences.join('<br />')
-    },
-    extractLinks (metadata, json, idLang) {
-        var links = this.JSONPATH.query(json, "$..['gmd:CI_OnlineResource']")
+    }
+    function extractLinks (metadata, json, idLang) {
+        var links = JSONPATH.query(json, "$..['gmd:CI_OnlineResource']")
         if (links[0] && links[0].length > 0) {
           var aux = []
           links.forEach(function (link) {
@@ -354,7 +358,6 @@ export default {
           })
           links = aux
         }
-        var _this = this
         links.forEach(function (online, index) {
          var protocol = 'WWW:LINK-1.0-http--link'
          if (online['gmd:protocol']['gmx:Anchor']) {
@@ -363,8 +366,8 @@ export default {
           var protocol = online['gmd:protocol']['gco:CharacterString']['#text'] 
          }
           var url = online['gmd:linkage']['gmd:URL']
-          var name = _this.extractFromLangs(online['gmd:name'], idLang)
-          var description = _this.extractFromLangs(online['gmd:description'], idLang)
+          var name = extractFromLangs(online['gmd:name'], idLang)
+          var description = extractFromLangs(online['gmd:description'], idLang)
           var link = {
               id: index,
               title: name,
@@ -379,7 +382,7 @@ export default {
           case 'Opensearch':
           case 'opensearch':
           case 'SensorThings':
-            var access =  _this.extractAccessFromDescription(description)
+            var access =  extractAccessFromDescription(description)
             metadata.api = {
               http: url,
               name: name,
@@ -458,25 +461,25 @@ export default {
             break;
           }
         })
-    },
-    extractResolution (metadata, json) {
+    }
+    function extractResolution (metadata, json) {
         if (json === undefined) {
           return
         }
-        var dist = this.JSONPATH.query(json, "$..['gco:Distance']")
+        var dist = JSONPATH.query(json, "$..['gco:Distance']")
         if (dist.length > 0) {
            var list = dist.map(d => d['#text'] + ' ' + d['@uom'] )
            metadata.resolution = list.join(', ')
         
         } else {
-          var denominator = this.JSONPATH.query(json, "$..['gmd:denominator']['gco:Integer']")
+          var denominator = JSONPATH.query(json, "$..['gmd:denominator']['gco:Integer']")
           if (denominator.length > 0) {
             metadata.resolution = '1 / ' + denominator[0]['#text']
           }
         }
       
-    },
-    extractSpatialRepresentation (metadata, json) {
+    }
+    function extractSpatialRepresentation (metadata, json) {
         if (json === undefined) {
           return
         }
@@ -484,4 +487,5 @@ export default {
           metadata.representation = json['gmd:MD_SpatialRepresentationTypeCode']['@codeListValue']
         }
     }
+    return {transform: transform}
 }

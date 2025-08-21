@@ -8,6 +8,7 @@ const exportLinks = defineProps({
 
 </script>
 <template >
+{{exportLinks}}
  <span class="mtdt-export-links" v-if="exportLinks.xml || exportLinks.pdf || exportLinks.json">
   <div  class="mtdt-tab-export">
     <i class="fa fa-chevron-down"></i>

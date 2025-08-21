@@ -45,7 +45,7 @@ function close () {
         <hr />
         <div class="mtdt-tabs">
              <div v-for="(tab,index) in tabs" class="mtdt-tab" :class="{'selected': data.currentTab === index}" @click="data.currentTab = index">{{$t(index)}}</div>
-          <export-links v-if="metadata && metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
+          <export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
         </div>
         <div v-show="data.currentTab === 'description'">
         {{metadata}}
@@ -71,6 +71,10 @@ function close () {
 .metadata-content h4{
   font-size: 1em;
   }
+.metadata-content h1 svg {
+    vertical-align:top;
+    margin: 8px auto;
+}
 .metadata-content h1 div {
   max-width:calc(100% - 150px);
   display:inline-block;
