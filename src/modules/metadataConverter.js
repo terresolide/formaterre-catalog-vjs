@@ -36,6 +36,11 @@ export default function (attrs) {
         metadata.description = description.replace(/(?:\\[rn]|[\r\n])/g, '<br />')
         metadata.credit = extractFromLangs(json['gmd:credit'], idLang)
         metadata.purpose = extractFromLangs(json['gmd:purpose'], idLang)
+        if (json['gmd:hierarchyLevel']) {
+            metadata.hierarchyLevel = json['gmd:hierarchyLevel']['gmd:MD_ScopeCode']['@codeListValue']
+        } else {
+            metadata.hierarchyLevel = 'dataset'
+        }
         if (metadata.purpose) {
           metadata.purpose = metadata.purpose.replace(/(?:\\[rn]|[\r\n])/g, '<br />')
         }
@@ -130,7 +135,13 @@ export default function (attrs) {
         var latmax = json['gmd:northBoundLatitude']['gco:Decimal']['#text']
         var lngmin = json['gmd:westBoundLongitude']['gco:Decimal']['#text']
         var lngmax = json['gmd:eastBoundLongitude']['gco:Decimal']['#text']
-        return [lngmin, latmin, lngmax, latmax].join('|')
+        
+        var coordinates = [[[parseFloat(lngmin), parseFloat(latmin)],
+                            [parseFloat(lngmin), parseFloat(latmax)],
+                            [parseFloat(lngmax), parseFloat(latmax)],
+                            [parseFloat(lngmax), parseFloat(latmin)],
+                            [parseFloat(lngmin), parseFloat(latmin)]]]
+        return coordinates
     }
     function extractConstraints (json, idLang) {
         if (!json) {
@@ -215,13 +226,30 @@ export default function (attrs) {
         if (geographics.length === 0) {
           return
         }
+        
         if (geographics.length > 1) {
-          metadata.geobox = []
+          metadata.geojson = {
+              type: 'FeatureCollection',
+              features: []
+          }
           geographics.forEach(function (boxjson) {
-            metadata.geobox.push(extractBboxJson(boxjson))
+           // var bbox = extractBboxJson(boxjson)
+            metadata.geojson.features.push({
+                type: 'Feature',
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: extractBboxJson(boxjson)
+                }
+            })
           })
         } else {
-          metadata.geobox = extractBboxJson(geographics[0])
+          metadata.geojson = {
+                type: 'Feature',
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: extractBboxJson(geographics[0])
+                }
+            }
         }
     }
     function extractFormat (metadata, json, idLang) {

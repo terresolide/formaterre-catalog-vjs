@@ -2,6 +2,7 @@
 import {computed, reactive} from 'vue'
 import { useConfig } from "@/stores/config.js"
 import ExportLinks from '@/components/ExportLinks.vue'
+import MetadataContent from '@/components/MetadataContent.vue'
 const {metadata,color} = defineProps({
     metadata: {
         type: Object,
@@ -35,7 +36,7 @@ function close () {
             <a v-if="metadata.dataCenter" :href="dataCenter.href" :title="dataCenter.title[config.lang]" target="_blank" class="mtdt-group-logo">
               <img :src="dataCenter.logo"/>
             </a>
-            <font-awesome-icon :icon="metadata && metadata.type === 'series' ? 'fa-solid fa-folder-open': 'fa-solid fa-file'" /> 
+            <font-awesome-icon :icon="metadata && metadata.hierarchyLevel === 'series' ? 'fa-solid fa-folder-open': 'fa-solid fa-file'" /> 
             <div>
                <span v-if="metadata.initiativeType">{{$t(metadata.initiativeType)}}: </span>
               {{metadata.title ? metadata.title: metadata.defaultTitle}}
@@ -48,7 +49,7 @@ function close () {
           <export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
         </div>
         <div v-show="data.currentTab === 'description'">
-        {{metadata}}
+         <metadata-content :metadata="metadata" />
         </div>
         <div v-show="data.currentTab === 'search'">
             <slot></slot>

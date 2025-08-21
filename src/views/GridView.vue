@@ -67,15 +67,13 @@
       }
       elasticsearch.getMetadata(uuid)
       .then(meta => {
+          console.log(meta)
           getMetaConverter()
           .then(converter => {
               data.converter = converter.default()
               data.metadata = data.converter.transform(uuid, meta)
-              var coords = data.metadata.geobox.split('|')
-              data.bbox = {type: 'Feature', geometry: {
-                  type: 'Polygon',
-                  coordinates: [[[coords[0], coords[1]], [coords[2], coords[1]], [coords[2], coords[3]], [coords[0], coords[3]], [coords[0], coords[1]]]]
-              }}
+              data.bbox = data.metadata.geojson
+              
            })
           
       })
@@ -97,6 +95,7 @@
           data.pagination.count = json.hits.hits.length
           data.pagination.total = json.hits.total.value
           data.pagination.relation = json.hits.total.relation
+          data.bbox = null
         }
         return elasticsearch.treatmentAggregations(json.aggregations)
     }).then(values => {
