@@ -1,12 +1,18 @@
 <script setup>
+import CarrousselImages from '@/components/CarrousselImages.vue'
 const {metadata} = defineProps({
     metadata: Object
 })
 </script>
 <template>
     <div class="metadata-container">
-        <div>{{metadata}}</div>
-        <div>image
+        <div>
+            <div>status</div>
+            {{metadata}}
+            <div v-html="metadata.description" />
+        </div>
+        <div>
+           <carroussel-images :images="metadata.images" />
         <br>lien
         </div>
     </div>
