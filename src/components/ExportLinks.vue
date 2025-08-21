@@ -12,8 +12,7 @@ const {exportLinks} = defineProps({
   <div  class="mtdt-tab-export">
      Export  
      <font-awesome-icon icon="fa-solid fa-caret-down" /> 
-           
-     
+
   </div>
   <div class="mtdt-expand">
      <div v-if="exportLinks.json"><a :href="exportLinks.json" target="_blank">Export JSON</a></div>

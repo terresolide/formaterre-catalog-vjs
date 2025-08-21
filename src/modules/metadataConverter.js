@@ -8,14 +8,13 @@ export default function (attrs) {
     let JSONPATH = new JSONPath()
     function transform (uuid, json) {
         var metadata = {}
-        console.log(config)
         if (config.state.geonetwork) {
           if (json.logo) {
-            metadata.logo = config.state.geonetwork + json.logo.replace(/^\//, '')
+            metadata.logo = config.state.geonetwork + '/' + json.logo.replace(/^\//, '')
           }
           metadata.exportLinks = {
-              xml: config.state.geonetwork + 'srv/api/records/'+ uuid + '/formatters/xml?attachment=true',
-              pdf: config.state.geonetwork + 'srv/api/records/'+ uuid + '/formatters/xsl-view?root=div&output=pdf'
+              xml: config.state.geonetwork + '/srv/api/records/'+ uuid + '/formatters/xml?attachment=true',
+              pdf: config.state.geonetwork + '/srv/api/records/'+ uuid + '/formatters/xsl-view?root=div&output=pdf'
           }
         }
         var idLang = config.locale

@@ -20,7 +20,8 @@ const router = useRouter()
 const map = ref(null)
 
 const props = defineProps({
-  list: Array
+  list: Array,
+  bbox: Object
 })
 
 const data = reactive({
@@ -30,6 +31,7 @@ const data = reactive({
   controlDraw: null,
   layers: [],
   bbox: null, // ensemble des bbox
+  singleBbox: null, // bbox pour page metadonnées
   selectedBbox: null, // la bbox sélectionnée parmi toutes
   drawnBbox: null, // la bbox dessinée
   reader: null
@@ -285,6 +287,21 @@ watch(
     (query) => {
        drawBbox(query)
 })
+watch(
+    () => props.bbox,
+    (bbox) => {
+        if(data.singleBbox) {
+            data.singleBbox.remove()
+            data.singleBbox = null
+        }
+        if (bbox) {
+            data.singleBbox = L.geoJSON(bbox, { style: selectedOptions })
+            data.singleBbox.addTo(data.map)
+            let bounds = data.singleBbox.getBounds()
+            data.map.fitBounds(bounds, [10, 10])
+        }
+    }
+)
 watch(
   () => props.list,
   (list) => {

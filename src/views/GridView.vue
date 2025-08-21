@@ -10,6 +10,7 @@
   const elasticsearch = useElasticsearch()
   let data = reactive({
     list: [],
+    bbox: null,
     pagination: {
       count: 0,
       total: 0
@@ -69,8 +70,12 @@
           getMetaConverter()
           .then(converter => {
               data.converter = converter.default()
-              console.log(data.converter)
               data.metadata = data.converter.transform(uuid, meta)
+              var coords = data.metadata.geobox.split('|')
+              data.bbox = {type: 'Feature', geometry: {
+                  type: 'Polygon',
+                  coordinates: [[[coords[0], coords[1]], [coords[2], coords[1]], [coords[2], coords[3]], [coords[0], coords[3]], [coords[0], coords[1]]]]
+              }}
            })
           
       })
@@ -102,7 +107,7 @@
 
 <template>
   <main>
-    <FormGrid :aggregations="data.aggregations" :list="data.list"></FormGrid>
+    <FormGrid :aggregations="data.aggregations" :list="data.list" :bbox="data.bbox"></FormGrid>
     <template v-if="route.params.id">
        <metadata-page :metadata="data.metadata" @close="close">
             <div>

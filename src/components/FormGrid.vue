@@ -13,7 +13,8 @@
   const router = useRouter()
   const props = defineProps({
     aggregations: Object,
-    list: Array
+    list: Array,
+    bbox: Object
   })
 
   // daymin et daymax à récupérer (depend du catalogue ou bien de la série parent....)
@@ -56,7 +57,7 @@
    <div class="formater-input-group" style="margin: 10px; width: calc(100% - 20px); " :style="{backgroundColor: config.state.lightcolor}">
     <input name="any" v-model="data.any" :placeholder="$t('search')  + '...'" @change="textChange">
     <font-awesome-icon icon="fa-solid fa-search"/></div>
-   <map-box :list="props.list"></map-box>
+   <map-box :list="props.list" :bbox="props.bbox"></map-box>
    <div style="height:calc(100% - 300px);overflow-y:scroll;">
        <search-box :color="config.state.primary" header-icon-class="fa-solid fa-earth-americas" type="light" :title="$t('spatial_extent')">
             <spatial-search :lang="config.state.lang" :primary="config.state.primary" :color="config.state.lightcolor"></spatial-search> 
