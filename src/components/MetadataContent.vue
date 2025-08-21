@@ -11,13 +11,19 @@ const {metadata} = defineProps({
             {{metadata}}
             <div v-html="metadata.description" />
         </div>
-        <div>
-           <carroussel-images :images="metadata.images" />
-        <br>lien
+        <div class="right-side">
+            <div>
+               <carroussel-images :images="metadata.images" />
+            </div>
+            <div>lien</div>
         </div>
     </div>
 </template>
 <style scoped>
+.right-side {
+    margin-top: 10px;
+    text-align:center;
+}
 @media (min-width: 1200px) {
     .metadata-container {
         display:grid;

@@ -8,11 +8,14 @@ const data = reactive({
 })
 </script>
 <template>
-     <span class="mtdt-quicklooks" v-if="images">
-    <span class="fa fa-chevron-circle-left" v-if="selected > 0" @click="data.selected -= 1">
-        
+ <span class="mtdt-quicklooks" v-if="images">
+    <span class="circle left" v-if="data.selected > 0" @click="data.selected -= 1">
+         <font-awesome-icon icon="fa-solid fa-circle-chevron-left" /> 
+          
     </span>
-    <i class="fa fa-chevron-circle-right" v-if="images.length>0 && data.selected < images.length - 1" @click="selected += 1"></i>
+    <span class="circle right" v-if="images.length > 0 && data.selected < images.length - 1" @click="data.selected += 1">
+        <font-awesome-icon icon="fa-solid fa-circle-chevron-right" /> 
+    </span>
     <div class="wrapper">
     <div v-for="(image, index) in images" :key="index" :class="{'selected': data.selected === index}">
 
@@ -25,15 +28,15 @@ const data = reactive({
 <style scoped>
 .mtdt-quicklooks{
   position: relative;
-   float:left;
-   max-width: 200px;
+  display:block;
+   max-width: 100%;
   /* max-height:260px;*/
-   background: #ddd;
+   background: #eee;
    margin: 0px 15px 10px 0;
 }
 .mtdt-quicklooks div.wrapper{
    text-align:center;
-   max-width: 200px;
+   max-width: 100%;
    max-height:296px;
    line-height:180px;
    margin:auto;
@@ -51,33 +54,31 @@ const data = reactive({
 }
 .mtdt-quicklooks img{
   width:100%;
-  max-width:180px;
+  max-width:100%;
   max-height:260px;
   display:block;
   margin:auto;
   vertical-align:middle;
 }
-.mtdt-catalogue .mtdt-quicklooks .fa-chevron-circle-right,
-.mtdt-catalogue .mtdt-quicklooks .fa-chevron-circle-left{
+.mtdt-quicklooks .circle {
   position: absolute;
   font-size:40px;
-  top: 110px;
+  top: 80px;
   z-index:1;
-  opacity:0;
+  opacity:0.3;
   cursor: pointer;
 }
- .mtdt-quicklooks:hover .fa {
+ .mtdt-quicklooks:hover .circle {
    opacity:0.3
  }
-.mtdt-quicklooks .fa-chevron-circle-right:hover,
-.mtdt-quicklooks .fa-chevron-circle-left:hover{
+.mtdt-quicklooks .circle:hover {
   opacity: 0.7;
 }
- .mtdt-metadata .mtdt-quicklooks .fa-chevron-circle-right{
+.mtdt-quicklooks .right{
   right:1px;
   margin-right:0;
 }
-.mtdt-metadata .mtdt-quicklooks .fa-chevron-circle-left{
+.mtdt-metadata .mtdt-quicklooks .left{
   left:1px;
   margin-left:0;
 }
