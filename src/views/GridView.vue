@@ -64,6 +64,7 @@
   function getMetadata(uuid) {
       if (!uuid) {
           data.metadata = null
+          return
       }
       elasticsearch.getMetadata(uuid)
       .then(meta => {

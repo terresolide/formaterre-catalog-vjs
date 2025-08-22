@@ -82,7 +82,8 @@ function treatmentLinks (list, id) {
             if (!links.layers) {
               links.layers = []
             }
-            var idLayer =  id + '_' + index
+            var idLayer =  id + '_' + links.layers.length 
+            console.log(idLayer)
             links.layers.push({
                  id: idLayer,
                  uuid: id,

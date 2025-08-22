@@ -7,15 +7,16 @@ const {metadata} = defineProps({
 </script>
 <template>
     <div class="metadata-container">
-        <div>
+        <div class="main-column">
             <div>status</div>
-            {{metadata}}
+            
             <div v-html="metadata.description" />
         </div>
         <div class="right-side">
-            <div>
+            <div style="margin-bottom:20px;">
                <carroussel-images :images="metadata.images" />
             </div>
+        
             <div>
               <related-links :links="metadata.links" :uuid="metadata.uuid" mode="page"/> 
             </div>
@@ -24,6 +25,7 @@ const {metadata} = defineProps({
 </template>
 <style scoped>
 .right-side {
+
     margin-top: 10px;
     text-align:center;
     background: #eee;
@@ -34,9 +36,13 @@ const {metadata} = defineProps({
         grid-template-columns: 3fr 1fr;
         grid-gap:10px;
     }
-    .right-side {
-        max-width: 270px;
+    .main-column {
+        grid-column: 1/1;
     }
+    .right-side {
+        grid-column: 2/2;
+    }
+    
 }
 
 </style>

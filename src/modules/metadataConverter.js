@@ -78,7 +78,10 @@ export default function (attrs) {
             metadata.contacts.resource[contact[0]] = [contact]
           }
         })
-        extractDistributionInfo (metadata, json, idLang) 
+        // extractDistributionInfo (metadata, json, idLang) 
+        var json2 = json['gmd:distributionInfo']['gmd:MD_Distribution']['gmd:distributionFormat'] || {}
+        extractFormat(metadata, json2, idLang)
+        extractLinks (metadata, json, idLang, uuid) 
         extractExtent(metadata, dataInfo['gmd:extent'])
         extractDates(metadata,  JSONPATH.query(dataInfo, "$..['gmd:citation']..['gmd:CI_Date']"))
         extractAssociation(metadata, dataInfo['gmd:aggregationInfo'])
@@ -377,7 +380,7 @@ export default function (attrs) {
         })
         metadata.lineage = sentences.join('<br />')
     }
-    function extractLinks (metadata, json, idLang) {
+    function extractLinks (metadata, json, idLang, uuid) {
         var list = {}
         var links = JSONPATH.query(json, "$..['gmd:CI_OnlineResource']")
         if (links[0] && links[0].length > 0) {
@@ -436,9 +439,9 @@ export default function (attrs) {
                       if (!list.layers) {
                         list.layers = []
                       }
-                      var id = metadata.uuid + '_' + index
+                      var id = uuid + '_' + list.layers.length
+                      console.log(id)
                       link.id = id
-                      link.checked = false
                       list.layers.push(link)
                     break;
                   case 'application/vnd.google-earth.kml+xml':

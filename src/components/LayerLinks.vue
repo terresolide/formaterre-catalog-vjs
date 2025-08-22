@@ -65,3 +65,8 @@ function select(index) {
     </ul>
   </div>
 </template>
+<style scoped>
+.mtdt-layers svg {
+    vertical-align:top;
+}
+</style>

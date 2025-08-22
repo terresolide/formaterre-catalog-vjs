@@ -1,6 +1,7 @@
 <script setup>
 import {computed, reactive} from 'vue'
 import { useConfig } from "@/stores/config.js"
+import { useSelection } from "@/stores/selection.js"
 import ExportLinks from '@/components/ExportLinks.vue'
 import MetadataContent from '@/components/MetadataContent.vue'
 const {metadata,color} = defineProps({
@@ -15,6 +16,7 @@ const {metadata,color} = defineProps({
 })
 const emit= defineEmits(["close"])
 const config = useConfig()
+const selection = useSelection()
 const tabs = {
     description: 'description',
     search: 'search'
@@ -49,6 +51,7 @@ function close () {
           <export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
         </div>
         <div v-show="data.currentTab === 'description'">
+        {{selection.layers}}
          <metadata-content :metadata="metadata" />
         </div>
         <div v-show="data.currentTab === 'search'">

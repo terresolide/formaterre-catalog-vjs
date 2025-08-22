@@ -82,7 +82,7 @@ const data = reactive({
   left:1px;
   margin-left:0;
 }
-@media screen and (min-width:1100px) {
+/* @media screen and (min-width:1100px) {
   .mtdt-quicklooks{
    max-width: 250px;
   }
@@ -107,5 +107,5 @@ const data = reactive({
     .mtdt-quicklooks img{
       max-width:320px;
     }
-}
+}*/
 </style>

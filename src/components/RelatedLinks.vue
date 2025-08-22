@@ -98,9 +98,7 @@ span.disabled,
   margin: 20px 10px 30px 10px;
   text-align: left;
 }
-.mtdt-related-metadata .mtdt-links.mtdt-expand {
-  display: block;
-}
+
 .mtdt-links a,
 .mtdt-links span {
   padding: 1px 3px;
@@ -157,27 +155,29 @@ span.disabled,
   list-style: none;
   margin: 5px 3px 5px 9px;
 }
-.mtdt-related-metadata .mtdt-expand ul {
-  display: inline;
+.mtdt-expand ul {
+  display: block;
   margin-top:4px;
 }
-.element-metadata-flex .mtdt-expand ul li {
+.element-metadata-flex .mtdt-expand ul li,
+.element-metadata-flex .mtdt-expand ul li div {
   word-break: break-word;
   line-height:1;
   padding-bottom:3px;
   font-size:0.9rem;
 }
-.mtdt-related-metadata .mtdt-expand ul li {
+.mtdt-expand ul li {
   word-break: break-word;
   padding: 2px;
   margin: 0;
+  line-height:1;
   cursor: pointer;
 }
-.mtdt-related-metadata .mtdt-expand ul li.disabled {
+.mtdt-expand ul li.disabled {
   pointer-events: none;
   opacity: 0.5;
 }
-.mtdt-related-metadata .mtdt-expand ul:not(.mtdt-layers) li:before {
+.mtdt-expand ul:not(.mtdt-layers) li:before {
   content: '\2192';
   padding: 0 5px;
   display: table-cell;
@@ -190,9 +190,9 @@ span.disabled,
   padding: 0 5px;
   display: table-cell;
 }
-.mtdt-related-metadata .mtdt-expand ul:not(.mtdt-layers) li a,
-.mtdt-related-metadata .mtdt-expand ul:not(.mtdt-layers) li span,
-.mtdt-related-metadata .mtdt-expand ul:not(.mtdt-layers) li div {
+.mtdt-expand ul:not(.mtdt-layers) li a,
+.mtdt-expand ul:not(.mtdt-layers) li span,
+.mtdt-expand ul:not(.mtdt-layers) li div {
   display: table-cell;
   max-width: 92%;
 }
@@ -225,7 +225,7 @@ ul.mtdt-layers li {
 .element-metadata-flex ul.mtdt-layers li i.fa {
   margin-right: 3px;
 }
-.element-metadata-flex ul.mtdt-layers li div {
+ul.mtdt-layers li div {
   text-overflow: clip;
   margin: 0;
   padding: 0;
@@ -233,7 +233,7 @@ ul.mtdt-layers li {
   overflow: hidden;
   word-break: break-word;
   vertical-align: top;
-  line-height: 0.9;
+  line-height: 1;
   max-height: 32px;
   padding: 2px 0;
   display: inline-block;
