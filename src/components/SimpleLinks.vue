@@ -10,7 +10,11 @@ const props = defineProps({
    type: {
        type:String,
        default: 'information'
-    }
+    },
+   mode: {
+       type: String,
+       default: 'box'
+   }
 })
 let icon = computed(() => {
     if (props.type === 'information') {
@@ -28,11 +32,11 @@ let config = useConfig()
       <!-- liens d'information -->
        <div class="mtdt-related-type" :style="{backgroundColor: config.state.primary}">
        <font-awesome-icon :icon="icon" /> 
-       <font-awesome-icon v-if="props.links.length > 1" icon="fa-solid fa-caret-down" />
+       <font-awesome-icon v-if="props.links.length > 1 && props.mode === 'box'" icon="fa-solid fa-caret-down" />
     
     
       </div>
-       <div v-if="props.links.length > 1" class="mtdt-expand mtdt-links">
+       <div v-if="props.links.length > 1 || props.mode === 'page'" class="mtdt-expand mtdt-links">
             <ul >
                 <template v-for="link in props.links">
                   <li >

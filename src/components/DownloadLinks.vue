@@ -1,9 +1,13 @@
 <script setup>
 import { computed} from 'vue';
 import {useSelection} from '@/stores/selection'
-const {links, service} = defineProps({
-   links: Array,
-   service: null
+const {links, service, mode} = defineProps({
+    links: Array,
+    service: null,
+    mode: {
+        type: String,
+        default: 'box'
+    }
 })
 const selection = useSelection()
 const isDisable = computed(() => {return false})
@@ -21,13 +25,13 @@ function download (index) {
      </template>
      <template v-else>
          <font-awesome-icon icon="fa-solid fa-download"  />
-         <font-awesome-icon
+         <font-awesome-icon v-if="mode === 'box'"
           style="margin-left: 2px"
           icon="fa-solid fa-caret-down"
          />
      </template>
   </div>
-  <div v-if="links.length > 1" class="mtdt-expand mtdt-links">
+  <div v-if="links.length > 1 || mode === 'page'" class="mtdt-expand mtdt-links">
     <ul>
       <template v-for="(link, index) in links">
         <li @click="download(index)" style="cursor:pointer;">

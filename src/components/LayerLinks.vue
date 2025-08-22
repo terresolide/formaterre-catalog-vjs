@@ -8,6 +8,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  mode: {
+      type: String,
+      default: 'box'
+  },
   access: {
     type: Object,
     default: () => {
@@ -42,13 +46,13 @@ function select(index) {
   >
     <font-awesome-icon icon="fa-solid fa-earth-americas" />
     <font-awesome-icon
-      v-if="props.links.length > 1"
+      v-if="props.links.length > 1 && props.mode === 'box'"
       style="margin-left: 2px"
       icon="fa-solid fa-caret-down"
     />
   </div>
 
-  <div v-if="props.links.length > 1" class="mtdt-expand mtdt-layers">
+  <div v-if="props.links.length > 1 || props.mode === 'page'" class="mtdt-expand mtdt-layers">
     <ul class="mtdt-layers">
       <template v-for="(layer, index) in props.links">
         <li @click="select(index)">

@@ -7,9 +7,12 @@ import SimpleLinks from '@/components/SimpleLinks.vue'
 import DownloadLinks from '@/components/DownloadLinks.vue'
 import LayerLinks from '@/components/LayerLinks.vue'
 const props = defineProps({
-  uuid: String,
-  links: Object,
-  mode: 'box'
+    uuid: String,
+    links: Object,
+    mode: {
+        type: String,
+        default:'box'
+    }
 })
 let config = useConfig()
 let selection = useSelection()
@@ -17,7 +20,7 @@ let links = computed(() => {})
 let access = { view: 'free', download: 'free' }
 let selectedUuid = computed(() => selection.uuid)
 function select() {
-  selection.toggle(props.uuid)
+    selection.toggle(props.uuid)
 }
 </script>
 <template>
@@ -32,7 +35,7 @@ function select() {
   </div>
   <!-- afficher la couche sur la carte -->
   <template v-if="props.links.layers && props.links.layers.length > 0">
-    <layer-links :links="props.links.layers" :uuid="uuid" :access="access"></layer-links>
+    <layer-links :links="props.links.layers" :uuid="uuid" :access="access" :mode="props.mode"></layer-links>
   </template>
   <!-- instrument -->
   <!--
@@ -41,7 +44,7 @@ function select() {
       </div>
   -->
   <template v-if="props.links.download && props.links.download.length > 0">
-    <download-links :links="props.links.download"></download-links>
+    <download-links :links="props.links.download" :mode="props.mode"></download-links>
   </template>
 
   <!-- commander les données -->
@@ -53,10 +56,10 @@ function select() {
       </div>
   </template>
   <template v-if="props.links.links && props.links.links.length > 0">
-    <simple-links :links="props.links.links" type="information"></simple-links>
+    <simple-links :links="props.links.links" type="information" :mode="props.mode"></simple-links>
   </template>
   <template v-if="props.links.relatedLinks && props.links.relatedLinks.length > 0">
-    <simple-links :links="props.links.relatedLinks" type="related"></simple-links>
+    <simple-links :links="props.links.relatedLinks" type="related" :mode="props.mode"></simple-links>
   </template>
 </template>
 <style>

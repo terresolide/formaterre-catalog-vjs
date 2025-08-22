@@ -32,7 +32,7 @@ const data = reactive({
    max-width: 100%;
   /* max-height:260px;*/
    background: #eee;
-   margin: 0px 15px 10px 0;
+   margin: auto;
 }
 .mtdt-quicklooks div.wrapper{
    text-align:center;

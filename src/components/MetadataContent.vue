@@ -6,7 +6,6 @@ const {metadata} = defineProps({
 })
 </script>
 <template>
-{{metadata.links}}
     <div class="metadata-container">
         <div>
             <div>status</div>
@@ -18,7 +17,7 @@ const {metadata} = defineProps({
                <carroussel-images :images="metadata.images" />
             </div>
             <div>
-              <related-links :links="metadata.links" :uuid="metadata.uuid" /> 
+              <related-links :links="metadata.links" :uuid="metadata.uuid" mode="page"/> 
             </div>
         </div>
     </div>
@@ -27,12 +26,16 @@ const {metadata} = defineProps({
 .right-side {
     margin-top: 10px;
     text-align:center;
+    background: #eee;
 }
 @media (min-width: 1200px) {
     .metadata-container {
         display:grid;
         grid-template-columns: 3fr 1fr;
         grid-gap:10px;
+    }
+    .right-side {
+        max-width: 270px;
     }
 }
 
