@@ -79,6 +79,7 @@
       })
   }
   function close () {
+    // enregistrer la dernière page grid...
     let lastPath = router.options.history.state.back;
     if (lastPath) {
         router.back()

@@ -63,7 +63,7 @@ const data = reactive({
 .mtdt-quicklooks .circle {
   position: absolute;
   font-size:40px;
-  top: 80px;
+  top: 100px;
   z-index:1;
   opacity:0.3;
   cursor: pointer;
@@ -78,7 +78,7 @@ const data = reactive({
   right:1px;
   margin-right:0;
 }
-.mtdt-metadata .mtdt-quicklooks .left{
+.mtdt-quicklooks .left{
   left:1px;
   margin-left:0;
 }

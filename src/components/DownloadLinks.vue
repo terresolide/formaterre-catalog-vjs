@@ -10,7 +10,8 @@ const isDisable = computed(() => {return false})
 function commandLine() {
     selection.setDownload(links[0])
 }
-
+function download (index) {
+}
 </script>
 <template>
   <div class="mtdt-related-type">

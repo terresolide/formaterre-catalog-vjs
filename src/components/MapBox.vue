@@ -298,7 +298,9 @@ watch(
             data.singleBbox = L.geoJSON(bbox, { style: selectedOptions })
             data.singleBbox.addTo(data.map)
             let bounds = data.singleBbox.getBounds()
-            data.map.fitBounds(bounds, [10, 10])
+            if (bounds) {
+                data.map.fitBounds(bounds, [10, 10])
+            }
         }
     }
 )
@@ -335,7 +337,9 @@ watch(
         data.bbox.addLayer(L.geoJSON(geojson, { style: currentOptions }))
         data.bbox.addTo(data.map)
         var bounds = data.bbox.getBounds()
-        data.map.fitBounds(bounds)
+        if (bounds) {
+            data.map.fitBounds(bounds)
+        }
     }
   },
 )
@@ -348,7 +352,11 @@ watch(
     data.legendControl.removeAll()
     if (!uuid) {
       data.selectedBbox = null
-      data.map.fitBounds(data.bbox.getBounds())
+      
+      var bounds = data.bbox.getBounds()
+        if (bounds.isValid()) {
+            data.map.fitBounds(bounds)
+        }
 
       return
     }

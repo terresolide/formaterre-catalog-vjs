@@ -1,10 +1,12 @@
 <script setup>
 import CarrousselImages from '@/components/CarrousselImages.vue'
+import RelatedLinks from '@/components/RelatedLinks.vue'
 const {metadata} = defineProps({
     metadata: Object
 })
 </script>
 <template>
+{{metadata.links}}
     <div class="metadata-container">
         <div>
             <div>status</div>
@@ -15,7 +17,9 @@ const {metadata} = defineProps({
             <div>
                <carroussel-images :images="metadata.images" />
             </div>
-            <div>lien</div>
+            <div>
+              <related-links :links="metadata.links" :uuid="metadata.uuid" /> 
+            </div>
         </div>
     </div>
 </template>

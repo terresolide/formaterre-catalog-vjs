@@ -9,6 +9,7 @@ import LayerLinks from '@/components/LayerLinks.vue'
 const props = defineProps({
   uuid: String,
   links: Object,
+  mode: 'box'
 })
 let config = useConfig()
 let selection = useSelection()
@@ -20,8 +21,8 @@ function select() {
 }
 </script>
 <template>
-  <!-- afficher la position sur la carte -->
-  <div
+
+  <div v-if="props.mode === 'box'"
     class="mtdt-related-type"
     :style="{ backgroundColor: uuid === selectedUuid ? config.state.over : config.state.primary }"
     :title="$t('localize')"

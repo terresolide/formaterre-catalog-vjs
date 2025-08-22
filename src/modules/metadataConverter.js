@@ -47,6 +47,7 @@ export default function (attrs) {
         var dataInfo = json['gmd:identificationInfo']['gmd:MD_DataIdentification']
         metadata.status = JSONPATH.query(json,"$..['gmd:status']['gmd:MD_ProgressCode']['@codeListValue']")[0]
         metadata.identifier = JSONPATH.query(json, "$..['gmd:identifier']..['gco:CharacterString']['#text']")[0]
+        metadata.uuid = metadata.indentifier
         // metadata.dataCenter =
         if (dataInfo['gmd:topicCategory']) {
         metadata.topicCat = dataInfo['gmd:topicCategory']['gmd:MD_TopicCategoryCode']
@@ -77,7 +78,7 @@ export default function (attrs) {
             metadata.contacts.resource[contact[0]] = [contact]
           }
         })
-     
+        extractDistributionInfo (metadata, json, idLang) 
         extractExtent(metadata, dataInfo['gmd:extent'])
         extractDates(metadata,  JSONPATH.query(dataInfo, "$..['gmd:citation']..['gmd:CI_Date']"))
         extractAssociation(metadata, dataInfo['gmd:aggregationInfo'])
@@ -208,7 +209,7 @@ export default function (attrs) {
         })
     }
     function extractDistributionInfo (metadata, json, idLang) {
-        var json2 = json['gmd:MD_Distribution']['gmd:distributionFormat'] || {}
+        var json2 = json['gmd:distributionInfo']['gmd:MD_Distribution']['gmd:distributionFormat'] || {}
         extractFormat(metadata, json2, idLang)
         extractLinks (metadata, json, idLang) 
     }
@@ -377,6 +378,7 @@ export default function (attrs) {
         metadata.lineage = sentences.join('<br />')
     }
     function extractLinks (metadata, json, idLang) {
+        var list = {}
         var links = JSONPATH.query(json, "$..['gmd:CI_OnlineResource']")
         if (links[0] && links[0].length > 0) {
           var aux = []
@@ -386,108 +388,99 @@ export default function (attrs) {
           links = aux
         }
         links.forEach(function (online, index) {
-         var protocol = 'WWW:LINK-1.0-http--link'
-         if (online['gmd:protocol']['gmx:Anchor']) {
-           var protocol = online['gmd:protocol']['gmx:Anchor']['#text']
-         } else if (online['gmd:protocol']['gco:CharacterString'] ) {
-          var protocol = online['gmd:protocol']['gco:CharacterString']['#text'] 
-         }
-          var url = online['gmd:linkage']['gmd:URL']
-          var name = extractFromLangs(online['gmd:name'], idLang)
-          var description = extractFromLangs(online['gmd:description'], idLang)
-          var link = {
-              id: index,
-              title: name,
-              description: description,
-              url: url,
-              type: protocol
-            }
-           console.log(protocol)
-          switch(protocol) {
-          case 'UKST':
-          case 'OpenSearch':
-          case 'Opensearch':
-          case 'opensearch':
-          case 'SensorThings':
-            var access =  extractAccessFromDescription(description)
-            metadata.api = {
-              http: url,
-              name: name,
-              protocol: protocol,
-              access: access
-            }
-            break;
-          case 'GetMap':
-          case 'WTS':
-          case 'WMTS':
-          case 'OGC API - Tiles':
-          case 'XYZ-Tile-Service':
-          case 'OGC:WMS': 
-          case 'OGC:WMS-1.1.1-http-get-map':
-          case 'OGC:WFS':
-          case 'OGC:WFS-G':
-          case 'OGC:KML':
-          case 'OGC:OWS':
-          case 'OGC:OWS-C':
-          case 'OGC Web Map Service':
-          case 'GLG:KML-2.0-http-get-map':
-              if (!metadata.layers) {
-                metadata.layers = []
-              }
-              var id = metadata.id + '_' + index
-              link.id = id
-              link.href = link.url
-              link.name = link.title
-              link.checked = false
-              delete link.url
-              delete link.title
-              metadata.layers.push(link)
-            break;
-          case 'application/vnd.google-earth.kml+xml':
-          case 'WWW:DOWNLOAD-1.0-ftp--download':
-             break;
-          case 'WWW:DOWNLOAD-1.0-link--download':
-          
-          case 'telechargement':
-          case 'download':
-          case 'WWW:DOWNLOAD-1.0-http--download':
-            if (!metadata.download) {
-              metadata.download = []
-            }
-            link.name = link.title
-            delete link.title
-            metadata.download.push(link)
-            break;
-          case 'WWW:DOWNLOAD-1.0-link--order':
-          case 'order':
-            if (!metadata.order) {
-              metadata.order = []
-            }
-            link.name = link.title
-            delete link.title
-            metadata.order.push(link)
-            break;
-          case 'WWW:LINK-1.0-http--related':
-            if (!metadata.relatedLinks) {
-              metadata.relatedLinks = []
-            }
-            link.href = link.url
-            delete link.url
-            metadata.relatedLinks.push(link)
-            break;
-          case 'WWW:LINK-1.0-http--link':
-          case 'WWW:LINK-1.0-http--partners':
-          case 'DOI':
-          default:
-            if (!metadata.links) {
-              metadata.links = []
-            }
-            link.href = link.url
-            delete link.url
-            metadata.links.push(link)
-            break;
-          }
+             var protocol = 'WWW:LINK-1.0-http--link'
+             if (online['gmd:protocol']['gmx:Anchor']) {
+               var protocol = online['gmd:protocol']['gmx:Anchor']['#text']
+             } else if (online['gmd:protocol']['gco:CharacterString'] ) {
+              var protocol = online['gmd:protocol']['gco:CharacterString']['#text'] 
+             }
+              var url = online['gmd:linkage']['gmd:URL']
+              var name = extractFromLangs(online['gmd:name'], idLang)
+              var description = extractFromLangs(online['gmd:description'], idLang)
+              var link = {
+                  id: index,
+                  name: name,
+                  description: description,
+                  url: url,
+                  type: protocol
+                }
+               console.log(protocol)
+              switch(protocol) {
+                  case 'UKST':
+                  case 'OpenSearch':
+                  case 'Opensearch':
+                  case 'opensearch':
+                  case 'SensorThings':
+                    var access =  extractAccessFromDescription(description)
+                    links.api = {
+                      url: url,
+                      name: name,
+                      protocol: protocol,
+                      access: access
+                    }
+                    break;
+                  case 'GetMap':
+                  case 'WTS':
+                  case 'WMTS':
+                  case 'OGC API - Tiles':
+                  case 'XYZ-Tile-Service':
+                  case 'OGC:WMS': 
+                  case 'OGC:WMS-1.1.1-http-get-map':
+                  case 'OGC:WFS':
+                  case 'OGC:WFS-G':
+                  case 'OGC:KML':
+                  case 'OGC:OWS':
+                  case 'OGC:OWS-C':
+                  case 'OGC Web Map Service':
+                  case 'GLG:KML-2.0-http-get-map':
+                      if (!list.layers) {
+                        list.layers = []
+                      }
+                      var id = metadata.uuid + '_' + index
+                      link.id = id
+                      link.checked = false
+                      list.layers.push(link)
+                    break;
+                  case 'application/vnd.google-earth.kml+xml':
+                  case 'WWW:DOWNLOAD-1.0-ftp--download':
+                     break;
+                  case 'WWW:DOWNLOAD-1.0-link--download':
+                  
+                  case 'telechargement':
+                  case 'download':
+                  case 'WWW:DOWNLOAD-1.0-http--download':
+                    if (!list.download) {
+                      list.download = []
+                    }
+                    
+                    list.download.push(link)
+                    break;
+                  case 'WWW:DOWNLOAD-1.0-link--order':
+                  case 'order':
+                    if (!list.order) {
+                      list.order = []
+                    }
+                    list.order.push(link)
+                    break;
+                  case 'WWW:LINK-1.0-http--related':
+                    if (!list.relatedLinks) {
+                      list.relatedLinks = []
+                    }
+                    list.relatedLinks.push(link)
+                    break;
+                  case 'WWW:LINK-1.0-http--link':
+                  case 'WWW:LINK-1.0-http--partners':
+                  case 'DOI':
+                  default:
+                    if (!list.links) {
+                      list.links = []
+                    }
+                   
+                    list.links.push(link)
+                    break;
+                  }
         })
+        metadata.links = list
     }
     function extractResolution (metadata, json) {
         if (json === undefined) {
