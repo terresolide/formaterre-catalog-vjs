@@ -66,6 +66,8 @@ export default function (attrs) {
         if (constraints) {
           metadata.constraints = constraints
         }
+        extractLineage(metadata, json, idLang)
+        
         var contacts = extractContacts(
             JSONPATH.query(dataInfo, "$..['gmd:CI_ResponsibleParty']"),
             'resource',
@@ -89,6 +91,7 @@ export default function (attrs) {
         extractSpatialRepresentation(metadata, dataInfo['gmd:spatialRepresentationType'])
         return metadata
     }
+    
     function extractAddress (json) {
         if (json === undefined) {
           return null
@@ -380,7 +383,7 @@ export default function (attrs) {
         statements.forEach(function (statement) {
           sentences.push(extractFromLangs(statement, idLang))
         })
-        metadata.lineage = sentences.join('<br />')
+        metadata.lineage = sentences
     }
     function extractLinks (metadata, json, idLang, uuid) {
         var list = {}

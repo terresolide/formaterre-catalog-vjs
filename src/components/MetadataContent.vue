@@ -42,6 +42,23 @@ const config = useConfig()
                     </dd>
                 </template>
             </dl>
+            <dl>
+                <dt :style="{color: config.state.primary}">Généalogie</dt>
+                <dd>
+                <template v-for="item in metadata.lineage">
+                  <dd v-html="item"></dd>
+                </template>
+                </dd>
+            </dl>
+            <dl>
+                <dt :style="{color: config.state.primary}">Contraintes</dt>
+                <template v-for="item in metadata.legalConstraints">
+                  <dd v-html="item"></dd>
+                </template>
+                <template v-for="item in metadata.constraints">
+                  <dd v-html="item"></dd>
+                </template>
+            </dl> 
             
         </div>
         <div class="right-side">
