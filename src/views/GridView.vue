@@ -73,6 +73,7 @@
           .then(converter => {
               data.converter = converter.default()
               data.metadata = data.converter.transform(uuid, meta)
+              console.log(data.metadata)
               data.bbox = data.metadata.geojson
               
            })

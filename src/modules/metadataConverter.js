@@ -217,14 +217,16 @@ export default function (attrs) {
         extractLinks (metadata, json, idLang) 
     }
     function extractExtent (metadata, json) {
-
+        metadata.temporalExtents = []
         var start = JSONPATH.query(json, "$..['gml:beginPosition']")
         if (start.length > 0) {
-          metadata.tempExtentBegin = start[0]
-        }
-        var end = JSONPATH.query(json, "$..['gml:endPosition']")
-        if (end.length > 0) {
-          metadata.tempExtentEnd = end[0]
+            var temp = {start: {date: start[0]}}
+       
+            var end = JSONPATH.query(json, "$..['gml:endPosition']")
+            if (end.length > 0) {
+              temp.end = {date: end[0]}
+            }
+            metadata.temporalExtents.push(temp)
         }
         var geographics = JSONPATH.query(json, "$..['gmd:EX_GeographicBoundingBox']")
         if (geographics.length === 0) {
