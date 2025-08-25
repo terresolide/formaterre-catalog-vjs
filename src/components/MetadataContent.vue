@@ -5,6 +5,7 @@ import CarrousselImages from '@/components/CarrousselImages.vue'
 import RelatedLinks from '@/components/RelatedLinks.vue'
 import TemporalExtent from '@/components/TemporalExtent.vue'
 import ContactBox from '@/components/ContactBox.vue'
+import KeywordList from '@/components/KeywordList.vue'
 const moment = inject('moment')
 const {metadata} = defineProps({
     metadata: Object
@@ -68,6 +69,11 @@ const config = useConfig()
         
             <div>
               <related-links :links="metadata.links" :uuid="metadata.uuid" mode="page"/> 
+            </div>
+            <div>
+                <template v-for="list in metadata.keyword">
+                    <keyword-list :keywords="list" />
+                </template>
             </div>
         </div>
     </div>

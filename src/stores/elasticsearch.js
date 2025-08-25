@@ -234,7 +234,16 @@ export const useElasticsearch = defineStore('elasticsearch', {
             }
 
             for(var key in aggregations) {
-                if (query [key]) {
+                console.log(aggregations[key].terms.field)
+                console.log(query)
+                query[aggregations[key].terms.field + '_tree.key']
+                if (query[aggregations[key].terms.field.replace('_tree.key','')]) {
+                   // query[key] = query[aggregations[key].terms.field.replace('_tree.key','')]
+                   // delete query[aggregations[key].terms.field.replace('_tree.key','')]
+                    parameters.query.bool.filter.push({terms: {'th_formater-platform-gn.key':  query[aggregations[key].terms.field.replace('_tree.key','')]}})
+                }
+  
+                if (query [key] ) {
                     if (aggregations[key].meta.type === 'dimension') {
                         var terms = {}
                         var q = decodeURIComponent(query[key])
@@ -242,7 +251,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                         terms[aggregations[key].terms.field] = values
                         parameters.query.bool.filter.push({terms: terms})
                     } else {
-                        if (query[key].indexOf('+') === -1) {
+                        if (query[key] && query[key].indexOf('+') === -1) {
                             // OR
                             var term = {}
                             term[aggregations[key].terms.field] = decodeURIComponent(query[key]).split(',')

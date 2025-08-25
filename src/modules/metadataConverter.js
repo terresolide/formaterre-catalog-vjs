@@ -348,19 +348,26 @@ export default function (attrs) {
         if (json) 
         json.forEach(function (keynode) {
             var list = keynode['gmd:MD_Keywords']['gmd:keyword']
-            var thesaurus = keynode['gmd:thesaurusName']
+            var type = JSONPATH.query(keynode, "$..['gmd:MD_KeywordTypeCode']['@codeListValue']")
+            if (type) {
+                type = type[0]
+            } else {
+                type = null
+            }
             var isDataCenter = false
             if (keynode['gmd:MD_Keywords']['gmd:thesaurusName']) {
-              var key = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:identifier']..['gmd:code']['gmx:Anchor']['#text']")[0]
-              console.log(key)
-              var keys = key.split('.')
-              var type = key[3]
-              var key = 'th_' + keys.slice(4, keys.length + 1).join('.')
-              
-              // var name = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:title']..['#text']")
-              if (key.indexOf('distributor') >= 0) {
-                isDataCenter = true
-              }
+                var key = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:identifier']..['gmd:code']['gmx:Anchor']['#text']")[0]
+                console.log(key)
+                if (key) {
+                    var keys = key.split('.')
+                    type = keys[3]
+                    var key = 'th_' + keys.slice(4, keys.length + 1).join('.')
+                    
+                    // var name = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:title']..['#text']")
+                    if (key.indexOf('distributor') >= 0) {
+                      isDataCenter = true
+                    }
+                }
             }
             if (!list.forEach) {
               list = [list]
@@ -383,7 +390,13 @@ export default function (attrs) {
                 }
               }
             })
+            keywords.push({
+                type: type,
+                key: key,
+                keywords: kwds
+            })
         })
+        console.log(keywords)
         metadata.keyword = keywords
     } 
     function extractLineage(metadata, json, idLang) {
