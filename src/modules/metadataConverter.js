@@ -351,25 +351,35 @@ export default function (attrs) {
             var thesaurus = keynode['gmd:thesaurusName']
             var isDataCenter = false
             if (keynode['gmd:MD_Keywords']['gmd:thesaurusName']) {
-              var name = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:title']..['#text']")
-              if (name && name[0] && name[0].indexOf('Distributor') >= 0) {
+              var key = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:identifier']..['gmd:code']['gmx:Anchor']['#text']")[0]
+              console.log(key)
+              var keys = key.split('.')
+              var type = key[3]
+              var key = 'th_' + keys.slice(4, keys.length + 1).join('.')
+              
+              // var name = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:title']..['#text']")
+              if (key.indexOf('distributor') >= 0) {
                 isDataCenter = true
               }
             }
             if (!list.forEach) {
               list = [list]
             }
+            var kwds = []
             list.forEach (function (node) {
               var keywd = extractFromLangs(node, idLang)
+              var link = JSONPATH.query(node, "$..['gmx:Anchor']['@xlink:href']")
+              if (link) {
+                  link = link[0]
+              }
               if (keywd) {
-                keywords.push(extractFromLangs(node, idLang))
+                kwds.push({
+                    name: extractFromLangs(node, idLang),
+                    link: link
+                })
                 if (isDataCenter) {
-                  // extract link
-                  var link = JSONPATH.query(node, "$..['gmx:Anchor']['@xlink:href']")
-                  if (link.length > 0) {
-                    metadata.dataCenter = link[0]
+                    metadata.dataCenter = link
                     metadata.cds = link[0].substring(link[0].lastIndexOf('#') + 1)
-                  }
                 }
               }
             })
