@@ -26,7 +26,7 @@ const address = computed(() => {
 <template>
     <fieldset v-if="contact"  class="contact-flex">
       <div id="line"></div>
-      <legend>{{contact[0]}}</legend>
+      <legend>{{$t(contact[0])}}</legend>
       <div class="contact-info" style="font-size:0.9rem;">
        <div v-if="contact[2]">
              <div >

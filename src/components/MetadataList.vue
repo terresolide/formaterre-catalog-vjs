@@ -1,19 +1,17 @@
 <script setup>
-import { computed, defineAsyncComponent } from 'vue';
+// import { computed } from 'vue';
 import MetadataBox from '@/components/MetadataBox.vue'
 
-import { useSelection } from '@/stores/selection'
+// import { useSelection } from '@/stores/selection'
 
-const CommandLine = defineAsyncComponent(() => import('@/components/CommandLine.vue'))
+// const CommandLine = defineAsyncComponent(() => import('@/components/CommandLine.vue'))
 const props = defineProps({
     list: Array
 }) 
-const selection = useSelection()
+// const selection = useSelection()
 </script>
 <template>
-     <template v-if="selection.download">
-       <command-line :download="selection.download"></command-line>
-     </template>
+
      <div class="wrapper-group-2">
        <template v-if="props.list.length > 0">
            <div class="container-flex"> 

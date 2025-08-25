@@ -70,7 +70,7 @@ function removeTooltip ()
       <template v-else-if="token">curl {{selection.download.url}}?_bearer={{token}} -o {{file}}</template>
       <template v-else >curl {{selection.download.url}}  -o {{file}}</template>
       </div>
-      <div style="display:inline-block;vertical-align:top;max-width:90px;margin-left:5px;">
+      <div style="display:inline-block;vertical-align:top;max-width:95px;margin-left:5px;">
       <button ref="button" @click="copy2clipboard($event)" :title="$t('copy_clipboard')">
          <font-awesome-icon icon="fa-solid fa-clipboard" /> {{$t('copy')}}
       </button>

@@ -28,7 +28,7 @@ function goTo (kwd) {
     min-width: 20px;
     vertical-align: bottom;
     border-radius: 3px;
-    background: #754a15;
+    background: var(--color-text);
     padding: 3px 5px;
     color: white;
     margin: 3px;

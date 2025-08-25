@@ -71,9 +71,14 @@ const config = useConfig()
               <related-links :links="metadata.links" :uuid="metadata.uuid" mode="page"/> 
             </div>
             <div>
+                <div class="mtdt-related-type" :style="{backgroundColor: config.state.primary}">
+                    <font-awesome-icon icon="fa-solid fa-key" />
+                </div>
+                <div class="mtdt-expand">
                 <template v-for="list in metadata.keyword">
                     <keyword-list :keywords="list" />
                 </template>
+                </div>
             </div>
         </div>
     </div>
@@ -168,5 +173,8 @@ div.contact-container {
     }
     
 }
-
+div.mtdt-expand {
+    text-align:center;
+    
+}
 </style>

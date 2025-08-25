@@ -1,12 +1,15 @@
 <script setup>
-  import { reactive, watch, onMounted } from 'vue';
+  import { defineAsyncComponent, reactive, watch, onMounted } from 'vue';
   import { useRoute, useRouter } from "vue-router"
   import { useElasticsearch } from '@/stores/elasticsearch';
+  import { useSelection } from '@/stores/selection'
   import MetadataList from '@/components/MetadataList.vue'
   import FormGrid from '@/components/FormGrid.vue'
   import PageNavigation from '@/components/PageNavigation.vue'
   import MetadataPage from '@/components/MetadataPage.vue'
   const getMetaConverter = () => import('@/modules/metadataConverter.js') 
+  const CommandLine = defineAsyncComponent(() => import('@/components/CommandLine.vue'))
+  const selection = useSelection()
   const elasticsearch = useElasticsearch()
   let data = reactive({
     list: [],
@@ -110,6 +113,9 @@
 <template>
   <main>
     <FormGrid :aggregations="data.aggregations" :list="data.list" :bbox="data.bbox"></FormGrid>
+    <template v-if="selection.download">
+        <command-line :download="selection.download"></command-line>
+    </template>
     <template v-if="route.params.id">
        <metadata-page :metadata="data.metadata" @close="close">
             <div>
