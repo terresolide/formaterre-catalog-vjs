@@ -18,8 +18,8 @@ export default function (attrs) {
           }
         }
         var idLang = config.locale
-           
-
+        console.log(uuid)
+        metadata.uuid = uuid
 
         metadata.title = extractFromLangs(
              JSONPATH.query(json, "$..['gmd:citation']['gmd:CI_Citation']['gmd:title']"),
@@ -33,6 +33,7 @@ export default function (attrs) {
         } else if (!description) {
            description = ''
         }
+        metadata.dateStamp = json['gmd:dateStamp']['gco:DateTime']['#text']
         metadata.description = description.replace(/(?:\\[rn]|[\r\n])/g, '<br />')
         metadata.credit = extractFromLangs(json['gmd:credit'], idLang)
         metadata.purpose = extractFromLangs(json['gmd:purpose'], idLang)
@@ -46,8 +47,8 @@ export default function (attrs) {
         }
         var dataInfo = json['gmd:identificationInfo']['gmd:MD_DataIdentification']
         metadata.status = JSONPATH.query(json,"$..['gmd:status']['gmd:MD_ProgressCode']['@codeListValue']")[0]
-        metadata.identifier = JSONPATH.query(json, "$..['gmd:identifier']..['gco:CharacterString']['#text']")[0]
-        metadata.uuid = metadata.indentifier
+        metadata.identifier = JSONPATH.query(dataInfo, "$..['gmd:identifier']..['gco:CharacterString']['#text']")[0]
+      
         // metadata.dataCenter =
         if (dataInfo['gmd:topicCategory']) {
         metadata.topicCat = dataInfo['gmd:topicCategory']['gmd:MD_TopicCategoryCode']
@@ -67,19 +68,15 @@ export default function (attrs) {
           metadata.constraints = constraints
         }
         extractLineage(metadata, json, idLang)
-        
+        extractCrs(metadata, json, idLang)
         var contacts = extractContacts(
-            JSONPATH.query(dataInfo, "$..['gmd:CI_ResponsibleParty']"),
-            'resource',
-            idLang)
-        metadata.contacts = {resource:{}}
-        contacts.forEach(function (contact) {
-          if (metadata.contacts.resource[contact[0]]) {
-            metadata.contacts.resource[contact[0]].push(contact)
-          } else {
-            metadata.contacts.resource[contact[0]] = [contact]
-          }
-        })
+            JSONPATH.query(dataInfo['gmd:pointOfContact'], "$..['gmd:CI_ResponsibleParty']"), idLang)
+
+        metadata.contacts = {resource: contacts}
+        var contacts = extractContacts(
+            JSONPATH.query(json['gmd:contact'], "$..['gmd:CI_ResponsibleParty']"), idLang)
+
+        metadata.contacts.metadata = contacts
         // extractDistributionInfo (metadata, json, idLang) 
         var json2 = json['gmd:distributionInfo']['gmd:MD_Distribution']['gmd:distributionFormat'] || {}
         extractFormat(metadata, json2, idLang)
@@ -176,21 +173,30 @@ export default function (attrs) {
         })
         return constraints
     }
-    function extractContacts (json, type, idLang) {
-        var contacts = []
+    function extractContacts (json, idLang) {
+
+         var contacts = []
         if (!json) {
           return contacts
         }
         if (json.length > 0) {
           json.forEach (function (jsoncontact) {
-             contacts.push(extractContact(jsoncontact, type, idLang))
+             contacts.push(extractContact(jsoncontact, idLang))
           })
         } else {
-          contacts.push(extractContact(json, type, idLang))
+          contacts.push(extractContact(json, idLang))
         }
-        return contacts
+        var resp = {}
+         contacts.forEach(function (contact) {
+          if (resp[contact[0]]) {
+            resp[contact[0]].push(contact)
+          } else {
+            resp[contact[0]] = [contact]
+          }
+        })
+        return resp
     }
-    function extractContact (json, type, idLang) {
+    function extractContact (json, idLang) {
         var role = JSONPATH.query(json, "$..['gmd:CI_RoleCode']['@codeListValue']")[0]
         var organisationNode  = JSONPATH.query(json, "$..['gmd:organisationName']" )[0]
         var organisation = extractFromLangs(organisationNode, idLang)
@@ -203,6 +209,13 @@ export default function (attrs) {
         var address = extractAddress(JSONPATH.query(json, "$..['gmd:CI_Address']")[0])
         var position = null
         return [role, type, organisation, name, email, position, null, address, organisationLink, individualLink]
+    }
+    function extractCrs (metadata, json, idLang) {
+        var crs = JSONPATH.query(json, "$..['gmd:referenceSystemInfo']..['gmd:code']")
+        metadata.crs = []
+        crs.forEach(function(node) {
+            metadata.crs.push(extractFromLangs(node, idLang))
+        })
     }
     function extractDates (metadata, json) {
         if (!json || json === 'undefined' || json.length === 0) {
@@ -386,7 +399,7 @@ export default function (attrs) {
                 })
                 if (isDataCenter) {
                     metadata.dataCenter = link
-                    metadata.cds = link[0].substring(link[0].lastIndexOf('#') + 1)
+                    metadata.cds = link.substring(link.lastIndexOf('#') + 1)
                 }
               }
             })
@@ -518,17 +531,19 @@ export default function (attrs) {
           return
         }
         var dist = JSONPATH.query(json, "$..['gco:Distance']")
-        if (dist.length > 0) {
+        var denominator = JSONPATH.query(json, "$..['gmd:denominator']['gco:Integer']")
+        var resolution = []
+        if (dist && dist.length > 0) {
            var list = dist.map(d => d['#text'] + ' ' + d['@uom'] )
-           metadata.resolution = list.join(', ')
+           resolution = list
         
-        } else {
-          var denominator = JSONPATH.query(json, "$..['gmd:denominator']['gco:Integer']")
-          if (denominator.length > 0) {
-            metadata.resolution = '1 / ' + denominator[0]['#text']
-          }
+        } 
+        if (denominator && denominator.length > 0) {
+            var list = dist.map(d => '1 / ' + d['#text'])
+            resolution = resolution.concat(list)
         }
-      
+        
+        metadata.resolution = resolution
     }
     function extractSpatialRepresentation (metadata, json) {
         if (json === undefined) {

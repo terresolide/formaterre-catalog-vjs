@@ -6,13 +6,17 @@ import MetadataBox from '@/components/MetadataBox.vue'
 
 // const CommandLine = defineAsyncComponent(() => import('@/components/CommandLine.vue'))
 const props = defineProps({
-    list: Array
+    list: Array,
+    inside: {
+        type: Boolean,
+        default: false
+    }
 }) 
 // const selection = useSelection()
 </script>
 <template>
 
-     <div class="wrapper-group-2">
+     <div class="wrapper-group-2" :class="{inside: props.inside}">
        <template v-if="props.list.length > 0">
            <div class="container-flex"> 
                 <template v-for="item in props.list" >
@@ -34,6 +38,9 @@ div.wrapper-group-2{
     max-height:calc(100vh - 80px);
     overflow-y:scroll;
   }
+div.wrapper-group-2.inside {
+      max-height:calc(100vh - 210px);
+    }
   div.wrapper-group-2 div.container-flex {
   display: -webkit-box;
   display: -ms-flexbox;

@@ -122,7 +122,7 @@
               <div style="text-align:center;margin:15px 0;">
                 <PageNavigation :tot="data.pagination"></PageNavigation>
               </div>
-              <MetadataList :list="data.list"></MetadataList>
+              <MetadataList :list="data.list" :inside="true"></MetadataList>
             </div>
        </metadata-page>
     </template>

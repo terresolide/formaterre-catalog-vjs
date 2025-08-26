@@ -18,19 +18,23 @@ function download (index) {
 }
 </script>
 <template>
-  <div class="mtdt-related-type">
+ 
      
      <template v-if="links.length === 1 && mode === 'box'">
-        <a :href="links[0].url" target="_blank" download :title="links[0].name" style="color:white;"><font-awesome-icon icon="fa-solid fa-download" /></a>
+        <div class="mtdt-related-type" :title="links[0].name">
+            <a :href="links[0].url" target="_blank" download  style="color:white;"><font-awesome-icon icon="fa-solid fa-download" /></a>
+        </div>
      </template>
      <template v-else>
-         <font-awesome-icon icon="fa-solid fa-download"  />
-         <font-awesome-icon v-if="mode === 'box'"
-          style="margin-left: 2px"
-          icon="fa-solid fa-caret-down"
-         />
+         <div class="mtdt-related-type" :title="$t('download_link')">
+             <font-awesome-icon icon="fa-solid fa-download"  />
+             <font-awesome-icon v-if="mode === 'box'"
+              style="margin-left: 2px"
+              icon="fa-solid fa-caret-down"
+             />
+        </div>
      </template>
-  </div>
+
   <div v-if="links.length > 1 || mode === 'page'" class="mtdt-expand mtdt-links">
     <ul>
       <template v-for="(link, index) in links">

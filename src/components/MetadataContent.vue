@@ -19,15 +19,15 @@ const config = useConfig()
             
             <div class="description" v-html="metadata.description" />
             <dl>
-               <dt :style="{color: config.state.primary}">Identifiant de la resource</dt>
+               <dt :style="{color: config.state.primary}">{{$t('identifier')}}</dt>
                <dd>{{metadata.identifier}}</dd>
             </dl>
             <dl>
-               <dt :style="{color: config.state.primary}">Status</dt>
+               <dt :style="{color: config.state.primary}">{{$t('status')}}</dt>
                <dd>{{metadata.status}}</dd>
             </dl>
             <dl>
-                <dt :style="{color: config.state.primary}">Date(s) de la donnée</dt>
+                <dt :style="{color: config.state.primary}">{{$t('resource_date')}}</dt>
                 <dd v-for="extent in metadata.temporalExtents" >
                   <temporal-extent :extent="extent"></temporal-extent>
                 </dd>
@@ -48,7 +48,7 @@ const config = useConfig()
                 </template>
             </dl>
             <dl>
-                <dt :style="{color: config.state.primary}">Généalogie</dt>
+                <dt :style="{color: config.state.primary}">{{$t('lineage')}}</dt>
                 <dd>
                 <template v-for="item in metadata.lineage">
                   <dd v-html="item"></dd>
@@ -56,7 +56,7 @@ const config = useConfig()
                 </dd>
             </dl>
             <dl>
-                <dt :style="{color: config.state.primary}">Contraintes</dt>
+                <dt :style="{color: config.state.primary}">{{$t('constraints')}}</dt>
                 <template v-for="item in metadata.legalConstraints">
                   <dd v-html="item"></dd>
                 </template>
@@ -65,15 +65,63 @@ const config = useConfig()
                 </template>
             </dl> 
             <dl>
-                <dt :style="{color: config.state.primary}">Informations géographiques</dt>
+                <dt :style="{color: config.state.primary}">{{$t('geographic_information')}}</dt>
                 <dd>
-                  Type de données: {{metadata.representation}}
+                  {{$t('resource_type')}}: {{metadata.representation}}
                 <br>
-                  Résolution: {{metadata.resolution}}
+                  {{$t('resolution')}}: 
+                  <template v-if="metadata.resolution.length === 1">
+                   {{metadata.resolution[0]}}
+                   </template>
+                   <template v-else-if="metadata.resolution.length > 0">
+                       <ul>
+                         <li v-for="item in metadata.resolution">{{item}}</li>
+                       </ul>
+                    </template>
                 <br>
-                   Système de coordonnées: {{metadata.refSystem}}
+                   {{$t('ref_system')}}: 
+                   <template v-if="metadata.crs.length === 1">
+                   {{metadata.crs[0]}}
+                   </template>
+                   <template v-else-if="metadata.crs.length > 0">
+                       <ul>
+                         <li v-for="item in metadata.crs">{{item}}</li>
+                       </ul>
+                    </template>
                 </dd>
             </dl>
+            <dl>
+                <dt :style="{color: config.state.primary}">Format(s)</dt>
+                <template v-for="item in metadata.format">
+                  <dd>{{item}}</dd>
+                </template>
+             
+            </dl>
+             
+            <div class="metadata-section">
+              <hr>
+            <h2 :style="{color: config.state.primary}">{{$t('about_metadata')}}</h2>
+                <dl>
+                    <dt :style="{color: config.state.primary}">{{$t('identifier')}}</dt>
+                    <dd> {{metadata.uuid}}</dd>
+                </dl>
+                <dl>
+                    <dt :style="{color: config.state.primary}">{{$t('update')}}</dt>
+                    <dd>{{moment(metadata.dateStamp).format('ll')}}</dd>
+                </dl>
+               <dl>
+                <dt :style="{color: config.state.primary}">Contact(s)</dt>
+                <template v-for="list, key in metadata.contacts.metadata">
+                   <dd>
+                      <div class="contact-container">
+                        <template v-for="item in list">
+                           <contact-box :contact="item" />
+                        </template>
+                      </div>
+                    </dd>
+                </template>
+            </dl>
+            </div>
         </div>
         <div class="right-side">
             <div style="margin-bottom:20px;">
@@ -84,7 +132,7 @@ const config = useConfig()
               <related-links :links="metadata.links" :uuid="metadata.uuid" mode="page"/> 
             </div>
             <div>
-                <div class="mtdt-related-type" :style="{backgroundColor: config.state.primary}">
+                <div class="mtdt-related-type" :title="$t('keywords')" style="{backgroundColor: config.state.primary}">
                     <font-awesome-icon icon="fa-solid fa-key" />
                 </div>
                 <div class="mtdt-expand">
@@ -93,14 +141,26 @@ const config = useConfig()
                 </template>
                 </div>
             </div>
+         
         </div>
     </div>
 </template>
 <style scoped>
+.metadata-container {
+    max-height:calc(100vh - 210px);
+    overflow-x: scroll;
+}
+.metadata-section > div {
+    text-align:left;
+}
+.metadata-section hr {
+    width:90px;
+    margin: 20px auto;
+}
 .right-side {
 
     margin-top: 4px;
-    padding: 5px;
+    padding: 5px 10px;
     text-align:center;
     background: #eee;
 }
