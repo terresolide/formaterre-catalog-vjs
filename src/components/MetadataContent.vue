@@ -19,6 +19,10 @@ const config = useConfig()
             
             <div class="description" v-html="metadata.description" />
             <dl>
+               <dt :style="{color: config.state.primary}">Identifiant de la resource</dt>
+               <dd>{{metadata.identifier}}</dd>
+            </dl>
+            <dl>
                <dt :style="{color: config.state.primary}">Status</dt>
                <dd>{{metadata.status}}</dd>
             </dl>
@@ -60,7 +64,16 @@ const config = useConfig()
                   <dd v-html="item"></dd>
                 </template>
             </dl> 
-            
+            <dl>
+                <dt :style="{color: config.state.primary}">Informations géographiques</dt>
+                <dd>
+                  Type de données: {{metadata.representation}}
+                <br>
+                  Résolution: {{metadata.resolution}}
+                <br>
+                   Système de coordonnées: {{metadata.refSystem}}
+                </dd>
+            </dl>
         </div>
         <div class="right-side">
             <div style="margin-bottom:20px;">
@@ -109,6 +122,8 @@ dt {
 
 dd {
   grid-column: 2;
+  margin-bottom: 6px;
+  line-height: 1.2;
 }
 div.contact-container {
   display: -webkit-box;

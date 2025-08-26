@@ -396,7 +396,7 @@ export default function (attrs) {
                 keywords: kwds
             })
         })
-        console.log(keywords)
+        console.log(metadata)
         metadata.keyword = keywords
     } 
     function extractLineage(metadata, json, idLang) {

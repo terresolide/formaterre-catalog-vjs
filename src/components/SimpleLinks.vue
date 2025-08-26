@@ -28,20 +28,18 @@ let config = useConfig()
 
 </script>
 <template>
-    <template v-if="props.links.length > 1">
+    <template v-if="props.links.length > 1 || props.mode === 'page'">
       <!-- liens d'information -->
        <div class="mtdt-related-type" :style="{backgroundColor: config.state.primary}">
-       <font-awesome-icon :icon="icon" /> 
-       <font-awesome-icon v-if="props.links.length > 1 && props.mode === 'box'" icon="fa-solid fa-caret-down" />
-    
-    
-      </div>
+           <font-awesome-icon :icon="icon" /> 
+           <font-awesome-icon v-if="props.links.length > 1 && props.mode === 'box'" icon="fa-solid fa-caret-down" />
+       </div>
        <div v-if="props.links.length > 1 || props.mode === 'page'" class="mtdt-expand mtdt-links">
             <ul >
                 <template v-for="link in props.links">
-                  <li >
-                    <a :href="link.url" target="_blank" :title="link.description">{{link.name}}</a>
-                  </li>
+                    <li >
+                      <a :href="link.url" target="_blank" :title="link.description">{{link.name}}</a>
+                    </li>
                 </template>
            </ul>    
       </div> 
