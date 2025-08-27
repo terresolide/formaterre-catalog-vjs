@@ -16,7 +16,7 @@ const catalog = computed(() => {
     return catalogs.getCurrent()
 })
 const linkMetadata = computed(() => {
-    var link = {name:'metadata', params: {id: props.metadata._source.uuid }}
+    var link = {name:'metadata', params: {id: props.metadata.id }}
     if (route.params.catalog) {
         link.name = 'catalog-metadata'
         link.params.catalog = route.params.catalog
@@ -165,6 +165,7 @@ function treatmentLinks (list, id) {
      return links
    }
 const metadata = computed(() => {
+    return props.metadata
     let source = props.metadata._source
     let meta = {
          id: source.uuid, 

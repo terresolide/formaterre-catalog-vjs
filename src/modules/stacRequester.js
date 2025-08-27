@@ -1,8 +1,9 @@
-export default function (url, limit, fixed) {
+export default function (url, fixed={}, limit=24) {
+    console.log(fixed)
     console.log(url)
     const stacParameters = []
     const mappingParameters =  {}
-    const parameters =  {page: 1, limit: 8, query: {dataset: {in: ['FLATSIM_BALKANS_INTERFEROGRAM_PUBLIC']}}, sortBy:[{direction: 'desc',field: 'start_datetime' }]}
+    const parameters =  {page: 1, limit: limit, query: {}, sortBy:[{direction: 'desc',field: 'start_datetime' }]}
     const predefined =  {
          start: "start",
          end: "end",
@@ -11,9 +12,10 @@ export default function (url, limit, fixed) {
          index: "offset",
          page: "page"
        }
-    const defaultQuery = {}
+    const defaultQuery = fixed
     const searchUrl = url
     const count = 0
+    
     function getRecords (route) {
         prepareRequest(route)
         return new Promise((successCallback, failureCallback) => {
@@ -23,6 +25,7 @@ export default function (url, limit, fixed) {
                     body: JSON.stringify(parameters)
             }).then(rep => rep.json())
             .then(json => {
+                features = treatmentJson(json)
                 if (successCallback) {
                     successCallback(json)
                 }
@@ -33,7 +36,8 @@ export default function (url, limit, fixed) {
             })
         })
     }
-   
+    function treatmentJson (json) {
+    }
     function prepareRequest(newroute) {
         // initParameters()
         
@@ -51,9 +55,13 @@ export default function (url, limit, fixed) {
         if (newroute.query.end) {
           parameters.query['end_datetime']= {lte: newroute.query.end + 'T23:59:59.999Z'}
         }
+        for (var key in defaultQuery) {
+            console.log(key)
+            parameters.query[key] = {in: defaultQuery[key]}
+        }
         for(var name in mappingParameters) {
             if (newroute.query[name]){
-                parameters.query[this.mappingParameters[name]] = {eq: newroute.query[name]}
+                parameters.query[mappingParameters[name]] = {eq: newroute.query[name]}
             }
         }
     }

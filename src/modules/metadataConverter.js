@@ -299,13 +299,17 @@ export default function (attrs) {
         }
         var lists = description.split(';')
         var access = {}
+        var query = {}
         lists.forEach(function (tab) {
           var extract = tab.split('=')
-          if (extract.length > 1) {
+          if (extract.length > 1 && ['search', 'view', 'download'].indexOf(extract[0]) >= 0) {
              access[extract[0]] = extract[1]
+          } else {
+              query[extract[0]] = extract[1].split(',')
           }
         })
-        return access
+       
+        return {access: access, query: query}
     }
     function extractHref (json) {
         if (json === undefined) {
@@ -456,7 +460,7 @@ export default function (attrs) {
                   case 'opensearch':
                   case 'SensorThings':
                   case 'STAC':
-                    var access =  extractAccessFromDescription(description)
+                    var obj =  extractAccessFromDescription(description)
                     if (!list.api) {
                         list.api = {}
                     }
@@ -464,7 +468,8 @@ export default function (attrs) {
                       url: url,
                       name: name,
                       protocol: protocol,
-                      access: access
+                      access: obj.access,
+                      query: obj.query
                     }
                     break;
                   case 'GetMap':

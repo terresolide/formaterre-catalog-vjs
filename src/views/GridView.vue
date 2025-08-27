@@ -82,9 +82,11 @@
               console.log(data.metadata)
               data.bbox = data.metadata.geojson
               if (data.metadata.links.api && data.metadata.links.api.STAC) {
+                  var access = data.metadata.links.api.STAC.access
+                  var query = data.metadata.links.api.STAC.query
                   getStacRequester()
                   .then(x => {
-                      data.stacRequester = x.default(data.metadata.links.api.STAC.url)
+                      data.stacRequester = x.default(data.metadata.links.api.STAC.url, query, 12)
                       data.stacRequester.getRecords(route)
                       .then(data => { console.log(data)})
                   })
@@ -108,11 +110,11 @@
 
     elasticsearch.getRecords(query)
     .then(json => {
-        if (json.hits && json.hits.hits) {
-          data.list = json.hits.hits
-          data.pagination.count = json.hits.hits.length
-          data.pagination.total = json.hits.total.value
-          data.pagination.relation = json.hits.total.relation
+        console.log(json)
+        if (json.list) {
+          console.log(json.list)
+          data.list = json.list
+          data.pagination = Object.assign(data.pagination, json.pagination)
           data.bbox = null
         }
         return elasticsearch.treatmentAggregations(json.aggregations)

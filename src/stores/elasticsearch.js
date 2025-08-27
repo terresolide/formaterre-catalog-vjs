@@ -5,10 +5,12 @@ import {useCatalog} from './catalog'
 export const useElasticsearch = defineStore('elasticsearch', {
     state: () => ({
       catalogId: null,
+      catalog: null,
       uuid: null,
       groupOwner: null,
       step: 'step1',
       reset: null,
+      config: null,
       aggregations: {
         step1: {
           groupOwner: {
@@ -132,15 +134,27 @@ export const useElasticsearch = defineStore('elasticsearch', {
             this.name = routeName
             this.groupOwner = null
             this.uuid = metadataId
-            let catalogs = useCatalog()
+            let catalogs = this.getCatalogs()
             this.reset = reset || catal !== catalogs.getName()
-            let catalog = catalogs.setCatalog(catalogName)
+            let catalog = this.catalogs.setCatalog(catalogName)
             if (catalog) {
                 this.groupOwner = catalog.id
             }
         },
+        getCatalogs () {
+            if (!this.catalogs) {
+                this.catalogs = useCatalog()
+            }
+            return this.catalogs
+        },
+        getConfig () {
+            if (!this.config) {
+                this.config = useConfig()
+            }
+            return this.config
+        },
         getDefaultParameters () {
-            let config = useConfig()
+            let config = this.getConfig()
             return {
                 from: 0,
                 size: config.state.size,
@@ -277,7 +291,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             var headers =  {
               'accept': 'application/json',
             }
-            const config = useConfig()
+            const config = this.getConfig()
             let url = config.state.geonetwork +  '/srv/api/records/' + this.uuid
             return new Promise((successCallback, failureCallback) => {
                 fetch(url, {headers:headers})
@@ -295,9 +309,10 @@ export const useElasticsearch = defineStore('elasticsearch', {
 
         },
         getRecords (query) {
-            const config = useConfig()
+            const config = this.getConfig()
             let api = config.state.geonetwork +  '/srv/api/search/records/_search?bucket=metadata'
             let parameters = this.getParameters(query)
+            var self = this
             return new Promise((successCallback, failureCallback) => {
                 fetch(api,
                 {
@@ -307,8 +322,9 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
                 ).then(rep => rep.json())
                 .then(json => {
+                    var result = self.treatmentJson(json)
                     if (successCallback) {
-                        successCallback(json)
+                        successCallback(result)
                     }
                 }).catch(err => {
                     if (failureCallback) {
@@ -316,6 +332,78 @@ export const useElasticsearch = defineStore('elasticsearch', {
                     }
                 })
             })
+        },
+        treatmentJson (json) {
+            let config = this.getConfig()
+            var list = []
+            var pagination = {
+                count: 0,
+                total: 0
+            }
+            if (json.hits && json.hits.hits) {
+                var list = json.hits.hits
+                var pagination = {
+                    count: json.hits.hits.length,
+                    total: json.hits.total.value,
+                    relation: json.hits.total.relation
+                }
+            }
+            var self = this
+            list.forEach(function (result, index) {
+                list[index] = self.treatmentMeta(result)
+                
+            })
+            return {list: list, pagination: pagination, aggregations: json.aggregations}
+        },
+        treatmentMeta (result) {
+            let source = result._source
+            let config = this.getConfig()
+            let meta = {
+                 id: source.uuid, 
+                 title: config.tr(source.resourceTitleObject),
+                 catalogId: source.groupOwner,
+                 description: config.tr(source.resourceAbstractObject).replace('\n', '<br>')
+            }
+            
+            if (source.cl_hierarchyLevel && source.cl_hierarchyLevel.length > 0) {
+                meta.hierachyLevel = {
+                    icon: source.cl_hierarchyLevel[0].key === 'dataset' ? 'file' : 'folder-open',
+                    name: config.tr(source.cl_hierarchyLevel[0])
+                }
+            } else {
+                meta.hierachyLevel = { icon: 'file', name: null}
+            }
+            meta.status = null
+            if (source.cl_status && source.cl_status.length > 0) {
+                meta.status = {
+                    key: source.cl_status[0].key,
+                    label: config.tr(source.cl_status[0])
+                }
+            }
+            meta.quicklook = null
+            if (source.overview && source.overview.length > 0) {
+              meta.quicklook = {
+                  src: source.overview[0].url,
+                  title: source.overview[0].nameObject ? config.tr(source.overview[0].nameObject) : ''
+              }
+            }
+            meta.temporalExtents = source.resourceTemporalExtentDetails
+            meta.related = []
+            if (source.link) {
+                meta.related = source.link
+            }
+            // catalog
+            var catalogs = this.getCatalogs()
+            meta.catalog = this.catalogs.getCatalogById(source.groupOwner)
+            meta.geom = source.geom
+            // fournisseur (on utilise distributor pour le moment)
+            meta.provider = null
+            if (source['th_formater-distributor']) {
+                meta.provider = config.getProvider(source['th_formater-distributor'][0].link)
+            }
+            meta.thesaurus = this.treatmentThesaurus(source)
+            meta.links = this.treatmentLinks(source.link, meta.id)
+            return meta
         },
         treatmentAggregations (aggs) {
 
@@ -358,7 +446,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
         },
         translate(thesaurus, uris) {
             var self = this
-            let config = useConfig()
+            let config = this.getConfig()
             return new Promise(function (resolve, reject) {
                 var id = uris.join(',')
                 var lang = config.state.lang === 'fr' ? 'fre' : 'eng'
@@ -371,9 +459,150 @@ export const useElasticsearch = defineStore('elasticsearch', {
             })
 
         },
+        treatmentThesaurus (source) {
+            var thesaurus = {}
+            for(var step in this.aggregations) {
+               for (var key in this.aggregations[step]) {
+                  if (this.aggregations[step][key].meta.thesaurus) {
+                   var th = 'th_' + this.aggregations[step][key].meta.thesaurus
+                } else {
+                  var field = this.aggregations[step][key].terms.field
+                  var tab = field.split('.')
+                  var th =  tab[0]
+                  
+                }
+                if (source[th] && source[th].forEach) {
+                    var label = this.aggregations[step][key].meta.label
+                    if (this.aggregations[step][key].meta.thesaurus) {
+                        var th = 'th_' + this.aggregations[step][key].meta.thesaurus
+                    } else {
+                        var field = this.aggregations[step][key].terms.field
+                        var tab = field.split('.')
+                        var th =  tab[0]
+                    }
+                    var config = this.getConfig()
+                    var lang = config.state.lang
+                    if (this.aggregations[step][key].meta.label[lang]) {
+                      label = this.aggregations[step][key].meta.label[lang]
+                    }
+                    thesaurus[th] = {label: label, values: source[th].map(x => config.tr(x))}
+                }
+               }
+            }
+            return thesaurus
+        },
+        treatmentLinks (list, id) {
+            let config = this.getConfig()
+            var links = {}
+            list.forEach((lk, index) => {
+            switch(lk.protocol) {
+               case 'OpenSearch':
+               case 'SensorThings':
+               case 'Sensorthings':
+                 links.api = {}
+                 links.api.http = lk.urlObject.default
+                 links.api.name = config.tr(lk.nameObject)
+                 break;
+               case 'GetMap':
+               case 'WTS':
+               case 'OGC:WMS':
+               case 'OGC:WMS-1.1.1-http-get-map':
+               case 'OGC:WFS':
+               case 'OGC:WFS-G':
+               case 'OGC:KML':
+               case 'OGC:OWS':
+               case 'OGC:OWS-C':
+               case 'OGC API - Tiles':
+               case 'OGC Web Map Service':
+               case 'GLG:KML-2.0-http-get-map':
+                   if (!links.layers) {
+                     links.layers = []
+                   }
+                   var idLayer =  id + '_' + links.layers.length 
+                   console.log(idLayer)
+                   links.layers.push({
+                        id: idLayer,
+                        uuid: id,
+                        name: config.tr(lk.nameObject),
+                        description: config.tr(lk.descriptionObject),
+                        url:  config.tr(lk.urlObject),
+                        type: lk.protocol,
+                        checked: false
+                   })
+                  break;
+               case 'application/vnd.google-earth.kml+xml':
+                  break;
+               case 'WWW:DOWNLOAD-1.0-ftp--download':
+                   break;
+               case 'WWW:DOWNLOAD-1.0-link--download':
+               case 'WWW:DOWNLOAD-1.0-http--download':
+               case 'download':
+               case 'telechargement':
+                  if (!links.download) {
+                    links.download = []
+                  }
+                  var download = {
+                        name:config.tr(lk.nameObject),
+                        description: config.tr(lk.descriptionObject),
+                        url: config.tr(lk.urlObject),
+                        type: lk.protocol
+                  }
+                  
+                  links.download.push(download)
+                  break;
+               case 'WWW:DOWNLOAD-1.0-link--order':
+               case 'order':
+                  if (!links.order) {
+                    links.order = []
+                  }
+                  var download = {
+                        name:config.tr(lk.nameObject),
+                        description: config.tr(lk.descriptionObject),
+                        url: config.tr(lk.urlObject),
+                        type: lk.protocol
+                 }
+                 links.order.push(download)
+                  break;
+               case 'UKST':
+                 
+                 //  if (link[6] && link[6].toLowerCase() === 'opensearch') {
+                 //    response.api = {}
+                 //    response.api.http = link[2]
+                 //    response.api.name = link[0].length > 0 ? link[0] : link[1]
+                 //  }
+                  break;
+               case 'WWW:LINK-1.0-http--related':
+                  if (!links.relatedLinks) {
+                    links.relatedLinks = []
+                  }
+                  var link = {
+                        name:config.tr(lk.nameObject),
+                        description: config.tr(lk.descriptionObject),
+                        url: config.tr(lk.urlObject),
+                        type: lk.protocol
+                  }
+                  links.relatedLinks.push(link)
+                  break;
+               case 'WWW:LINK-1.0-http--link':
+               default:
+                  if (!links.links) {
+                    links.links = []
+                  }
+                  var link = {
+                        name:config.tr(lk.nameObject),
+                        description: config.tr(lk.descriptionObject),
+                        url: config.tr(lk.urlObject),
+                        type: lk.protocol
+                  }
+                  links.links.push(link)
+                  break;
+             }
+            })
+            return links
+        },
         prepareAggregation(key, agg) {
             var self = this
-            let config = useConfig()
+            let config = this.getConfig()
             return new Promise(function (resolve, reject) {
                 var label = key
                 var lang = config.state.lang
