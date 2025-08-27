@@ -8,6 +8,7 @@
   import PageNavigation from '@/components/PageNavigation.vue'
   import MetadataPage from '@/components/MetadataPage.vue'
   const getMetaConverter = () => import('@/modules/metadataConverter.js') 
+  const getStacRequester = () => import('@/modules/stacRequester.js')
   const CommandLine = defineAsyncComponent(() => import('@/components/CommandLine.vue'))
   const selection = useSelection()
   const elasticsearch = useElasticsearch()
@@ -22,7 +23,8 @@
     reset: false,
     oldroute: null,
     aggregations: [],
-    metadata: null
+    metadata: null,
+    stacRequester: null
   })
   const route = useRoute()
   const router = useRouter()
@@ -62,6 +64,7 @@
     console.log('--- ON MOUNTED  DANS GRID VIEW ---')
     // elasticsearch.setCatalog(route.name, route.params.catalog)
     // getRecords(route.query)
+    
   })
   
   function getMetadata(uuid) {
@@ -78,6 +81,11 @@
               data.metadata = data.converter.transform(uuid, meta)
               console.log(data.metadata)
               data.bbox = data.metadata.geojson
+              if (data.metadata.links.api && data.metadata.links.api.STAC) {
+                  getStacRequester()
+                  .then(x => {data.stacRequester = x.default(data.metadata.links.api.STAC.url)})
+              }
+              
               
            })
           

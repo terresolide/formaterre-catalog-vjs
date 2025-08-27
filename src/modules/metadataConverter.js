@@ -455,8 +455,12 @@ export default function (attrs) {
                   case 'Opensearch':
                   case 'opensearch':
                   case 'SensorThings':
+                  case 'STAC':
                     var access =  extractAccessFromDescription(description)
-                    links.api = {
+                    if (!list.api) {
+                        list.api = {}
+                    }
+                    list.api[protocol] = {
                       url: url,
                       name: name,
                       protocol: protocol,
