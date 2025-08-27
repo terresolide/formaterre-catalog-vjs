@@ -83,7 +83,11 @@
               data.bbox = data.metadata.geojson
               if (data.metadata.links.api && data.metadata.links.api.STAC) {
                   getStacRequester()
-                  .then(x => {data.stacRequester = x.default(data.metadata.links.api.STAC.url)})
+                  .then(x => {
+                      data.stacRequester = x.default(data.metadata.links.api.STAC.url)
+                      data.stacRequester.getRecords(route)
+                      .then(data => { console.log(data)})
+                  })
               }
               
               
