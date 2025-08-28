@@ -1,4 +1,4 @@
-export default function (url, fixed={}, limit=24) {
+export default function (url, fixed={}, limit=24, cds) {
     console.log(fixed)
     console.log(url)
     const stacParameters = []
@@ -25,9 +25,9 @@ export default function (url, fixed={}, limit=24) {
                     body: JSON.stringify(parameters)
             }).then(rep => rep.json())
             .then(json => {
-                features = treatmentJson(json)
+                var resp = treatmentGeojson(json)
                 if (successCallback) {
-                    successCallback(json)
+                    successCallback(resp)
                 }
             }).catch(err => {
                 if (failureCallback) {
@@ -65,53 +65,61 @@ export default function (url, fixed={}, limit=24) {
             }
         }
     }
-    function treatmentGeojson (data, depth) {
+    function treatmentGeojson (data) {
       var metadatas = {}
-      var self = this
-      var features = []
+      var list = []
       data.features.forEach( function (feature) {
-        if (!feature.id) {
-          feature.id = feature.properties.productIdentifier
-        }
-        feature.properties.id = feature.id
-        metadatas[feature.id] =  self.mapToGeonetwork(feature)
-        features.push({type: feature.type, id: feature.id, geometry: feature.geometry})
+
+        var metadata =  mapToGeonetwork(feature)
+        list.push(metadata)
        
       })
-      if (data.features.length === 0) {
-        metadatas = {}
-      }
-      if (data.context) {
-        var properties = data.context
-      } else {
-        var properties = {}
-      }
-        properties.startIndex = (this.parameters.page - 1 ) * this.parameters.limit + 1
       
-      if (properties.matched) {
-        properties.totalResults = parseInt(properties.matched)
+      var pagination = {
+          count: list.length
       }
-      if (!properties.limit) {
-        properties.itemsPerPage = this.parameters.limit
+      if (data.context && data.context.matched) {
+          pagination.total = parseInt(data.context.matched)
       }
-    
+     
+      // if (data.context) {
+      //   var properties = data.context
+      // } else {
+      //   var properties = {}
+      // }
+      //   properties.startIndex = (parameters.page - 1 ) * parameters.limit + 1
+      // 
+      // if (properties.matched) {
+      //   properties.totalResults = parseInt(properties.matched)
+      // }
+      // if (!properties.limit) {
+      //   properties.itemsPerPage = parameters.limit
+      // }
+      return {list: list, pagination: pagination, aggregations: {}}
     }
     function mapToGeonetwork(feature) {
       var properties = {}
-      properties.fromOs = true
-      properties.cds = this.cds
-      properties.type = 'dataset'
-      
+      properties.fromStac = true
+      properties.cds = cds
+      properties.hierachyLevel = {
+            icon:'file',
+            name: 'dataset'
+    }
+      properties.geom = [feature.geometry]
+      properties.uuid = feature.id
+      properties.id = feature.id
+      properties.links = {}
       if (feature.properties.identifier) {
         properties.identifier = feature.properties.identifier
         properties.title = feature.properties.identifier
       }
-      if (feature.properties['temporal:startDate']) {
-        properties.tempExtentBegin = feature.properties['temporal:startDate']
+      if (feature.properties['start_datetime']) {
+        properties.temporalExtents = [{
+            start: feature.properties['start_datetime'],
+            end: feature.properties['end_datetime']
+        }]
       }
-      if (feature.properties['temporal:endDate']) {
-        properties.tempExtentEnd = feature.properties['temporal:endDate']
-      }
+      
       if (feature.properties.datetime) {
         properties.revisionDate = feature.properties.datetime
       }
@@ -131,7 +139,7 @@ export default function (url, fixed={}, limit=24) {
           }
       }
       for (var key in feature.properties) {
-        if (['datetime', 'temporal:starDate', 'temporal:endDate', 'spaceborne:keywords'].indexOf(key) < 0) {
+        if (['datetime', 'start_datetime', 'end_datetime', 'spaceborne:keywords'].indexOf(key) < 0) {
           var tab = key.split(':')
           var prop= tab.pop()
           properties[prop] = feature.properties[key]
@@ -143,6 +151,7 @@ export default function (url, fixed={}, limit=24) {
       if (lk) {
         properties.exportLinks.json = lk.href
       }
+      console.log(properties)
        return properties
     }
     function requestApi () {

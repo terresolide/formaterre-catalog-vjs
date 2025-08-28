@@ -57,8 +57,11 @@
       }
       data.oldroute = Object.assign({},newroute)
       elasticsearch.setCatalog(newroute.name, newroute.params.catalog, newroute.params.id)
-      getMetadata(newroute.params.id)
-      getRecords(newroute.query)
+      if (newroute.params.id) {
+          getMetadata(newroute.params.id)
+      } else {
+          getRecords(newroute.query)
+      }
   }, {immediate: true, deep: true})
   onMounted(() => {
     console.log('--- ON MOUNTED  DANS GRID VIEW ---')
@@ -86,9 +89,16 @@
                   var query = data.metadata.links.api.STAC.query
                   getStacRequester()
                   .then(x => {
-                      data.stacRequester = x.default(data.metadata.links.api.STAC.url, query, 12)
+                      data.stacRequester = x.default(data.metadata.links.api.STAC.url, query, 12, data.metadata.cds)
                       data.stacRequester.getRecords(route)
-                      .then(data => { console.log(data)})
+                      .then(json => { 
+                            if (json.list) {
+                              console.log(json.list)
+                              data.list = json.list
+                              data.pagination = Object.assign(data.pagination, json.pagination)
+                              data.bbox = null
+                            }
+                      })
                   })
               }
               
