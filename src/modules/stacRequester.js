@@ -98,85 +98,104 @@ export default function (url, fixed={}, limit=24, cds) {
       return {list: list, pagination: pagination, aggregations: {}}
     }
     function mapToGeonetwork(feature) {
-      var properties = {}
-      properties.fromStac = true
-      properties.cds = cds
-      properties.hierachyLevel = {
-            icon:'file',
-            name: 'dataset'
-    }
-      properties.geom = [feature.geometry]
-      properties.uuid = feature.id
-      properties.id = feature.id
-      properties.links = {}
-      if (feature.properties.identifier) {
-        properties.identifier = feature.properties.identifier
-        properties.title = feature.properties.identifier
-      }
-      if (feature.properties['start_datetime']) {
-        properties.temporalExtents = [{
-            start: feature.properties['start_datetime'],
-            end: feature.properties['end_datetime']
-        }]
-      }
-      
-      if (feature.properties.datetime) {
-        properties.revisionDate = feature.properties.datetime
-      }
-      if (feature.properties['spaceborne:keywords']) {
-        properties.keyword = feature.properties['spaceborne:keywords']
-      }
-      for (var key in feature.assets) {
-          if (feature.assets[key].roles.indexOf('overview') >=0) {
-            
-            properties.images = [[feature.assets[key].title, feature.assets[key].href, '']]
-            properties.thumbnail = feature.assets[key].href 
-
-          } else if (feature.assets[key].roles.indexOf('data') >=0) {
-            // feature.assets[key].renameProperty('href', 'url')
-            feature.assets[key].url = feature.assets[key].href
-            properties.download= [feature.assets[key]]
-          }
-      }
-      for (var key in feature.properties) {
-        if (['datetime', 'start_datetime', 'end_datetime', 'spaceborne:keywords'].indexOf(key) < 0) {
-          var tab = key.split(':')
-          var prop= tab.pop()
-          properties[prop] = feature.properties[key]
-
+        var properties = {}
+        properties.fromStac = true
+        properties.cds = cds
+        properties.hierachyLevel = {
+              icon:'file',
+              name: 'dataset'
         }
-      }
-      properties.exportLinks = {}
-      var lk = feature.links.find(f => f.rel === 'self')
-      if (lk) {
-        properties.exportLinks.json = lk.href
-      }
-      console.log(properties)
-       return properties
-    }
-    function requestApi () {
-      if (this.count > 2) {
-        return
-      }
-
-      this.$http.post(
-        this.searchUrl,
-        this.parameters,
-       {headers: {'Content-Type': 'application/json'}}
-      ).then(
-        resp => { this.treatmentGeojson (resp.body, this.depth)},
-        resp => {
-          switch (resp.status) {
-
-          }
-          if (this.searchUrl !== this.$store.state.proxyGeodes + '/items') {
-            this.searchUrl = this.$store.state.proxyGeodes + '/items'
-            this.requestApi()
+        properties.geom = [feature.geometry]
+        properties.uuid = feature.id
+        properties.id = feature.id
+        properties.links = {}
+        if (feature.properties.identifier) {
+          properties.identifier = feature.properties.identifier
+          properties.title = feature.properties.identifier
+        }
+        if (feature.properties['start_datetime']) {
+          properties.temporalExtents = [{
+              start: {date: feature.properties['start_datetime'].substring(0,10)},
+              end: {date: feature.properties['end_datetime'].substring(0,10)}
+          }]
+        }
+        
+        if (feature.properties.datetime) {
+          properties.revisionDate = feature.properties.datetime
+        }
+        if (feature.properties['spaceborne:keywords']) {
+          properties.keyword = feature.properties['spaceborne:keywords']
+        }
+        properties.links = {download:[]}
+        for (var key in feature.assets) {
+            if (feature.assets[key].roles.indexOf('overview') >=0) {
+              properties.quicklook = {
+                  src:  feature.assets[key].href,
+                  title: ''
+              }
+              // properties.images = [[feature.assets[key].title, feature.assets[key].href, '']]
+              // properties.thumbnail = feature.assets[key].href 
+        
+            } else if (feature.assets[key].roles.indexOf('data') >=0) {
+              // feature.assets[key].renameProperty('href', 'url')
+              // feature.assets[key].url = feature.assets[key].href
+              // properties.download= [feature.assets[key]]
+              properties.download.push({
+                  url: feature.assets[key].href,
+                  name: key,
+                  type: 'download',
+                  description: ''
+              })
+            }
+        }
+        if (feature.properties.endpoint_url) {
+             var tab = feature.properties.endpoint_url.split('/')
+             properties.links.download.push({
+                  url: feature.properties.endpoint_url,
+                  name: tab[tab.length - 1],
+                  type: 'download',
+                  description: ''
+              })
+        }
+        for (var key in feature.properties) {
+          if (['datetime', 'start_datetime', 'end_datetime', 'spaceborne:keywords'].indexOf(key) < 0) {
+            var tab = key.split(':')
+            var prop= tab.pop()
+            properties[prop] = feature.properties[key]
+        
           }
         }
-      )
-
+        properties.exportLinks = {}
+        var lk = feature.links.find(f => f.rel === 'self')
+        if (lk) {
+          properties.exportLinks.json = lk.href
+        }
+        
+        return properties
     }
+    // function requestApi () {
+    //     if (this.count > 2) {
+    //       return
+    //     }
+    //     
+    //     this.$http.post(
+    //       this.searchUrl,
+    //       this.parameters,
+    //      {headers: {'Content-Type': 'application/json'}}
+    //     ).then(
+    //       resp => { this.treatmentGeojson (resp.body, this.depth)},
+    //       resp => {
+    //         switch (resp.status) {
+    //     
+    //         }
+    //         if (this.searchUrl !== this.$store.state.proxyGeodes + '/items') {
+    //           this.searchUrl = this.$store.state.proxyGeodes + '/items'
+    //           this.requestApi()
+    //         }
+    //       }
+    //     )
+    // 
+    // }
     function extractDescribeParameters(json) {
       for(var i in json.links) {
         if (json.links[i].rel === 'root') {

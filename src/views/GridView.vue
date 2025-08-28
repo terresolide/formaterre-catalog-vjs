@@ -21,7 +21,7 @@
     },
     converter: null,
     reset: false,
-    oldroute: null,
+    oldroute: {name: null, params: {}, query: {}},
     aggregations: [],
     metadata: null,
     stacRequester: null
@@ -55,13 +55,14 @@
 
         }
       }
-      data.oldroute = Object.assign({},newroute)
+     
       elasticsearch.setCatalog(newroute.name, newroute.params.catalog, newroute.params.id)
-      if (newroute.params.id) {
+      if (newroute.params.id && (!data.oldroute.params.id || data.oldroute.params.id !== newroute.params.id)) {
           getMetadata(newroute.params.id)
       } else {
           getRecords(newroute.query)
       }
+       data.oldroute = Object.assign({},newroute)
   }, {immediate: true, deep: true})
   onMounted(() => {
     console.log('--- ON MOUNTED  DANS GRID VIEW ---')
