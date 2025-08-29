@@ -20,6 +20,7 @@
       total: 0
     },
     converter: null,
+    osRequester: null,
     reset: false,
     oldroute: {name: null, params: {}, query: {}},
     aggregations: [],
@@ -70,43 +71,51 @@
     // getRecords(route.query)
     
   })
-  
+  function convert (uuid, metadata) {
+      if (!data.converter) {
+          getMetaConverter()
+          .then(converter => {
+              data.converter = converter.default()
+              data.metadata = data.converter.transform(uuid, metadata)
+              data.bbox = data.metadata.geojson
+              getRecords()
+          })
+      } else {
+            data.metadata = data.converter.transform(uuid, metadata)
+            data.bbox = data.metadata.geojson
+            getRecords()
+      }
+  }
+  function launchStac () {
+      if (!data.stacRequester) {
+          getStacRequester()
+          .then(x => { 
+               data.stacRequester = x.default
+               getStacRecords()
+               
+          })
+      } else {
+          getStacRecords()
+      }
+  }
+  function getStacRecords () {
+      data.stacRequester(data.metadata.links.api.STAC.url, route.query, 12, data.metadata.cds)
+      .then(json => { 
+            if (json.list) {
+              console.log(json.list)
+              data.list = json.list
+              data.pagination = Object.assign(data.pagination, json.pagination)
+              data.bbox = null
+            }
+      })
+  }
   function getMetadata(uuid) {
       if (!uuid) {
           data.metadata = null
           return
       }
       elasticsearch.getMetadata(uuid)
-      .then(meta => {
-          console.log(meta)
-          getMetaConverter()
-          .then(converter => {
-              data.converter = converter.default()
-              data.metadata = data.converter.transform(uuid, meta)
-              console.log(data.metadata)
-              data.bbox = data.metadata.geojson
-              if (data.metadata.links.api && data.metadata.links.api.STAC) {
-                  var access = data.metadata.links.api.STAC.access
-                  var query = data.metadata.links.api.STAC.query
-                  getStacRequester()
-                  .then(x => {
-                      data.stacRequester = x.default(data.metadata.links.api.STAC.url, query, 12, data.metadata.cds)
-                      data.stacRequester.getRecords(route)
-                      .then(json => { 
-                            if (json.list) {
-                              console.log(json.list)
-                              data.list = json.list
-                              data.pagination = Object.assign(data.pagination, json.pagination)
-                              data.bbox = null
-                            }
-                      })
-                  })
-              }
-              
-              
-           })
-          
-      })
+      .then(meta => { convert(uuid, meta)})
   }
   function close () {
     // enregistrer la dernière page grid...
