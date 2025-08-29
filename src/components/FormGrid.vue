@@ -70,6 +70,9 @@
                 <template v-if="agg.meta.type === 'dimension'">
                    <dimension-block :name="key" :aggregation="agg" />
                 </template>
+                <template v-else-if="agg.meta.type === 'select'">
+                  {{key}} {{agg}}
+                </template>
                 <template v-else>
                     <aggregation-block :name="agg.key" :aggregation="agg"></aggregation-block>
                 </template>

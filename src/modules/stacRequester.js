@@ -2,7 +2,11 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
     console.log(fixed)
     console.log(url)
     const stacParameters = []
+    
     const mappingParameters =  {}
+    for (var key in fixed) {
+        mappingParameters[key.replace(':', '_')] = key
+    }
     const parameters =  {page: 1, limit: limit, query: {}, sortBy:[{direction: 'desc',field: 'start_datetime' }]}
     const predefined =  {
          start: "start",
@@ -95,6 +99,13 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
       // if (!properties.limit) {
       //   properties.itemsPerPage = parameters.limit
       // }
+      var aggregations = {}
+      for (var key in fixed) {
+          aggregations[key] = {
+              buckets: fixed[key],
+              meta: {label: key.replace(':', '_'), type: 'select'}
+          }
+      }
       return {list: list, pagination: pagination, aggregations: {}}
     }
     function mapToGeonetwork(feature) {

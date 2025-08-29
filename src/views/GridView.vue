@@ -63,8 +63,10 @@
       if (newroute.params.id && (!data.oldroute.params.id || data.oldroute.params.id !== newroute.params.id)) {
           getMetadata(newroute.params.id)
       } else {
-          data.metadata = null
-          data.bbox = null
+          if (!newroute.params.id) {
+              data.metadata = null
+              data.bbox = null
+          }
           getRecords(newroute.query)
       }
        data.oldroute = Object.assign({},newroute)
@@ -104,6 +106,7 @@
   }
   function getStacRecords () {
       var stac = data.metadata.links.api.STAC
+      stac.query = Object.assign(stac.query, {'product:type': ['INTERFEROGRAM', 'TIMESERIE', 'AUXILIARYDATA']})
       var requester = data.stacRequester(stac.url, stac.query, config.state.size, data.metadata.cds)
       requester.getRecords(route)
       .then(json => { 
@@ -133,6 +136,7 @@
     }
   }
   function getRecords (query) {
+    console.log(data.metadata)
     if (data.metadata && data.metadata.stac && data.stacRequester) {
         launchStac()
         return
