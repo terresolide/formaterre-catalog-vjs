@@ -3,6 +3,7 @@
   import { useRoute, useRouter } from "vue-router"
   import { useElasticsearch } from '@/stores/elasticsearch';
   import { useSelection } from '@/stores/selection'
+  import { useConfig } from '@/stores/config'
   import MetadataList from '@/components/MetadataList.vue'
   import FormGrid from '@/components/FormGrid.vue'
   import PageNavigation from '@/components/PageNavigation.vue'
@@ -29,6 +30,7 @@
   })
   const route = useRoute()
   const router = useRouter()
+  const config = useConfig()
   function mergeAggregations (aggregations) {
     if (Object.keys(data.aggregations).length === 0 || data.reset) {
       data.aggregations = aggregations
@@ -61,6 +63,8 @@
       if (newroute.params.id && (!data.oldroute.params.id || data.oldroute.params.id !== newroute.params.id)) {
           getMetadata(newroute.params.id)
       } else {
+          data.metadata = null
+          data.bbox = null
           getRecords(newroute.query)
       }
        data.oldroute = Object.assign({},newroute)
@@ -99,8 +103,8 @@
       }
   }
   function getStacRecords () {
-      console.log(data.stacRequester)
-      var requester = data.stacRequester(data.metadata.links.api.STAC.url, route.query, 12, data.metadata.cds)
+      var stac = data.metadata.links.api.STAC
+      var requester = data.stacRequester(stac.url, stac.query, config.state.size, data.metadata.cds)
       requester.getRecords(route)
       .then(json => { 
             if (json.list) {
@@ -129,7 +133,10 @@
     }
   }
   function getRecords (query) {
-
+    if (data.metadata && data.metadata.stac && data.stacRequester) {
+        launchStac()
+        return
+    }
     elasticsearch.getRecords(query)
     .then(json => {
         console.log(json)
@@ -139,10 +146,9 @@
           data.pagination = Object.assign(data.pagination, json.pagination)
           data.bbox = null
         }
-        if (Object.keys(query).length === 0 && json.list.length === 0) {
-            if ( data.metadata.stac) {
-                launchStac()
-            }
+        if (json.list.length === 0 && data.metadata && data.metadata.stac) {
+            launchStac()
+
             return {}
         } else {
             return elasticsearch.treatmentAggregations(json.aggregations)
@@ -163,7 +169,7 @@
        <metadata-page :metadata="data.metadata" @close="close">
             <div>
               <div style="text-align:center;margin:15px 0;">
-                <PageNavigation :tot="data.pagination"></PageNavigation>
+                <PageNavigation :tot="data.pagination" :inside="true"></PageNavigation>
               </div>
               <MetadataList :list="data.list" :inside="true"></MetadataList>
             </div>

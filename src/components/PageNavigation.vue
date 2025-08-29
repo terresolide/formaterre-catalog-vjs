@@ -2,7 +2,13 @@
 import {computed, reactive} from 'vue';
 import { useRoute, useRouter} from 'vue-router'
 import {useConfig} from '@/stores/config';
-const pagination = defineProps({tot: Object})
+const pagination = defineProps({
+    tot: Object,
+    inside: {
+        type: Boolean,
+        default: false
+    }
+})
 let config = useConfig()
 const route = useRoute()
 const router = useRouter()
@@ -86,7 +92,7 @@ function sortChange() {
         <span class="mini-button" :class="{disabled: to >= pagination.tot.total}" :style="{background: config.state.primary}" @click="next">&rsaquo;</span>
         <span class="mini-button" :class="{disabled: to >= pagination.tot.total}" :style="{background: config.state.primary}" @click="last">&raquo;</span>
       </div>
-      <div class="order-by">
+      <div class="order-by" v-if="!pagination.inside">
         {{$t('sort_by')}} <select v-model="config.state.sortBy" @change="sortChange">
             <option value="popularity">{{$t('popularity')}}</option>
             <option value="changeDate">{{$t('update')}}</option>
