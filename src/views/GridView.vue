@@ -78,28 +78,30 @@
               data.converter = converter.default()
               data.metadata = data.converter.transform(uuid, metadata)
               data.bbox = data.metadata.geojson
-              getRecords()
+              getRecords(route.query)
           })
       } else {
             data.metadata = data.converter.transform(uuid, metadata)
             data.bbox = data.metadata.geojson
-            getRecords()
+            getRecords(route.query)
       }
   }
   function launchStac () {
       if (!data.stacRequester) {
           getStacRequester()
           .then(x => { 
-               data.stacRequester = x.default
+              console.log(x)
+               data.stacRequester = x.stacRequester
                getStacRecords()
-               
           })
       } else {
           getStacRecords()
       }
   }
   function getStacRecords () {
-      data.stacRequester(data.metadata.links.api.STAC.url, route.query, 12, data.metadata.cds)
+      console.log(data.stacRequester)
+      var requester = data.stacRequester(data.metadata.links.api.STAC.url, route.query, 12, data.metadata.cds)
+      requester.getRecords(route)
       .then(json => { 
             if (json.list) {
               console.log(json.list)
@@ -137,7 +139,14 @@
           data.pagination = Object.assign(data.pagination, json.pagination)
           data.bbox = null
         }
-        return elasticsearch.treatmentAggregations(json.aggregations)
+        if (Object.keys(query).length === 0 && json.list.length === 0) {
+            if ( data.metadata.stac) {
+                launchStac()
+            }
+            return {}
+        } else {
+            return elasticsearch.treatmentAggregations(json.aggregations)
+        }
     }).then(values => {
         mergeAggregations(values)
     })

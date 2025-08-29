@@ -1,4 +1,4 @@
-export default function (url, fixed={}, limit=24, cds) {
+export function stacRequester (url, fixed={}, limit=24, cds) {
     console.log(fixed)
     console.log(url)
     const stacParameters = []
@@ -140,7 +140,7 @@ export default function (url, fixed={}, limit=24, cds) {
               // feature.assets[key].renameProperty('href', 'url')
               // feature.assets[key].url = feature.assets[key].href
               // properties.download= [feature.assets[key]]
-              properties.download.push({
+              properties.links.download.push({
                   url: feature.assets[key].href,
                   name: key,
                   type: 'download',

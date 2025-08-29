@@ -471,6 +471,7 @@ export default function (attrs) {
                       access: obj.access,
                       query: obj.query
                     }
+                    metadata[protocol.toLowerCase()] = url
                     break;
                   case 'GetMap':
                   case 'WTS':
