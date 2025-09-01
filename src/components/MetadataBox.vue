@@ -3,20 +3,21 @@ import {computed} from 'vue'
 import { useRoute,RouterLink} from 'vue-router'
 import {useConfig} from '@/stores/config'
 import {useCatalog} from '@/stores/catalog'
-import {useElasticsearch} from '@/stores/elasticsearch'
 import TemporalExtent from '@/components/TemporalExtent.vue'
 import RelatedLinks from '@/components/RelatedLinks.vue'
 let config = useConfig()
 let catalogs = useCatalog()
 let route = useRoute()
-const props = defineProps({
+
+const stacProperties = ['beam_ids', 'instrument', 'instrument_mode', 'orbit_state', 'platform', 'polarizations', 'relative_orbit']
+const {metadata} = defineProps({
     metadata: Object
 })
 const catalog = computed(() => {
     return catalogs.getCurrent()
 })
 const linkMetadata = computed(() => {
-    var link = {name:'metadata', params: {id: props.metadata.id }}
+    var link = {name:'metadata', params: {id: metadata.id }}
     if (route.params.catalog) {
         link.name = 'catalog-metadata'
         link.params.catalog = route.params.catalog
@@ -24,195 +25,8 @@ const linkMetadata = computed(() => {
     return link
     
 })
-const elasticsearch = useElasticsearch()
-function treatmentThesaurus (source) {
-    var thesaurus = {}
-    for(var step in elasticsearch.aggregations) {
-       for (var key in elasticsearch.aggregations[step]) {
-          if (elasticsearch.aggregations[step][key].meta.thesaurus) {
-           var th = 'th_' + elasticsearch.aggregations[step][key].meta.thesaurus
-        } else {
-          var field = elasticsearch.aggregations[step][key].terms.field
-          var tab = field.split('.')
-          var th =  tab[0]
-          
-        }
-        if (source[th] && source[th].forEach) {
-            var label = elasticsearch.aggregations[step][key].meta.label
-            if (elasticsearch.aggregations[step][key].meta.thesaurus) {
-                var th = 'th_' + elasticsearch.aggregations[step][key].meta.thesaurus
-            } else {
-                var field = elasticsearch.aggregations[step][key].terms.field
-                var tab = field.split('.')
-                var th =  tab[0]
-            }
-            var lang = config.state.lang
-            if (elasticsearch.aggregations[step][key].meta.label[lang]) {
-              label = elasticsearch.aggregations[step][key].meta.label[lang]
-            }
-            thesaurus[th] = {label: label, values: source[th].map(x => config.tr(x))}
-        }
-       }
-    }
-    return thesaurus
-}
-function treatmentLinks (list, id) {
-    var links = {}
-    list.forEach((lk, index) => {
-    switch(lk.protocol) {
-        case 'OpenSearch':
-        case 'SensorThings':
-        case 'Sensorthings':
-          links.api = {}
-          links.api.http = lk.urlObject.default
-          links.api.name = config.tr(lk.nameObject)
-          break;
-        case 'GetMap':
-        case 'WTS':
-        case 'OGC:WMS':
-        case 'OGC:WMS-1.1.1-http-get-map':
-        case 'OGC:WFS':
-        case 'OGC:WFS-G':
-        case 'OGC:KML':
-        case 'OGC:OWS':
-        case 'OGC:OWS-C':
-        case 'OGC API - Tiles':
-        case 'OGC Web Map Service':
-        case 'GLG:KML-2.0-http-get-map':
-            if (!links.layers) {
-              links.layers = []
-            }
-            var idLayer =  id + '_' + links.layers.length 
-            console.log(idLayer)
-            links.layers.push({
-                 id: idLayer,
-                 uuid: id,
-                 name: config.tr(lk.nameObject),
-                 description: config.tr(lk.descriptionObject),
-                 url:  config.tr(lk.urlObject),
-                 type: lk.protocol,
-                 checked: false
-            })
-           break;
-        case 'application/vnd.google-earth.kml+xml':
-           break;
-        case 'WWW:DOWNLOAD-1.0-ftp--download':
-            break;
-        case 'WWW:DOWNLOAD-1.0-link--download':
-        case 'WWW:DOWNLOAD-1.0-http--download':
-        case 'download':
-        case 'telechargement':
-           if (!links.download) {
-             links.download = []
-           }
-           var download = {
-                 name:config.tr(lk.nameObject),
-                 description: config.tr(lk.descriptionObject),
-                 url: config.tr(lk.urlObject),
-                 type: lk.protocol
-           }
-           
-           links.download.push(download)
-           break;
-        case 'WWW:DOWNLOAD-1.0-link--order':
-        case 'order':
-           if (!links.order) {
-             links.order = []
-           }
-           var download = {
-                 name:config.tr(lk.nameObject),
-                 description: config.tr(lk.descriptionObject),
-                 url: config.tr(lk.urlObject),
-                 type: lk.protocol
-          }
-          links.order.push(download)
-           break;
-        case 'UKST':
-          
-          //  if (link[6] && link[6].toLowerCase() === 'opensearch') {
-          //    response.api = {}
-          //    response.api.http = link[2]
-          //    response.api.name = link[0].length > 0 ? link[0] : link[1]
-          //  }
-           break;
-        case 'WWW:LINK-1.0-http--related':
-           if (!links.relatedLinks) {
-             links.relatedLinks = []
-           }
-           var link = {
-                 name:config.tr(lk.nameObject),
-                 description: config.tr(lk.descriptionObject),
-                 url: config.tr(lk.urlObject),
-                 type: lk.protocol
-           }
-           links.relatedLinks.push(link)
-           break;
-        case 'WWW:LINK-1.0-http--link':
-        default:
-           if (!links.links) {
-             links.links = []
-           }
-           var link = {
-                 name:config.tr(lk.nameObject),
-                 description: config.tr(lk.descriptionObject),
-                 url: config.tr(lk.urlObject),
-                 type: lk.protocol
-           }
-           links.links.push(link)
-           break;
-      }
-     })
-     return links
-   }
-const metadata = computed(() => {
-    return props.metadata
-    let source = props.metadata._source
-    let meta = {
-         id: source.uuid, 
-         title: config.tr(source.resourceTitleObject),
-         catalogId: source.groupOwner,
-         description: config.tr(source.resourceAbstractObject).replace('\n', '<br>')
-    }
-    
-    if (source.cl_hierarchyLevel && source.cl_hierarchyLevel.length > 0) {
-        meta.hierachyLevel = {
-            icon: source.cl_hierarchyLevel[0].key === 'dataset' ? 'file' : 'folder-open',
-            name: config.tr(source.cl_hierarchyLevel[0])
-        }
-    } else {
-        meta.hierachyLevel = { icon: 'file', name: null}
-    }
-    meta.status = null
-    if (source.cl_status && source.cl_status.length > 0) {
-        meta.status = {
-            key: source.cl_status[0].key,
-            label: config.tr(source.cl_status[0])
-        }
-    }
-    meta.quicklook = null
-    if (source.overview && source.overview.length > 0) {
-      meta.quicklook = {
-          src: source.overview[0].url,
-          title: source.overview[0].nameObject ? config.tr(source.overview[0].nameObject) : ''
-      }
-    }
-    meta.temporalExtents = source.resourceTemporalExtentDetails
-    meta.related = []
-    if (source.link) {
-        meta.related = source.link
-    }
-    // catalog
-    meta.catalog = catalogs.getCatalogById(source.groupOwner)
-    
-    // fournisseur (on utilise distributor pour le moment)
-    meta.provider = null
-    if (source['th_formater-distributor']) {
-        meta.provider = config.getProvider(source['th_formater-distributor'][0].link)
-    }
-    meta.thesaurus = treatmentThesaurus(source)
-    meta.links = treatmentLinks(source.link, meta.id)
-    return meta
-})
+
+
 
 </script>
 <template>
@@ -233,12 +47,18 @@ const metadata = computed(() => {
        
             </div>
             <temporal-extent v-for="extent in metadata.temporalExtents" :extent="extent"></temporal-extent>
+            <div v-if="metadata.subtitle">{{metadata.subtitle}}</div>
             <div v-html="metadata.description"></div>
             <div v-for="item in metadata.thesaurus" >
                 <label :style="{color: config.state.primary}">{{ item.label }}: </label> 
                 <span v-for="value in item.values">{{ value }} </span>
             </div>
-            
+            <template v-for="key in stacProperties"> 
+             <div  v-if="metadata[key]">
+             <label :style="{color: config.state.primary}">{{ key }}: </label> 
+                <span >{{ metadata[key] }} </span>
+            </div>
+            </template>   
         </div>
         <div class="mtdt-footer">
             <div  class="mtdt-center">

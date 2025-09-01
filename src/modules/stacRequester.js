@@ -19,7 +19,8 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
     const defaultQuery = fixed
     const searchUrl = url
     const count = 0
-    
+    const stacProperties = ['beam_ids', 'instrument', 'instrument_mode', 'orbit_state', 'platform', 'polarizations', 'relative_orbit']
+
     function getRecords (route) {
         prepareRequest(route)
         return new Promise((successCallback, failureCallback) => {
@@ -60,7 +61,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
           parameters.query['end_datetime']= {lte: newroute.query.end + 'T23:59:59.999Z'}
         }
         for (var key in defaultQuery) {
-            console.log(key)
+            // les filtres fixes, issus des metadonnées
             parameters.query[key] = {in: defaultQuery[key]}
         }
         for (var key in newroute.query) {
@@ -113,6 +114,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
               meta: {label: key.replace(':', '_'), type: 'dimension'}
           }
       }
+      // idem pour summaries et/ou queryable
       return {list: list, pagination: pagination, aggregations: aggregations}
     }
     function mapToGeonetwork(feature) {
@@ -139,7 +141,10 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         }
         
         if (feature.properties.datetime) {
-          properties.revisionDate = feature.properties.datetime
+          properties.dateStamp = feature.properties.datetime
+        }
+        if (feature.properties['processing:datetime']) {
+          properties.processingDate = feature.properties['processing:datetime']
         }
         if (feature.properties['spaceborne:keywords']) {
           properties.keyword = feature.properties['spaceborne:keywords']
@@ -176,12 +181,15 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
               })
         }
         for (var key in feature.properties) {
-          if (['datetime', 'start_datetime', 'end_datetime', 'spaceborne:keywords'].indexOf(key) < 0) {
-            var tab = key.split(':')
-            var prop= tab.pop()
-            properties[prop] = feature.properties[key]
-        
-          }
+          // if (['datetime', 'start_datetime', 'end_datetime'].indexOf(key) < 0) {
+            if (['identifier', 'instrument', 'subtitle', 'platform'].indexOf(key) >= 0) {
+                properties[key] = feature.properties[key]
+            } else if (key.indexOf('sar:') >= 0 || key.indexOf('sat:') >= 0) {
+                 var tab = key.split(':')
+                 var prop= tab.pop()
+                 properties[prop] = feature.properties[key]
+            }
+          // }
         }
         properties.exportLinks = {}
         var lk = feature.links.find(f => f.rel === 'self')

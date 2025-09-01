@@ -19,7 +19,7 @@ const props = defineProps({
      <div class="wrapper-group-2" :class="{inside: props.inside}">
        <template v-if="props.list.length > 0">
            <div class="container-flex"> 
-                <template v-for="item in props.list" >
+                <template v-for="item in props.list"  :key="item.uuid">
                      <metadata-box :metadata="item"></metadata-box> 
                 </template>
             </div>
