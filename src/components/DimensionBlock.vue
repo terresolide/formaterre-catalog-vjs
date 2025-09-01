@@ -101,7 +101,7 @@ onMounted(() => {merge(aggregation)})
             </template>
         </span>
         <label> {{dim.label}} </label>
-        <span>({{dim.count}})</span>
+        <span v-if="dim.count !== null">({{dim.count}})</span>
     </div>
 </template>
 <style scoped>
@@ -110,12 +110,15 @@ div {
     line-height:1.3;
 }
 span {
+    vertical-align:top;
     display:inline-block;
 }
 div span:first-child {
     width:25px;
 }
 label {
+    display: inline-block;
+    width:calc(100% - 60px);
     margin-right:10px;
 }
 div span:last-child {

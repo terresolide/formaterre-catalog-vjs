@@ -63,6 +63,11 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
             console.log(key)
             parameters.query[key] = {in: defaultQuery[key]}
         }
+        for (var key in newroute.query) {
+            if (['from', 'to', 'box', 'start', 'end'].indexOf(key) < 0) {
+                parameters.query[key] = {in: newroute.query[key].split(',')}
+            }
+        }
         for(var name in mappingParameters) {
             if (newroute.query[name]){
                 parameters.query[mappingParameters[name]] = {eq: newroute.query[name]}
@@ -100,13 +105,15 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
       //   properties.itemsPerPage = parameters.limit
       // }
       var aggregations = {}
+      
       for (var key in fixed) {
+          var category = fixed[key].map(x => {return {key: x, label: x, count: null}})
           aggregations[key] = {
-              buckets: fixed[key],
-              meta: {label: key.replace(':', '_'), type: 'select'}
+              category: category,
+              meta: {label: key.replace(':', '_'), type: 'dimension'}
           }
       }
-      return {list: list, pagination: pagination, aggregations: {}}
+      return {list: list, pagination: pagination, aggregations: aggregations}
     }
     function mapToGeonetwork(feature) {
         var properties = {}

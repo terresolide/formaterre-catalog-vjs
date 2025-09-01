@@ -116,6 +116,8 @@
               data.pagination = Object.assign(data.pagination, json.pagination)
               data.bbox = null
             }
+            console.log(json.aggregations)
+            data.aggregations = json.aggregations
       })
   }
   function getMetadata(uuid) {
