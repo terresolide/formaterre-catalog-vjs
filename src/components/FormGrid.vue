@@ -18,7 +18,7 @@
   })
 
   // daymin et daymax à récupérer (depend du catalogue ou bien de la série parent....)
- const daymin = '2020-05-10'
+ const daymin = null
  const daymax = null
  const data = reactive({
      any: null

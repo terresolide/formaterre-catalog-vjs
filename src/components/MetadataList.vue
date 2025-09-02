@@ -1,6 +1,7 @@
 <script setup>
 // import { computed } from 'vue';
 import MetadataBox from '@/components/MetadataBox.vue'
+import MetadataSingle from '@/components/MetadataSingle.vue'
 
 // import { useSelection } from '@/stores/selection'
 

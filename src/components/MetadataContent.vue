@@ -6,6 +6,7 @@ import RelatedLinks from '@/components/RelatedLinks.vue'
 import TemporalExtent from '@/components/TemporalExtent.vue'
 import ContactBox from '@/components/ContactBox.vue'
 import KeywordList from '@/components/KeywordList.vue'
+
 const moment = inject('moment')
 const {metadata} = defineProps({
     metadata: Object

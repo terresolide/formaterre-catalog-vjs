@@ -51,21 +51,22 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
           parameters.limit = nb
           parameters.page = Math.round((parseInt(newroute.query.from) -1) / nb) + 1
         }
-        if (newroute.query.box) {
-          parameters.bbox = newroute.query.box.split(',')
+        if (newroute.query.bbox) {
+            var bbox = newroute.query.bbox.split(',')
+            parameters.bbox = bbox.map(x => parseFloat(x))
         }
         if (newroute.query.start) {
-          parameters.query['start_datetime'] = {gte: newroute.query.start + 'T00:00:00.000Z'}
+          parameters.query['end_datetime'] = {gte: newroute.query.start + 'T00:00:00.000Z'}
         }
         if (newroute.query.end) {
-          parameters.query['end_datetime']= {lte: newroute.query.end + 'T23:59:59.999Z'}
+          parameters.query['start_datetime']= {lte: newroute.query.end + 'T23:59:59.000Z'}
         }
         for (var key in defaultQuery) {
             // les filtres fixes, issus des metadonnées
             parameters.query[key] = {in: defaultQuery[key]}
         }
         for (var key in newroute.query) {
-            if (['from', 'to', 'box', 'start', 'end'].indexOf(key) < 0) {
+            if (['from', 'to', 'bbox', 'start', 'end'].indexOf(key) < 0) {
                 parameters.query[key] = {in: newroute.query[key].split(',')}
             }
         }
