@@ -13,8 +13,12 @@ const stacProperties = ['beam_ids', 'instrument', 'instrument_mode', 'orbit_stat
 const {metadata} = defineProps({
     metadata: Object
 })
+const emit = defineEmits(['show'])
 const catalog = computed(() => {
     return catalogs.getCurrent()
+})
+const isExterior = computed(() => {
+    return metadata.fromStac || metadata.fromOs
 })
 const linkMetadata = computed(() => {
     var link = {name:'metadata', params: {id: metadata.id }}
@@ -26,17 +30,28 @@ const linkMetadata = computed(() => {
     
 })
 
-
-
+function show () {
+    emit('show')
+}
 </script>
 <template>
     <div class="element-metadata-flex" >
-        <router-link class="service-link" :to="linkMetadata" >
-            <h3 :style="{background: config.state.emphasis}">
-                <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
-                <div >{{metadata.title}}</div>
-            </h3>
-        </router-link>
+        <template v-if="isExterior">
+           <a class="service-link" @click="show" >
+                <h3 :style="{background: config.state.emphasis}">
+                    <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
+                    <div >{{metadata.title}}</div>
+                </h3>
+            </a>
+        </template>
+        <template v-else>
+            <router-link class="service-link" :to="linkMetadata" >
+                <h3 :style="{background: config.state.emphasis}">
+                    <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
+                    <div >{{metadata.title}}</div>
+                </h3>
+            </router-link>
+        </template>
         <div class="element-description">
             <div v-if="metadata.quicklook || metadata.status" style="display:block;float:left;max-width:120px;text-align:center;">
                 <img :src="metadata.quicklook.src" :title="metadata.quicklook.title" v-if="metadata.quicklook"/>

@@ -1,5 +1,5 @@
 <script setup>
-// import { computed } from 'vue';
+import { reactive } from 'vue';
 import MetadataBox from '@/components/MetadataBox.vue'
 import MetadataSingle from '@/components/MetadataSingle.vue'
 
@@ -13,15 +13,24 @@ const props = defineProps({
         default: false
     }
 }) 
+const data = reactive({
+    metadata: null
+})
 // const selection = useSelection()
+
+function show(metadata) {
+    data.metadata = metadata
+}
 </script>
 <template>
-
+    <template v-if="data.metadata">
+       <metadata-single :metadata="data.metadata" />
+    </template>
      <div class="wrapper-group-2" :class="{inside: props.inside}">
        <template v-if="props.list.length > 0">
            <div class="container-flex"> 
                 <template v-for="item in props.list"  :key="item.uuid">
-                     <metadata-box :metadata="item"></metadata-box> 
+                     <metadata-box :metadata="item" @show="show(item)"></metadata-box> 
                 </template>
             </div>
         </template>

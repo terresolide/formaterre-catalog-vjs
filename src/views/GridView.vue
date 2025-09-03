@@ -108,7 +108,7 @@
       var stac = data.metadata.links.api.STAC
       stac.query = Object.assign(stac.query, {'product:type': ['INTERFEROGRAM', 'TIMESERIE', 'AUXILIARYDATA']})
       var requester = data.stacRequester(stac.url, stac.query, config.state.size, data.metadata.cds)
-      requester.getRecords(route)
+      requester.getRecords(data.metadata, route)
       .then(json => { 
             if (json.list) {
               console.log(json.list)

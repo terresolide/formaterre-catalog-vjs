@@ -21,7 +21,9 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
     const count = 0
     const stacProperties = ['beam_ids', 'instrument', 'instrument_mode', 'orbit_state', 'platform', 'polarizations', 'relative_orbit']
 
-    function getRecords (route) {
+    function getRecords (parent, route) {
+        console.log(parent)
+        console.log(route)
         prepareRequest(route)
         return new Promise((successCallback, failureCallback) => {
             fetch(searchUrl,  {
@@ -30,7 +32,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
                     body: JSON.stringify(parameters)
             }).then(rep => rep.json())
             .then(json => {
-                var resp = treatmentGeojson(json)
+                var resp = treatmentGeojson(parent, json)
                 if (successCallback) {
                     successCallback(resp)
                 }
@@ -43,7 +45,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
     }
     function treatmentJson (json) {
     }
-    function prepareRequest(newroute) {
+    function prepareRequest( newroute) {
         // initParameters()
         
         if (newroute.query.from) {
@@ -76,12 +78,12 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
             }
         }
     }
-    function treatmentGeojson (data) {
+    function treatmentGeojson (parent, data) {
       var metadatas = {}
       var list = []
       data.features.forEach( function (feature) {
 
-        var metadata =  mapToGeonetwork(feature)
+        var metadata =  mapToGeonetwork(parent, feature)
         list.push(metadata)
        
       })
@@ -118,7 +120,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
       // idem pour summaries et/ou queryable
       return {list: list, pagination: pagination, aggregations: aggregations}
     }
-    function mapToGeonetwork(feature) {
+    function mapToGeonetwork(parent, feature) {
         var properties = {}
         properties.fromStac = true
         properties.cds = cds
@@ -150,6 +152,10 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         if (feature.properties['spaceborne:keywords']) {
           properties.keyword = feature.properties['spaceborne:keywords']
         }
+        if (feature.properties['raster:spatial_resolution']) {
+            properties.resolution = [feature.properties['raster:spatial_resolution'] + 'm']
+        }
+       
         properties.links = {download:[]}
         for (var key in feature.assets) {
             if (feature.assets[key].roles.indexOf('overview') >=0) {
@@ -197,6 +203,13 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         if (lk) {
           properties.exportLinks.json = lk.href
         }
+        properties.crs = parent.crs
+        properties.contacts = parent.contacts
+        properties.legalConstraints = parent.legalConstraints
+        properties.lineage = parent.lineage
+        properties.representation = parent.representation
+        properties.status = parent.status
+        properties.keyword = parent.keyword
         
         return properties
     }

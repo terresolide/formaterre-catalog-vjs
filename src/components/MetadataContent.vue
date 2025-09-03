@@ -18,7 +18,7 @@ const config = useConfig()
         <div class="main-column">
 
             
-            <div class="description" v-html="metadata.description" />
+            <div class="description" v-if="metadata.description" v-html="metadata.description" />
             <dl>
                <dt :style="{color: config.state.primary}">{{$t('identifier')}}</dt>
                <dd>{{metadata.identifier}}</dd>
