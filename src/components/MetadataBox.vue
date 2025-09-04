@@ -26,6 +26,15 @@ const linkMetadata = computed(() => {
         link.name = 'catalog-metadata'
         link.params.catalog = route.params.catalog
     }
+    var query = {}
+    var props = ['start', 'end', 'bbox']
+    props.forEach(function (prop) {
+        if (route.query && route.query[prop]) {
+            query[prop] = route.query[prop]
+        }
+        
+    })
+    link.query = query
     return link
     
 })
