@@ -26,7 +26,8 @@
     oldroute: {name: null, params: {}, query: {}},
     aggregations: [],
     metadata: null,
-    stacRequester: null
+    stacRequester: null,
+    lastGrid: null
   })
   const route = useRoute()
   const router = useRouter()
@@ -59,13 +60,17 @@
         }
       }
      
+     
       elasticsearch.setCatalog(newroute.name, newroute.params.catalog, newroute.params.id)
       if (newroute.params.id && (!data.oldroute.params.id || data.oldroute.params.id !== newroute.params.id)) {
+           data.lastGrid = data.oldroute
           getMetadata(newroute.params.id)
       } else {
+         
           if (!newroute.params.id) {
               data.metadata = null
               data.bbox = null
+             
           }
           getRecords(newroute.query)
       }
@@ -129,10 +134,9 @@
       .then(meta => { convert(uuid, meta)})
   }
   function close () {
-    // enregistrer la dernière page grid...
-    let lastPath = router.options.history.state.back;
-    if (lastPath) {
-        router.back()
+    console.log(data.lastGrid)
+    if (data.lastGrid) {
+        router.push(data.lastGrid)
     } else {
         router.push({name:'grid'})
     }
