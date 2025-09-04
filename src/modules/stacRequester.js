@@ -79,6 +79,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         }
     }
     function treatmentGeojson (parent, data) {
+      console.log(parent.keyword)
       var metadatas = {}
       var list = []
       data.features.forEach( function (feature) {
@@ -163,7 +164,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
                   src:  feature.assets[key].href,
                   title: ''
               }
-              // properties.images = [[feature.assets[key].title, feature.assets[key].href, '']]
+              properties.images = [[feature.assets[key].title, feature.assets[key].href, '']]
               // properties.thumbnail = feature.assets[key].href 
         
             } else if (feature.assets[key].roles.indexOf('data') >=0) {
@@ -209,7 +210,14 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         properties.lineage = parent.lineage
         properties.representation = parent.representation
         properties.status = parent.status
-        properties.keyword = parent.keyword
+        properties.dataCenter = parent.dataCenter
+        properties.keyword = []
+        parent.keyword.forEach(function (list) {
+            if (list.key !== 'th_regions') {
+                properties.keyword.push(list)
+            }
+        })
+      
         
         return properties
     }

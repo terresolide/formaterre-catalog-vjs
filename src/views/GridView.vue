@@ -191,9 +191,13 @@
     </template>
   </main>
 </template>
+<style>
+
+</style>
 <style scoped>
 div.grid-content {
   max-width: calc(100% - 330px);
   margin-left:330px;
 }
+
 </style>

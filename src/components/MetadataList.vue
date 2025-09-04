@@ -1,7 +1,7 @@
 <script setup>
 import { reactive } from 'vue';
 import MetadataBox from '@/components/MetadataBox.vue'
-import MetadataSingle from '@/components/MetadataSingle.vue'
+import MetadataPage from '@/components/MetadataPage.vue'
 
 // import { useSelection } from '@/stores/selection'
 
@@ -21,10 +21,13 @@ const data = reactive({
 function show(metadata) {
     data.metadata = metadata
 }
+function close () {
+    data.metadata = null
+}
 </script>
 <template>
     <template v-if="data.metadata">
-       <metadata-single :metadata="data.metadata" />
+       <metadata-page :metadata="data.metadata" inside="true" @close="close"/>
     </template>
      <div class="wrapper-group-2" :class="{inside: props.inside}">
        <template v-if="props.list.length > 0">

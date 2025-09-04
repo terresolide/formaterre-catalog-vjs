@@ -57,7 +57,7 @@ function show () {
                 <img :src="metadata.quicklook.src" :title="metadata.quicklook.title" v-if="metadata.quicklook"/>
                  <div class="mtdt-status" v-if="metadata.status"  
                  :style="{color: config.state.primary, borderColor: config.state.primary}">
-                    {{metadata.status.label}}
+                    {{metadata.status.label || metadata.status}}
                  </div>
        
             </div>

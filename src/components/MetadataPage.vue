@@ -4,10 +4,14 @@ import { useConfig } from "@/stores/config.js"
 // import { useSelection } from "@/stores/selection.js"
 import ExportLinks from '@/components/ExportLinks.vue'
 import MetadataContent from '@/components/MetadataContent.vue'
-const {metadata,color} = defineProps({
+const {metadata,inside, color} = defineProps({
     metadata: {
         type: Object,
         default: null
+    },
+    inside: {
+        type:Boolean,
+        default: false
     },
     color: {
         type:String,
@@ -31,8 +35,9 @@ function close () {
     emit('close')
 }
 </script>
+
 <template>
-    <div class="metadata-content" v-if="metadata">
+    <div class="metadata-content" :class="{'metadata-single': inside}" v-if="metadata">
         <span class="mtdt-metadata-close fa fa-close" @click="close"><font-awesome-icon icon="fa-solid fa-close" /> </span>
         <h1 class="mtdt-metadata-header" :style="{color:config.state.primary}">
             <a v-if="metadata.dataCenter" :href="dataCenter.href" :title="dataCenter.title[config.lang]" target="_blank" class="mtdt-group-logo">
@@ -47,15 +52,24 @@ function close () {
         </h1> 
         <hr />
         <div class="mtdt-tabs">
-             <div v-for="(tab,index) in tabs" class="mtdt-tab" :class="{'selected': data.currentTab === index}" @click="data.currentTab = index">{{$t(index)}}</div>
-          <export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
+            <template v-if="!inside">
+                <div v-for="(tab,index) in tabs" class="mtdt-tab" :class="{'selected': data.currentTab === index}" @click="data.currentTab = index">{{$t(index)}}</div>
+            </template>
+            <export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
         </div>
-        <div v-show="data.currentTab === 'description'">
-         <metadata-content :metadata="metadata" />
-        </div>
-        <div v-show="data.currentTab === 'search'">
-            <slot></slot>
-        </div>
+        <template v-if="inside">
+            <div>
+                <metadata-content :metadata="metadata" />
+            </div>
+        </template>
+        <template v-else>
+            <div v-show="data.currentTab === 'description'">
+             <metadata-content :metadata="metadata" />
+            </div>
+            <div v-show="data.currentTab === 'search'">
+                <slot></slot>
+            </div>
+        </template>
     </div>
 
 </template>
@@ -119,6 +133,22 @@ div.metadata-content {
   border-radius: 0 0 5px 5px;
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
+div.metadata-content.metadata-single {
+    position:absolute;
+    left:-330px;
+    top:5px;
+    z-index:100;
+    border: 1px solid #333;
+    border-radius: 5px 5px;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.5);
+    background: white;
+    max-width:100%;
+    
+}
+div.mtdt-tabs {
+     display:block;
+     min-height: 38px;
+}
 div.mtdt-tab,
 .mtdt-tab-export{
   display:inline-block;
@@ -127,6 +157,7 @@ div.mtdt-tab,
   border-top:0px;
   background: #eee;
   cursor: pointer;
+  
 }
 div.mtdt-tab:hover,
 .mtdt-tab-export:hover{
