@@ -1,19 +1,23 @@
 <script setup>
 import {reactive, onMounted} from 'vue'
+import {useConfig} from '@/stores/config.js'
 import {AuthService} from 'formater-auth-service-js'
 
 const data = reactive({
     sso: null
 })
+const config = useConfig()
 function login () {
     data.sso.login()
 }
 onMounted(() => {
-    console.log(import.meta.env)
+    console.log(config)
     var env = import.meta.env
     data.sso = new AuthService(env.SSO_NAME, {
-           keycloakUrl: env.SSO_URL + '/realms/' + env.SSO_REALM,
-           redirectUri: 'http://localhost:3000/#/login'
+       clientId: config.state.clientId,
+       method: 'public_verifier',
+       keycloakUrl: env.SSO_URL + '/realms/' + env.SSO_REALM,
+       redirectUri: 'http://localhost:3000/#/login'
     })
     console.log(data.sso)
     
