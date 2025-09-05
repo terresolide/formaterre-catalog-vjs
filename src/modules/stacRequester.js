@@ -190,7 +190,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         }
         for (var key in feature.properties) {
           // if (['datetime', 'start_datetime', 'end_datetime'].indexOf(key) < 0) {
-            if (['identifier', 'instrument', 'subtitle', 'platform'].indexOf(key) >= 0) {
+            if (['identifier', 'instrument', 'subtitle', 'platform', 'product:type', 'grid:code'].indexOf(key) >= 0) {
                 properties[key] = feature.properties[key]
             } else if (key.indexOf('sar:') >= 0 || key.indexOf('sat:') >= 0) {
                  var tab = key.split(':')
