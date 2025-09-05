@@ -22,6 +22,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "date-fns": "^4.1.0",
+    "formater-auth-service-js": "github:terresolide/formater-auth-service-js",
     "jsonpath": "^1.1.1",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",
