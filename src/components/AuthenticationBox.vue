@@ -17,7 +17,7 @@ onMounted(() => {
        clientId: config.state.clientId,
        method: 'public_verifier',
        keycloakUrl: env.SSO_URL + '/realms/' + env.SSO_REALM,
-       redirectUri: 'http://localhost:3000/#/login'
+       redirectUri: config.state.ssoLogin
     })
     console.log(data.sso)
     

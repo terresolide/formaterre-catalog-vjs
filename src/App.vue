@@ -23,35 +23,37 @@ let currentCatalog = computed(() => {
 </script>
 
 <template>
-  <header>
-
-    <div class="wrapper">
-      <div style="text-align:right;">
-        <a><font-awesome-icon icon="fa-solid fa-basket-shopping"/> {{$t('basket')}}</a>
-        <authentication-box />
-      </div>
-      <nav>
-        <div>
-        <RouterLink style="padding-right:0;" to="/" >{{$t('catalog', 10)}}</RouterLink>
-        <template v-if="currentCatalog"> / 
-        <img :src="config.state.api + '/images/harvesting/' + currentCatalog.logo" height="25" style="vertical-align:middle;" > {{currentCatalog.name}}</template>
-      </div>
-      <div style="text-align:center;width:calc(100% - 300px);">
-        <template v-if="route.params.catalog">
-          <RouterLink :to="{name: 'catalog-map', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
-          <RouterLink :to="{name: 'catalog-grid', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
-          <RouterLink :to="{name: 'catalog-search', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
-        </template>
-        <template v-else>
-          <RouterLink to="/map"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
-          <RouterLink to="/grid"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
-          <RouterLink to="/search"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
-        </template>
-      </div>
-      
-      </nav>
-    </div>
-  </header>
+    <template v-if="route.name !== 'login'">
+        <header>
+            
+            <div class="wrapper">
+              <div style="text-align:right;">
+                <a><font-awesome-icon icon="fa-solid fa-basket-shopping"/> {{$t('basket')}}</a>
+                <authentication-box />
+              </div>
+              <nav>
+                <div>
+                <RouterLink style="padding-right:0;" to="/" >{{$t('catalog', 10)}}</RouterLink>
+                <template v-if="currentCatalog"> / 
+                <img :src="config.state.api + '/images/harvesting/' + currentCatalog.logo" height="25" style="vertical-align:middle;" > {{currentCatalog.name}}</template>
+              </div>
+              <div style="text-align:center;width:calc(100% - 300px);">
+                <template v-if="route.params.catalog">
+                  <RouterLink :to="{name: 'catalog-map', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
+                  <RouterLink :to="{name: 'catalog-grid', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
+                  <RouterLink :to="{name: 'catalog-search', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
+                </template>
+                <template v-else>
+                  <RouterLink to="/map"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
+                  <RouterLink to="/grid"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
+                  <RouterLink to="/search"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
+                </template>
+              </div>
+              
+              </nav>
+            </div>
+        </header>
+  </template>
   <RouterView />
 </template>
 <style>
