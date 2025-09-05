@@ -5,11 +5,12 @@ import {useConfig} from '@/stores/config'
 import {useCatalog} from '@/stores/catalog'
 import TemporalExtent from '@/components/TemporalExtent.vue'
 import RelatedLinks from '@/components/RelatedLinks.vue'
+import StacParameters from '@/components/StacParameters.vue'
 let config = useConfig()
 let catalogs = useCatalog()
 let route = useRoute()
 
-const stacProperties = ['beam_ids', 'instrument', 'instrument_mode', 'orbit_state', 'platform', 'polarizations', 'relative_orbit']
+
 const {metadata} = defineProps({
     metadata: Object
 })
@@ -77,12 +78,8 @@ function show () {
                 <label :style="{color: config.state.primary}">{{ item.label }}: </label> 
                 <span v-for="value in item.values">{{ value }} </span>
             </div>
-            <template v-for="key in stacProperties"> 
-             <div  v-if="metadata[key]">
-             <label :style="{color: config.state.primary}">{{ key }}: </label> 
-                <span >{{ metadata[key] }} </span>
-            </div>
-            </template>   
+            <stac-parameters :metadata="metadata" />
+            
         </div>
         <div class="mtdt-footer">
             <div  class="mtdt-center">

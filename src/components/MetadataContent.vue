@@ -6,6 +6,7 @@ import RelatedLinks from '@/components/RelatedLinks.vue'
 import TemporalExtent from '@/components/TemporalExtent.vue'
 import ContactBox from '@/components/ContactBox.vue'
 import KeywordList from '@/components/KeywordList.vue'
+import StacParameters from '@/components/StacParameters.vue'
 
 const moment = inject('moment')
 const {metadata} = defineProps({
@@ -32,9 +33,13 @@ const config = useConfig()
                 <dd v-for="extent in metadata.temporalExtents" >
                   <temporal-extent :extent="extent"></temporal-extent>
                 </dd>
-                <template v-for="key in ['creation','revision', 'publication']" >
+                <template v-for="key in ['creation','revision', 'publication', 'processing']" >
                    <dd v-if="metadata[key + 'Date']">{{moment(metadata[key + 'Date']).format('ll')}} ({{key}})</dd>
                 </template>
+            </dl>
+            <dl v-if="metadata.fromStac">
+               <dt :style="{color: config.state.primary}">{{$t('parameters')}}</dt>
+               <dd><stac-parameters :metadata="metadata" /> </dd>
             </dl>
             <dl>
                 <dt :style="{color: config.state.primary}">Contact(s)</dt>
