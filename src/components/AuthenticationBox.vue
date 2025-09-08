@@ -3,7 +3,7 @@ import {reactive, onMounted} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {AuthService} from 'formater-auth-service-js'
 import {useUser} from '@/stores/user.js'
-import {useService} from '@/stores/service.js'
+import {useClient} from '@/stores/client.js'
 
 const data = reactive({
     sso: null,
@@ -12,7 +12,7 @@ const data = reactive({
 })
 const config = useConfig()
 const user = useUser()
-const service = useService()
+const client = useClient()
 function login () {
     data.sso.login()
 }
@@ -20,9 +20,10 @@ function logout () {
     // on ne se déconnecte pas du sso mais uniquement l'application
     data.sso.logout(true)
 }
-function getServices () {
+function getClients () {
     // get auth services?? for access right
-    service.get()
+    
+    client.getAll()
 }
 onMounted(() => {
     var env = import.meta.env
@@ -35,7 +36,7 @@ onMounted(() => {
     data.sso.add()
     data.sso.on('authenticated', function (usr, serv) {
         user.set(usr)
-        getServices()
+        getClients()
     })
     data.sso.on('logout', function () {
         user.reset()
