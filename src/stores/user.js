@@ -11,10 +11,15 @@ export const useUser = defineStore('user', {
     }),
     actions: {
         set (user) {
-            state.name = user.name
-            state.roles = user.client_roles
-            state.email = user.email
+            this.name = user.name
+            this.roles = user.client_roles
+            this.email = user.email
             
+        },
+        reset () {
+            this.name = null
+            this.roles = {}
+            this.email = null
         }
     }
 })

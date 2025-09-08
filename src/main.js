@@ -1,37 +1,3 @@
-import './assets/main.css'
-
-import { createApp } from 'vue'
-import { createPinia, defineStore } from 'pinia'
-import { library } from '@fortawesome/fontawesome-svg-core'
-
-/* import font awesome icon component */
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-/* import specific icons */
-import {faAsterisk,faBasketShopping, faCalendar,faCaretDown,faCaretLeft,faCaretRight, faCircleDot,faChevronCircleLeft, faChevronCircleRight,faClipboard,faClose,faDatabase,faDownload,faEarthAmericas, faFile, faFolderOpen,  faGaugeSimpleHigh, 
-        faGraduationCap,faGrip, faKey, faLink, faLocationDot, faMagnifyingGlass,faMap, 
-        faPenToSquare,faRocket,faSatelliteDish, faSearch, faTerminal, faUser, faUsers} from '@fortawesome/free-solid-svg-icons'
-import { setupI18n, loadLocaleMessages } from './i18n'
-import moment from 'moment'
-import fr from "moment/dist/locale/fr"
-import {
-   faSquare,
-   faSquareCheck
-} from '@fortawesome/free-regular-svg-icons'
-library.add(faAsterisk,faBasketShopping, faCalendar,faCaretDown,faCaretLeft,faCaretRight, faCircleDot,faChevronCircleLeft, faChevronCircleRight,faClipboard,faClose,faDatabase,faDownload,faEarthAmericas, faFile, faFolderOpen, faGaugeSimpleHigh,
-            faGraduationCap, faGrip, faKey, faLink,faLocationDot, faMagnifyingGlass,faMap,
-            faPenToSquare,faRocket, faSatelliteDish, faSearch, faSquare, faSquareCheck, faTerminal, faUser, faUsers)
-
-let cfg = {}
-
-if (typeof catalog != 'undefined') {
-  cfg = JSON.parse(catalog.innerHTML)
-} 
-
-let locale = navigator.language.substr(0, 2)
-if (!cfg.lang) {
-  cfg.lang = locale === 'fr' ? 'fr' : 'en'
-} 
-
 // for authentication
 function extractInfoFromURL (url) {
      var split = url.split(/\&|\?|#/)
@@ -51,7 +17,6 @@ function extractInfoFromURL (url) {
 }
 if (document.location.href.indexOf('/login') > 0 || document.location.href.indexOf('/logout') > 0 ) {
     var location = extractInfoFromURL(window.location.href)
-    console.log(window.location.href)
     if (window.opener) {
      // case window
      window.opener.postMessage(
@@ -62,11 +27,45 @@ if (document.location.href.indexOf('/login') > 0 || document.location.href.index
        },
        document.location.origin
      )
-     console.log(document.location.origin)
-     // window.close()
+     window.close()
      // return
     } 
 }
+import './assets/main.css'
+
+import { createApp } from 'vue'
+import { createPinia, defineStore } from 'pinia'
+import { library } from '@fortawesome/fontawesome-svg-core'
+
+/* import font awesome icon component */
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+/* import specific icons */
+import {faAsterisk,faBasketShopping, faCalendar,faCaretDown,faCaretLeft,faCaretRight,faCaretUp, faCircleDot,faChevronCircleLeft, faChevronCircleRight,faClipboard,faClose,faDatabase,faDownload,faEarthAmericas, faFile, faFolderOpen,  faGaugeSimpleHigh, 
+        faGraduationCap,faGrip, faKey, faLink, faLocationDot, faMagnifyingGlass,faMap, 
+        faPenToSquare,faRightFromBracket,faRocket,faSatelliteDish, faSearch, faTerminal, faUser, faUsers} from '@fortawesome/free-solid-svg-icons'
+import { setupI18n, loadLocaleMessages } from './i18n'
+import moment from 'moment'
+import fr from "moment/dist/locale/fr"
+import {
+   faSquare,
+   faSquareCheck
+} from '@fortawesome/free-regular-svg-icons'
+library.add(faAsterisk,faBasketShopping, faCalendar,faCaretDown,faCaretLeft,faCaretRight,faCaretUp,faCircleDot,faChevronCircleLeft, faChevronCircleRight,faClipboard,faClose,faDatabase,faDownload,faEarthAmericas, faFile, faFolderOpen, faGaugeSimpleHigh,
+            faGraduationCap, faGrip, faKey, faLink,faLocationDot, faMagnifyingGlass,faMap,
+            faPenToSquare,faRightFromBracket, faRocket, faSatelliteDish, faSearch, faSquare, faSquareCheck, faTerminal, faUser, faUsers)
+
+let cfg = {}
+
+if (typeof catalog != 'undefined') {
+  cfg = JSON.parse(catalog.innerHTML)
+} 
+
+let locale = navigator.language.substr(0, 2)
+if (!cfg.lang) {
+  cfg.lang = locale === 'fr' ? 'fr' : 'en'
+} 
+
+
 moment.locale(cfg.lang)
 
 console.log(cfg.lang)

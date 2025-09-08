@@ -53,5 +53,6 @@
     "titleLatitude": "Latitude must be a number between -90° and 90° (ex: 65.3)",
     "titleLongitude": "Longitude must be a number between -180° and 180° (ex: -110.3)",
     "to": "to",
-    "update": "Update"
+    "update": "Update",
+    "your_profile": "Your profile"
 }

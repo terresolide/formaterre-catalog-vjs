@@ -3,7 +3,7 @@ import {computed, onMounted, watch } from 'vue'
 import { useRoute, RouterLink, RouterView } from 'vue-router'
 import {useConfig} from '@/stores/config'
 import {useCatalog} from '@/stores/catalog'
-import AuthenticationBox from '@/components/AuthenticationBox.vue'
+import UserInfo from '@/components/UserInfo.vue'
 const config = useConfig()
 config.init()
 const catalog = useCatalog()
@@ -27,10 +27,7 @@ let currentCatalog = computed(() => {
         <header>
             
             <div class="wrapper">
-              <div style="text-align:right;">
-                <a><font-awesome-icon icon="fa-solid fa-basket-shopping"/> {{$t('basket')}}</a>
-                <authentication-box />
-              </div>
+              <user-info />
               <nav>
                 <div>
                 <RouterLink style="padding-right:0;" to="/" >{{$t('catalog', 10)}}</RouterLink>
