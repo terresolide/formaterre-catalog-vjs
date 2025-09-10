@@ -53,16 +53,25 @@ onMounted(() => {
   <template v-if="user.email">
     <span class="user" @click="data.deployed = !data.deployed">{{user.email}} <font-awesome-icon :icon="data.deployed ? 'fa-solid fa-caret-up': 'fa-solid fa-caret-down'"/></span>
     <div class="user-menu" :class="{deployed: data.deployed}">
-       <div @click="data.profile = !data.profile" :class="{actived: data.profile}"><font-awesome-icon icon="fa-solid fa-user" /> {{$t('your_profile')}}</div>
+       <div @click="data.profile = !data.profile" :class="{actived: data.profile}">
+            <font-awesome-icon icon="fa-solid fa-user" /> 
+            {{$t('your_profile')}}
+        </div>
        <div @click="logout()"><font-awesome-icon icon="fa-solid fa-right-from-bracket" /> {{$t('logout')}}</div>
     </div>
   </template>
   <template v-else>
-    <a @click="login"><font-awesome-icon icon="fa-solid fa-user" /> {{ $t('login') }}</a>
+    <a class="user" @click="login"><font-awesome-icon icon="fa-solid fa-user" /> {{ $t('login') }}</a>
   </template>
   <template v-if="user.email && data.profile">
     <div class="profile">
-    bla bla
+    <h2 :style="{backgroundColor: config.state.emphasis}">
+        <div class="close" @click="data.profile=false">&times;</div>
+        <font-awesome-icon icon="fa-solid fa-user" />  {{$t('your_profile')}}
+        
+    </h2>
+    <div class="column-left">info user</div>
+    <div class="column-right">droits d'accès</div>
     </div>
   </template>
 </template>
@@ -75,7 +84,7 @@ div.user-menu {
     display:none;
     right:0;
     text-align:left;
-    z-index:11;
+    z-index:10;
 }
 div.user-menu.deployed {
     display:block;
@@ -107,9 +116,40 @@ div.profile {
     top: 50%;
     left: 50%;
     text-align: left;
-    padding:10px;
+    padding:0px 10px 10px 10px;
     transform: translate(-50%, -50%);
     box-shadow: 0 0px 3px rgba(0,0,0,0.5);
-    z-index:10;
+    z-index:11;
+}
+div.profile h2 {
+    position:relative;
+    margin: 0 -10px 10px -10px;
+    padding: 10px;
+    color: white;
+}
+div.close {
+    position:absolute;
+    line-height:1;
+    top:2px;
+    right:3px;
+    padding: 0px 2px;
+    cursor:pointer;
+    border: 1px dotted transparent;
+
+}
+div.close:hover {
+    border-color:white;
+}
+@media screen and (width >= 900px) {
+    div.column-left {
+        width: 300px;
+        float:left;
+        border:1px solid grey;
+    }
+    div.column-right {
+        margin-left: 310px;
+        width: calc(100% - 310px);
+        border:1px solid grey;
+    }
 }
 </style>
