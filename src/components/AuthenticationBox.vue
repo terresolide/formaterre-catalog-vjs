@@ -25,10 +25,13 @@ function getClients () {
     
     client.getAll()
 }
-onMounted(() => {
+function getSSOInformation() {
+    return fetch(config.state.tools + '/api/client/' + config.state.app)
+}
+function initSSO (clientId) {
     var env = import.meta.env
-    data.sso = new AuthService(env.SSO_NAME, {
-       clientId: config.state.clientId,
+     data.sso = new AuthService(env.SSO_NAME, {
+       clientId: clientId,
        method: 'public_verifier',
        keycloakUrl: env.SSO_URL + '/realms/' + env.SSO_REALM,
        redirectUri: config.state.ssoLogin
@@ -46,6 +49,22 @@ onMounted(() => {
     data.sso.on('error', function (error) {
         console.log(error)
     })
+}
+onMounted(() => {
+    if (config.state.clientId) {
+        initSSO(config.state.clientId)
+        return
+    }
+    
+    getSSOInformation()
+    .then(resp => resp.json())
+    .then(json => {
+        if (json && json.client) {
+            initSSO(json.client.clientId)
+        }
+    })
+    console.log(name)
+   
     
 })
 </script>
