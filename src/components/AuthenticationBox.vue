@@ -51,16 +51,7 @@ function initSSO (clientId) {
         console.log(error)
     })
 }
-function  getOrganizationTypes ( ) {
-   
-    fetch(config.state.tools + '/api/types?lang=' + config.state.lang)
-    .then(resp => resp.json())
-    .then(json => {
-        if (json.types) {
-            data.organizationTypes = json.types
-        }
-    })
-}
+
 onMounted(() => {
     if (config.state.clientId) {
         initSSO(config.state.clientId)

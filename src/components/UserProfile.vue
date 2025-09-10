@@ -11,14 +11,11 @@ const config = useConfig()
     <h2 :style="{backgroundColor: config.state.primary}">
         <div class="close" @click="profile=false">&times;</div>
         <font-awesome-icon icon="fa-solid fa-user" />  {{$t('your_profile')}}
-        
     </h2>
     <div class="column-left">
-        
         <fieldset :style="{borderColor: config.state.primary}">
             <legend :style="{color: config.state.primary}">User information</legend>
-            <user-attributs />
-            
+            <user-attributs />  
         </fieldset>
     </div>
     <div class="column-right">
