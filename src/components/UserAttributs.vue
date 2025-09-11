@@ -1,10 +1,10 @@
 <script setup>
-import {computed, onMounted, reactive} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {useUser} from '@/stores/user.js'
 const config = useConfig()
 const user = useUser()
-const data = reactive({
+const data = ref({
     organizationTypes: [],
     organizations: [],
     organization: null,
@@ -12,22 +12,23 @@ const data = reactive({
     organizationId: null
 })
 const updated = computed(() => {
-    if (data.organization && !user.organization) {
+    if (data.value.organization && !user.organization) {
         console.log('ici')
         return true
     }
-    if (user.organization && user.organization.id !== data.organizationId) {
-        console.log(user.organization)
-        console.log(data)
+    if (user.organization && user.organization.id !== data.value.organizationId) {
+        console.log(user.organization.id)
+        console.log(data.value.organizationId)
+        console.log(user.organization.id !== data.value.organizationId)
         console.log('par là')
         return true
     }
     return false
 })
 function reset () {
-    data.organization = user.organization ? user.organization.name : null
-    data.organizationType = user.organization ? user.organization.type : null
-    data.organizationId = user.organization ? user.organization.id : null
+    data.value.organization = user.organization ? user.organization.name : null
+    data.value.organizationType = user.organization ? user.organization.type : null
+    data.value.organizationId = user.organization ? user.organization.id : null
 }
 function  getOrganizationTypes ( ) {
    
@@ -35,14 +36,14 @@ function  getOrganizationTypes ( ) {
     .then(resp => resp.json())
     .then(json => {
         if (json.types) {
-            data.organizationTypes = json.types
+            data.value.organizationTypes = json.types
         }
     })
 }
 function getOrganizations (domain) {
       var url = config.state.tools + '/api/organizations?nb=500&orderBy=' + encodeURIComponent('o_name ASC');
-      if (data.organization) {
-        url += '&q=' + data.organization
+      if (data.value.organization) {
+        url += '&q=' + data.value.organization
       }
       if (domain) {
         url += '&domain=' + domain
@@ -51,44 +52,44 @@ function getOrganizations (domain) {
       .then(resp => resp.json())
       .then(json => {
         if (json.organizations) {
-          data.organizations = json.organizations
-          if (domain && data.organizations.length === 1) {
-            data.organization = data.organizations[0].o_name
-            data.organizationId = data.organizations[0].o_uid
-            data.organizationType = data.organizations[0].o_fk_type_id
+          data.value.organizations = json.organizations
+          if (domain && data.value.organizations.length === 1) {
+            data.value.organization = data.value.organizations[0].o_name
+            data.value.organizationId = data.value.organizations[0].o_uid
+            data.value.organizationType = data.value.organizations[0].o_fk_type_id
           }
         }
       })
 }
 function organizationUpdated (event) {
-    data.organizationId = null
-    data.organizationType = null
+    data.value.organizationId = null
+    data.value.organizationType = null
     
-    if (data.organization.length <= 1) {
-        data.organizations = []
+    if (data.value.organization.length <= 1) {
+        data.value.organizations = []
     }
     if (event.inputType && event.inputType.indexOf('delete') >=0)
     {
         return
     }
-    if (data.organization.length === 2) {
+    if (data.value.organization.length === 2) {
         getOrganizations()
         return
     }
-    if (data.organization.length < 5) {
+    if (data.value.organization.length < 5) {
         return
     }
       // valid organism
     // data.showOrganismMessage = false
     var regex = new RegExp(/^[A-z0-9À-ž\s\-'@()]{5,300}$/)
-    if (regex.test(data.organization)) {
-        var organism = data.organization.trim().toLowerCase()
-        var find = data.organizations.find(org => organism.indexOf(org.o_name.toLowerCase()) >= 0 )
+    if (regex.test(data.value.organization)) {
+        var organism = data.value.organization.trim().toLowerCase()
+        var find = data.value.organizations.find(org => organism.indexOf(org.o_name.toLowerCase()) >= 0 )
         if (find) {
-            data.organizationId = find.o_uid
-            data.organizationType = find.o_fk_type_id
+            data.value.organizationId = find.o_uid
+            data.value.organizationType = find.o_fk_type_id
         } else {
-            data.organizationId = null
+            data.value.organizationId = null
         }
     } else {
      // data.showOrganismMessage = true
@@ -101,12 +102,12 @@ onMounted(() => {
 })
 </script>
 <template>
-    <div ><label :style="{color: config.state.primary}" >Name</label> {{user.name}}</div>
-    <div><label :style="{color: config.state.primary}">Email</label> {{user.email}}</div>
+    <div class="row"><label :style="{color: config.state.primary}" >Name</label> {{user.name}}</div>
+    <div class="row"><label :style="{color: config.state.primary}">Email</label> {{user.email}}</div>
     <hr />
     <div>
         <label :style="{color: config.state.primary}" >Organisation</label>
-        <div>   
+        <div class="subrow">   
             <label>Name</label> 
              <input style="line-height:normal;min-width:calc(100% - 70px);" v-model="data.organization" list="organizations" required 
              @mousedown="$event.stopPropagation()" @input="organizationUpdated($event)" > *
@@ -115,7 +116,7 @@ onMounted(() => {
                 <option v-for="org in data.organizations" :data-value="org.o_uid" >{{org.o_name}}<span v-if="org.o_short"> ({{org.o_short}})</span></option>
              </datalist>
         </div>
-        <div>   
+        <div class="subrow">   
             <label>Type</label>
             <select v-model="data.organizationType" :disabled="data.organizationId">
                <template v-for="item in data.organizationTypes">
@@ -124,8 +125,8 @@ onMounted(() => {
             </select>
         </div>
         <div style="text-align:right;margin-top:10px;"> 
-            <button @click="resetOrganization" :disabled="updated">Reset</button>
-            <button @click="update" :disabled="updated">Update</button>
+            <button :style="{backgroundColor:config.state.primary}" @click="reset" :disabled="!updated">Reset</button>
+            <button :style="{backgroundColor:config.state.primary}" @click="update" :disabled="!updated">Update</button>
         </div>
     </div>
 </template>
@@ -139,5 +140,12 @@ hr {
 label {
     display:inline-block;
     min-width:50px;
+}
+.row {
+    margin-top:5px;
+}
+.subrow {
+    margin-top:5px;
+    margin-left:5px;
 }
 </style>

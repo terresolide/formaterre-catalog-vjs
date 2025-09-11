@@ -42,7 +42,7 @@ const config = useConfig()
     text-align: left;
     padding:0px 10px 10px 10px;
     transform: translate(-50%, -50%);
-    box-shadow: 0 0px 3px rgba(0,0,0,0.5);
+    box-shadow: 0 0px 20px rgba(0,0,0,0.7);
     z-index:11;
 }
 div.profile h2 {
