@@ -19,11 +19,6 @@ function logout () {
     // on ne se déconnecte pas du sso mais uniquement l'application
     data.sso.logout(true)
 }
-function getClients () {
-    // get auth services?? for access right
-    
-    client.getAll()
-}
 function getSSOInformation() {
     return fetch(config.state.tools + '/api/client/' + config.state.app)
 }
@@ -38,7 +33,6 @@ function initSSO (clientId) {
     data.sso.add()
     data.sso.on('authenticated', function (usr, serv) {
         user.set(usr)
-        getClients()
     })
     data.sso.on('logout', function () {
         user.reset()

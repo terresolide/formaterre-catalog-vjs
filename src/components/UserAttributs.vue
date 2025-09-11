@@ -13,14 +13,9 @@ const data = ref({
 })
 const updated = computed(() => {
     if (data.value.organization && !user.organization) {
-        console.log('ici')
         return true
     }
     if (user.organization && user.organization.id !== data.value.organizationId) {
-        console.log(user.organization.id)
-        console.log(data.value.organizationId)
-        console.log(user.organization.id !== data.value.organizationId)
-        console.log('par là')
         return true
     }
     return false
@@ -42,20 +37,25 @@ function  getOrganizationTypes ( ) {
 }
 function update () {
     let post = {
-        id: data.organizationId,
-        name: data.organization,
-        type: data.organizationType
+        email: user.email,
+        uid: user.id,
+        id: data.value.organizationId,
+        name: data.value.organization,
+        type: data.value.organizationType
     }
+    var fdata = new URLSearchParams(post)
     fetch(config.state.tools + '/api/user', {
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
         method: 'POST',
-        body: JSON.stringify(post)
+        body: fdata.toString()
     }).then(resp => resp.json())
     .then(json => {
-        console.log(json)
+        if (json.success) {
+            user.setOrganization(json)
+        }
     })
 }
 function getOrganizations (domain) {
