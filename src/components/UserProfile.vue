@@ -28,7 +28,7 @@ const config = useConfig()
   </template>
 </template>
 <style scoped>
-div.profile {
+    div.profile {
     position:fixed;
     max-width: 1200px;
     background: white;
@@ -36,7 +36,6 @@ div.profile {
     max-height:calc(100vh - 30px);
     width:calc(100% - 80px);
     min-width:600px;
-    min-height:600px;
     top: 50%;
     left: 50%;
     line-height:1.2;
@@ -72,14 +71,19 @@ fieldset {
 legend {
     font-weight:700;
 }
+div.column-right {
+    margin-top:10px;
+}
 @media screen and (width >= 900px) {
+
     div.column-left {
-        width: 360px;
+        width: 370px;
         float:left;
     }
     div.column-right {
-        margin-left: 370px;
-        width: calc(100% - 370px);
+        margin-left: 380px;
+        margin-top:0;
+        width: calc(100% - 380px);
     }
 }
 </style>
