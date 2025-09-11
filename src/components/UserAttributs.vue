@@ -102,14 +102,14 @@ onMounted(() => {
 })
 </script>
 <template>
-    <div class="row"><label :style="{color: config.state.primary}" >Name</label> {{user.name}}</div>
+    <div class="row"><label :style="{color: config.state.primary}" >{{$t('name')}}</label> {{user.name}}</div>
     <div class="row"><label :style="{color: config.state.primary}">Email</label> {{user.email}}</div>
     <hr />
     <div>
-        <label :style="{color: config.state.primary}" >Organisation</label>
+        <label :style="{color: config.state.primary}" >{{$t('organization')}}</label>
         <div class="subrow">   
-            <label>Name</label> 
-             <input style="line-height:normal;min-width:calc(100% - 70px);" v-model="data.organization" list="organizations" required 
+            <label>{{$t('name')}}</label> 
+             <input style="line-height:normal;min-width:calc(100% - 65px);" v-model="data.organization" list="organizations" required 
              @mousedown="$event.stopPropagation()" @input="organizationUpdated($event)" > *
             <!-- <em v-if="data.organizationMessage" style="color:darkred;">{{$t('at_least_3')}}</em> -->
              <datalist id="organizations">
@@ -125,8 +125,8 @@ onMounted(() => {
             </select>
         </div>
         <div style="text-align:right;margin-top:10px;"> 
-            <button :style="{backgroundColor:config.state.primary}" @click="reset" :disabled="!updated">Reset</button>
-            <button :style="{backgroundColor:config.state.primary}" @click="update" :disabled="!updated">Update</button>
+            <button :style="{backgroundColor:config.state.primary}" @click="reset" :disabled="!updated">{{$t('reset')}}</button>
+            <button :style="{backgroundColor:config.state.primary}" @click="update" :disabled="!updated">{{$t('save')}}</button>
         </div>
     </div>
 </template>

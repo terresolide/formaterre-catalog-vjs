@@ -14,13 +14,13 @@ const config = useConfig()
     </h2>
     <div class="column-left">
         <fieldset :style="{borderColor: config.state.primary}">
-            <legend :style="{color: config.state.primary}">User information</legend>
+            <legend :style="{color: config.state.primary}">Informations</legend>
             <user-attributs />  
         </fieldset>
     </div>
     <div class="column-right">
         <fieldset :style="{borderColor: config.state.primary}">
-            <legend :style="{color: config.state.primary}">Access rights</legend>
+            <legend :style="{color: config.state.primary}">{{$t('access_rights')}}</legend>
             <user-access-rights />
         </fieldset>
     </div>

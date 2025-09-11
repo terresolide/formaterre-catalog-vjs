@@ -7,9 +7,7 @@ import {useClient} from '@/stores/client.js'
 
 const profile = defineModel()
 const data = reactive({
-    sso: null,
-    deployed: false,
-    organizationTypes: null
+    sso: null
 })
 const config = useConfig()
 const user = useUser()
@@ -68,8 +66,8 @@ onMounted(() => {
 </script>
 <template> 
   <template v-if="user.email">
-    <span class="user" @click="data.deployed = !data.deployed">{{user.email}} <font-awesome-icon :icon="data.deployed ? 'fa-solid fa-caret-up': 'fa-solid fa-caret-down'"/></span>
-    <div class="user-menu" :class="{deployed: data.deployed}">
+    <span class="user" >{{user.email}} <font-awesome-icon icon="fa-solid fa-caret-down"/></span>
+    <div class="user user-menu" >
        <div @click="profile = !profile" :class="{actived: profile}">
             <font-awesome-icon icon="fa-solid fa-user" /> 
             {{$t('your_profile')}}
@@ -86,6 +84,10 @@ onMounted(() => {
 span.user {
     cursor: pointer;
 }
+span.user:hover + div.user-menu,
+div.user-menu:hover {
+    display:block;
+}
 div.user-menu {
     position:absolute;
     display:none;
@@ -93,9 +95,7 @@ div.user-menu {
     text-align:left;
     z-index:10;
 }
-div.user-menu.deployed {
-    display:block;
-}
+
 div.user-menu div{
    line-height:2;
    padding: 3px 9px;
