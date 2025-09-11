@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, reactive} from 'vue'
+import {onMounted, computed, reactive} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {useUser} from '@/stores/user.js'
 import {useClient} from '@/stores/client.js'
@@ -8,8 +8,10 @@ const config = useConfig()
 const user = useUser()
 const client = useClient()
 const data = reactive({
+    message: null,
     checkedRoles: []
 })
+const uncompletedUser = computed(() => false)
 function selectRole (obj) {
     console.log(obj)
 }
@@ -40,28 +42,30 @@ onMounted(() => {
            <div ></div>
            <div></div>
     </div> 
+ 
        <!-- GLOBAL ROLES -->
-       <div v-if="client.roles.global"  style="border-top: 1px dotted black;padding:0px;">
+       <div v-if="client.roles.global" style="border-top: 1px dotted black;padding:0px;" >
           <role-client :client="client.roles.global" name="global" :checked-roles="data.checkedRoles" @roleChange="selectRole" />
-       </div>-->
-       <!--  CLIENT ROLES -->
-      <!-- <div v-for="(client,clientName) in clients"  v-if="clientName !== 'global'"
-       v-show="!show || !show.client || show.client === clientName" style="border-top: 1px dotted black;padding:0px;">
-         <formater-client :client="client" :name="clientName" :checked-roles="checkedRoles" @roleChange="selectRole"></formater-client>
        </div>
-       <div v-if="canAsk">
+       <!--  CLIENT ROLES -->
+       <template v-for="(client,clientName) in client.roles">
+      <div  v-if="clientName !== 'global'" style="border-top: 1px dotted black;padding:0px;">
+         <role-client :client="client" :name="clientName" :checked-roles="checkedRoles" @roleChange="selectRole" />
+       </div>
+       </template>
+       <div>
        <p  v-html="$t('access_to_formater')" style="font-size:0.9em;font-style:italic;line-height:1;"></p>
        <div style="position:relative;">
          <div v-if="asking" style="position:absolute;left:50%;top:10%;font-size:30px;">
            <span class="fa fa-spinner animated"></span>
          </div>
-         <textarea style="width:100%" v-model="message" :placeholder="$t('add_message')"></textarea>
+         <textarea style="width:100%" v-model="data.message" :placeholder="$t('add_message')"></textarea>
        </div>
-       <span  class="fmt-button" :class="{disabled: uncompleteUser || checkedRoles.length === 0 || asking}" :style="{background: $store.state.style.primary}" @click="accessRequest">{{$t('access_request')}}</span>
+       <span  class="fmt-button" :class="{disabled: uncompleteUser || data.checkedRoles.length === 0 || asking}" :style="{background: config.state.primary}" @click="accessRequest">{{$t('access_request')}}</span>
        </div>
-       <p v-if="displayWait" v-html="$t('wait_validation')" style="font-size:0.9em;color:green;line-height:1;"></p>
-       <p v-if="errorAsk" style="color:darkred;">Erreur : {{errorAsk}}</p>
-        </div>-->
+       <p  v-html="$t('wait_validation')" style="font-size:0.9em;color:green;line-height:1;"></p>
+       <p  style="color:darkred;">Erreur : {{data.errorAsk}}</p>
+     
 </template>
 <style scoped>
 div.role-line {
