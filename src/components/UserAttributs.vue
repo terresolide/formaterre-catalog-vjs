@@ -40,6 +40,24 @@ function  getOrganizationTypes ( ) {
         }
     })
 }
+function update () {
+    let post = {
+        id: data.organizationId,
+        name: data.organization,
+        type: data.organizationType
+    }
+    fetch(config.state.tools + '/api/user', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify(post)
+    }).then(resp => resp.json())
+    .then(json => {
+        console.log(json)
+    })
+}
 function getOrganizations (domain) {
       var url = config.state.tools + '/api/organizations?nb=500&orderBy=' + encodeURIComponent('o_name ASC');
       if (data.value.organization) {
