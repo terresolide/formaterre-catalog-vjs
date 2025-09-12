@@ -27,34 +27,36 @@ onMounted(() => {
          <div >{{$t('preview')}}</div>
          <div >{{$t('download')}}</div>
          <div>{{$t('charter')}}</div>
-         <div></div>
     </div>
     <div class="role-line full" >
-           <div>
+        <div>
            {{$t('public_data')}}
-           </div>
-           <div></div>
-           <div class="fmt-center">
-             <i class="fa fa-check" style="color:green;"></i>
-           </div>
-         <div class="fmt-center">
-           <i class="fa fa-check" style="color:green;"></i>
-         </div>
-           <div ></div>
-           <div></div>
+        </div>
+        <div></div>
+        <div class="fmt-center">
+            <span style="color:green;">
+                <font-awesome-icon icon="fa-solid fa-check" /> 
+            </span>
+        </div>
+        <div class="fmt-center">
+            <span style="color:green;">
+                <font-awesome-icon icon="fa-solid fa-check" /> 
+            </span>
+        </div>
+        <div ></div>
     </div> 
  
-       <!-- GLOBAL ROLES -->
-       <div v-if="client.roles.global" style="border-top: 1px dotted black;padding:0px;" >
-          <role-client :client="client.roles.global" name="global" :checked-roles="data.checkedRoles" @roleChange="selectRole" />
-       </div>
-       <!--  CLIENT ROLES -->
-       <template v-for="(client,clientName) in client.roles">
-      <div  v-if="clientName !== 'global'" style="border-top: 1px dotted black;padding:0px;">
-         <role-client :client="client" :name="clientName" :checked-roles="data.checkedRoles" @roleChange="selectRole" />
-       </div>
-       </template>
-       <div>
+     <!-- GLOBAL ROLES -->
+     <div v-if="client.roles.global" style="border-top: 1px dotted black;padding:0px;" >
+        <role-client :client="client.roles.global" name="global" :checked-roles="data.checkedRoles" @roleChange="selectRole" />
+     </div>
+     <!--  CLIENT ROLES -->
+     <template v-for="(client,clientName) in client.roles">
+        <div  v-if="clientName !== 'global'" style="border-top: 1px dotted black;padding:0px;">
+           <role-client :client="client" :name="clientName" :checked-roles="data.checkedRoles" @roleChange="selectRole" />
+        </div>
+     </template>
+     <div>
        <p  v-html="$t('access_to_formater')" style="font-size:0.9em;font-style:italic;line-height:1;"></p>
        <div style="position:relative;">
          <div v-if="asking" style="position:absolute;left:50%;top:10%;font-size:30px;">
@@ -68,13 +70,14 @@ onMounted(() => {
        <p  style="color:darkred;">Erreur : {{data.errorAsk}}</p>
      
 </template>
-<style scoped>
+<style >
 div.role-line {
   display: grid;
-  grid-template-columns: minmax(100px,180px) 50px minmax(50px, 120px) minmax(50px, 120px) minmax(50px, 150px);
+  grid-template-columns: minmax(200px,250px) 50px minmax(50px, 120px) minmax(50px, 120px) minmax(50px, 150px);
   grid-gap: 5px;
   text-align:center;
 }
+
 
 div.client-content div.role-line:nth-child(2n + 1) {
   background: #f3f3f3;
