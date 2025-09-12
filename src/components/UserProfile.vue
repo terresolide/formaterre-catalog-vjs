@@ -44,6 +44,7 @@ const config = useConfig()
     transform: translate(-50%, -50%);
     box-shadow: 0 0px 20px rgba(0,0,0,0.7);
     z-index:11;
+    overflow-y:scroll;
 }
 div.profile h2 {
     position:relative;

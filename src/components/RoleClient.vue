@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted} from 'vue'
+import {onMounted, reactive} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {useUser} from '@/stores/user.js'
 import TooltipBox from '@/components/TooltipBox.vue'
@@ -9,6 +9,9 @@ const {name, client} = defineProps({
         type: Object,
         default: null
     }
+})
+const data = reactive({
+    selectAll: false
 })
 const checkedRoles = []
 const config = useConfig()
@@ -32,6 +35,7 @@ function description (role) {
 function toggleClient (evt) {
 }
 function showRole (name) {
+    return true
 }
 onMounted(() => {
     console.log(name)
@@ -68,8 +72,8 @@ onMounted(() => {
  <div :class="client-content">
     <!-- ligne select all --> 
     <template v-if="(client.groups && Object.keys(client.groups).length > 2) || (client.roles && client.roles.length > 2)">
- 
-     <div class="role-line" v-if="showRole(null) && client.groups && Object.keys(client.groups).length > 1">
+
+     <div class="role-line">
          <div>
             <span style="font-size:1.2rem;">{{$t('select_all')}}</span>
         </div>
@@ -91,16 +95,19 @@ onMounted(() => {
         </div>
     </div>
     </template>
-             <div  class="role-line"  v-for="(role, index) in client.roles" v-show='showRole(role.name)'>
-                    <div>{{tr(role)}}</div>
-                    <div class="fmt-center">
-                    <tooltip-box :description="description(role)" />
-                    </div>
-                    <div v-for="key in ['view', 'download']" class="fmt-center">
-                      <span v-if="role.access" :title="$t('ACCEPTED')"><i class="fa fa-check" style="color:green;"></i></span>
-                  <!--  <i v-if="role.parameters.view" class="fa" :class="{'fa-close': !role.access, 'fa-check': role.access} "></i>
-                  --> 
-                  <span v-else-if="role.status">
+    <template v-for="(role,index) in client.roles">
+     <div  class="role-line"   v-show='showRole(role.name)'>
+
+            <div>{{tr(role.title)}}</div>
+            <div class="fmt-center">
+            <tooltip-box :description="description(role)" />
+            </div>
+            <div v-for="key in ['view', 'download']" class="fmt-center">
+                   <span v-if="user.roles[name] && user.roles[name].indexOf(role.name) >= 0" style="color:green;" :title="$t('ACCEPTED')">
+                             <font-awesome-icon icon="fa-solid fa-check" /> 
+                   </span>
+       
+                 <!-- <span v-else-if="role.status">
                           <span v-if="role.status === 'WAITING'">
                             <i class="fa fa-clock-o" ></i>
                           </span>
@@ -108,9 +115,9 @@ onMounted(() => {
                             <i class="fa fa-close" style="color:darkred;"></i>
                           </span>
                           <span v-if="role.status === 'CONDITION'" :title="$t('CONDITION')">
-                            <!--   <router-link :to="{name:'Charter', params: {id: role.charterId}}">
+                              <router-link :to="{name:'Charter', params: {id: role.charterId}}">
                                    <i class="fa fa-pencil" ></i>
-                               </router-link> -->
+                               </router-link> 
                           </span>
                  </span>
                  <span v-else-if="(Object.keys(role.parameters).length === 0 || !role.parameters.charter)">
@@ -118,68 +125,30 @@ onMounted(() => {
                       :checked="checkedRoles.indexOf(name + '.' + role.name) >= 0" @click="changeRole($event)" />
                      </span>
                      <span v-else-if="role.charterId" :title="$t('CONDITION')" >
-                 <!--         <router-link :to="{name:'Charter', params: {id: role.charterId}}">
+                         <router-link :to="{name:'Charter', params: {id: role.charterId}}">
                                <i class="fa fa-pencil" ></i>
-                       </router-link> -->
-                     </span>
-                    </div>
-                    <div class="fmt-center">
-                      <span v-if="role.charterId">
-                      <!-- <router-link v-if="role.charterId" :to="{name: 'Charter', params: {id: role.charterId}}">
-                      <span v-if="$store.getters['charters/isSigned'](role.charterId)">
-                        {{$t('signed')}}
-                       </span>
-                            <span  v-else :title="$t('CONDITION')">
-                             <i class="fa fa-pencil"></i>
-                            </span>
-                   </router-link> -->
-                  </span>
-                  <span v-else><em>{{$t('no_charter')}}</em></span>
-                </div>
-          </div>
-       <div class="role-line" v-if="client.groups" v-show="showGroup(key)" v-for="group, key in client.groups">
-          <div>{{title(group[0], key)}}</div>
-          <div class="fmt-center">
-             <formater-tooltip :description="description(group[0])"></formater-tooltip>
-          </div>
-          <div v-for="role, index in group" class="fmt-center">
-             <span v-if="role.access" :title="$t('ACCEPTED')"><i class="fa fa-check" style="color:green;"></i></span>
-             <span v-else-if="role.status">
-               <span v-if="role.status === 'WAITING'" :title="$t('WAITING')">
-                 <i class="fa fa-clock-o"></i>
+                       </router-link> 
+                     </span>-->
+            </div>
+            <div class="fmt-center">
+             <!-- <span v-if="role.charterId">
+               <router-link v-if="role.charterId" :to="{name: 'Charter', params: {id: role.charterId}}">
+              <span v-if="$store.getters['charters/isSigned'](role.charterId)">
+                {{$t('signed')}}
                </span>
-                <span v-if="role.status === 'REJECTED'" :title="$t('REJECTED')">
-                 <i class="fa fa-close" style="color:darkred;"></i>
-               </span>
-                 <span v-if="role.status === 'CONDITION'" :title="$t('CONDITION')">
-              <!-- <router-link :to="{name:'Charter', params: {id: role.charterId}}">
-                 <i class="fa fa-pencil" ></i>
-               </router-link> -->
-             </span>
-             </span>
-           <span v-else="!role.status">
-              <input v-if="index === 1 || checkedRoles.indexOf(name + '.' + group[1].name) < 0" type="checkbox" :value="name + '.' + role.name" 
-              :checked="checkedRoles.indexOf(name + '.' + role.name) >= 0" @click="changeRole($event)" />
-              <input v-if="index === 0 && checkedRoles.indexOf(name + '.' + group[1].name) >=0"  type="checkbox"  :checked="true" disabled value="no" />
-
-           </span>
-             
-          </div>
-          <div>
-             <span v-if="group[0].charterId">
-                <!-- <router-link :to="{name:'Charter', params: {id: group[0].charterId}}">
-                    <span v-if="$store.getters['charters/isSigned'](group[0].charterId)">
-                       {{$t('signed')}}
-                    </span>
-                    <span :title="$t('CONDITION')" v-else>
+                    <span  v-else :title="$t('CONDITION')">
                      <i class="fa fa-pencil"></i>
                     </span>
-                </router-link> -->
-           </span>
-           <span v-else><em>{{$t('no_charter')}}</em></span>
+           </router-link> 
+          </span>
+          <span v-else><em>{{$t('no_charter')}}</em></span> -->
         </div>
+   
+  </div>
+   </template>
+      
      </div>
-     </div>
+
 
 </template>
 <style scoped>

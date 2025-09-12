@@ -35,6 +35,7 @@ function showTooltip (event) {
 .tooltip-container {
     display:inline-block;
     position: relative;
+    cursor:pointer;
 }
 div.fmt-tooltip {
   position: absolute;
