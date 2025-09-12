@@ -1,15 +1,33 @@
 <script setup>
-const {description} = defineProps({
+import {useTemplateRef} from 'vue'
+const {icon,description} = defineProps({
     icon: {
         type: String,
-        default: 'fa-solid fa-info-circle'
+        default: 'fa-solid fa-circle-info'
     },
     description: null
 })
+const tooltip = useTemplateRef('tooltip')
+function hideTooltip() {
+    document.querySelectorAll('.tooltip-show').forEach(function (node) {
+      node.classList.remove('tooltip-show')
+    })
+}
+function showTooltip (event) {
+    event.preventDefault()
+    if (event.target.classList.contains('tooltip-show')) {
+      event.target.classList.remove('tooltip-show')
+      return
+    }
+    hideTooltip()
+    tooltip.value.classList.add('tooltip-show')
+}
 </script>
-<template v-if="description">
- <div class="tooltip-container" style="position:relative;">
-      <span class="fa-solid fa-info-circle" @click="showTooltip($event)"></span>
+<template>
+ <div v-if="description" class="tooltip-container" style="position:relative;">
+      <span ref="tooltip" @click="showTooltip($event)">
+          <font-awesome-icon :icon="icon" /> 
+      </span>
       <div class="fmt-tooltip" @click="hideTooltip()" v-html="description"></div>
 </div> 
 </template>
@@ -17,5 +35,22 @@ const {description} = defineProps({
 .tooltip-container {
     display:inline-block;
     position: relative;
+}
+div.fmt-tooltip {
+  position: absolute;
+  display:none;
+  background-color: #fafafa;
+  border: 1px solid #a3a3a3;
+  font-size: smaller;
+  line-height:1;
+  text-align:left;
+  padding: 5px;
+  cursor: pointer;
+  width: 150px;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.4);
+  z-index:1;
+}
+.tooltip-show + div.fmt-tooltip {
+  display:block;
 }
 </style>

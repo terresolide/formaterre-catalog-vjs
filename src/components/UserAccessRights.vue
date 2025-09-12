@@ -11,6 +11,7 @@ const data = reactive({
     message: null,
     checkedRoles: []
 })
+const asking = false
 const uncompletedUser = computed(() => false)
 function selectRole (obj) {
     console.log(obj)
@@ -50,7 +51,7 @@ onMounted(() => {
        <!--  CLIENT ROLES -->
        <template v-for="(client,clientName) in client.roles">
       <div  v-if="clientName !== 'global'" style="border-top: 1px dotted black;padding:0px;">
-         <role-client :client="client" :name="clientName" :checked-roles="checkedRoles" @roleChange="selectRole" />
+         <role-client :client="client" :name="clientName" :checked-roles="data.checkedRoles" @roleChange="selectRole" />
        </div>
        </template>
        <div>

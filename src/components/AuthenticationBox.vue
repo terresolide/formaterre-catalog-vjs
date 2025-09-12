@@ -59,20 +59,19 @@ onMounted(() => {
 })
 </script>
 <template> 
-  <template v-if="user.email">
-    <span class="user" >{{user.email}} <font-awesome-icon icon="fa-solid fa-caret-down"/></span>
-    <div class="user user-menu" >
-       <div @click="profile = !profile" :class="{actived: profile}">
-            <font-awesome-icon icon="fa-solid fa-user" /> 
-            {{$t('your_profile')}}
+    <template v-if="user.email">
+        <span class="user" >{{user.email}} <font-awesome-icon icon="fa-solid fa-caret-down"/></span>
+        <div class="user user-menu" >
+           <div @click="profile = !profile" :class="{actived: profile}">
+                <font-awesome-icon icon="fa-solid fa-user" /> 
+                {{$t('your_profile')}}
+            </div>
+           <div @click="logout()"><font-awesome-icon icon="fa-solid fa-right-from-bracket" /> {{$t('logout')}}</div>
         </div>
-       <div @click="logout()"><font-awesome-icon icon="fa-solid fa-right-from-bracket" /> {{$t('logout')}}</div>
-    </div>
-  </template>
-  <template v-else>
-    <a class="user" @click="login"><font-awesome-icon icon="fa-solid fa-user" /> {{ $t('login') }}</a>
-  </template>
-
+    </template>
+    <template v-else>
+        <a class="user" @click="login"><font-awesome-icon icon="fa-solid fa-user" /> {{ $t('login') }}</a>
+    </template>
 </template>
 <style scoped>
 span.user {
@@ -86,6 +85,7 @@ div.user-menu {
     position:absolute;
     display:none;
     right:0;
+    top:18px;
     text-align:left;
     z-index:10;
 }
