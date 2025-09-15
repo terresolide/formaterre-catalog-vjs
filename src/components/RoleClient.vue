@@ -116,7 +116,9 @@ onMounted(() => {
                 <span v-if="user.roles[name] && user.roles[name].roles && user.roles[name].roles.indexOf(role.name) >= 0" style="color:green;" :title="$t('ACCEPTED')">
                       <font-awesome-icon icon="fa-solid fa-check" /> 
                 </span>
+              
                 <span v-else-if="role.status">
+                  {{role.status}}
                     <span v-if="role.status === 'WAITING'">
                       <i class="fa fa-clock-o" ></i>
                     </span>
@@ -143,6 +145,7 @@ onMounted(() => {
             </div>
             <div class="fmt-center">
                 <span v-if="role.charterId">
+                {{role.charterId}}
                <!-- <router-link v-if="role.charterId" :to="{name: 'Charter', params: {id: role.charterId}}">
                     <span v-if="$store.getters['charters/isSigned'](role.charterId)">
                         {{$t('signed')}}
@@ -152,7 +155,7 @@ onMounted(() => {
                     </span>
                     </router-link> -->
                 </span>
-                <span v-else><em>{{$t('no_charter')}}</em></span> 
+                <span v-else><em>---</em></span> 
             </div>
    
         </div>
