@@ -8,27 +8,29 @@ const config = useConfig()
 <template>
  <template v-if="profile">
     <div class="profile">
-    <h2 :style="{backgroundColor: config.state.primary}">
-        <div class="close" @click="profile=false">&times;</div>
-        <font-awesome-icon icon="fa-solid fa-user" />  {{$t('your_profile')}}
-    </h2>
-    <div class="column-left">
-        <fieldset :style="{borderColor: config.state.primary}">
-            <legend :style="{color: config.state.primary}">Informations</legend>
-            <user-attributs />  
-        </fieldset>
-    </div>
-    <div class="column-right">
-        <fieldset :style="{borderColor: config.state.primary}">
-            <legend :style="{color: config.state.primary}">{{$t('access_rights')}}</legend>
-            <user-access-rights />
-        </fieldset>
-    </div>
+        <h2 :style="{backgroundColor: config.state.primary}">
+            <div class="close" @click="profile=false">&times;</div>
+            <font-awesome-icon icon="fa-solid fa-user" />  {{$t('your_profile')}}
+        </h2>
+        <div class="profile-content">
+            <div class="column-left">
+                <fieldset :style="{borderColor: config.state.primary}">
+                    <legend :style="{color: config.state.primary}">Informations</legend>
+                    <user-attributs />  
+                </fieldset>
+            </div>
+            <div class="column-right">
+                <fieldset :style="{borderColor: config.state.primary}">
+                    <legend :style="{color: config.state.primary}">{{$t('access_rights')}}</legend>
+                    <user-access-rights />
+                </fieldset>
+            </div>
+        </div>
     </div>
   </template>
 </template>
 <style scoped>
-    div.profile {
+div.profile {
     position:fixed;
     max-width: 1200px;
     background: white;
@@ -44,13 +46,18 @@ const config = useConfig()
     transform: translate(-50%, 0);
     box-shadow: 0 0px 20px rgba(0,0,0,0.7);
     z-index:11;
-    overflow-y:scroll;
+    overflow:hidden;
 }
+
 div.profile h2 {
     position:relative;
     margin: 0 -10px 10px -10px;
     padding: 10px;
     color: white;
+}
+div.profile-content {
+    max-height:calc(100vh - 100px);
+    overflow-y:auto;
 }
 div.close {
     position:absolute;
@@ -83,6 +90,7 @@ div.column-right {
     }
     div.column-right {
         margin-left: 380px;
+        padding-right:10px;
         margin-top:0;
         width: calc(100% - 380px);
     }

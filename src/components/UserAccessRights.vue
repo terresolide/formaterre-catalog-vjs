@@ -21,8 +21,7 @@ onMounted(() => {
 })
 </script>
 <template>
-{{data.checkedRoles}}
-    <div class="role-line" style="font-weight:700;background:#e3e3e3;" >
+    <div class="role-line role-line-header"  >
          <div></div>
          <div></div>
          <div >{{$t('preview')}}</div>
@@ -73,13 +72,19 @@ onMounted(() => {
 </template>
 <style >
 div.role-line {
-  display: grid;
-  grid-template-columns: minmax(200px,250px) 50px minmax(50px, 120px) minmax(50px, 120px) minmax(50px, 150px);
-  grid-gap: 5px;
-  text-align:center;
+    display: grid;
+    grid-template-columns: minmax(200px,230px) 50px minmax(50px, 120px) minmax(50px, 130px) minmax(50px, 150px);
+    grid-gap: 5px;
+    text-align:center;
 }
-
-
+div.role-line-header {
+    font-weight:700;
+    background:#e3e3e3;
+    padding: 6px 0;
+}
+div.role-line-header div {
+    word-break:break-all;
+}
 div.client-content div.role-line:nth-child(2n + 1) {
   background: #f3f3f3;
 }

@@ -16,10 +16,13 @@ const data = reactive({
 const checkedRoles = defineModel()
 const config = useConfig()
 const user = useUser()
-function tr (obj) {
+function tr (obj,name) {
     var lang = config.state.lang
     if (obj[lang]) {
         return obj[lang]
+    }
+    if (name) {
+        return name
     }
     return obj
 }
@@ -105,7 +108,7 @@ onMounted(() => {
     </template>
     <template v-for="(role,key in client.roles">
         <div  class="role-line"   v-show='showRole(role.name)'>
-            <div>{{tr(role.title)}}</div>
+            <div>{{tr(role.title, role.name)}}</div>
             <div class="fmt-center">
             <tooltip-box :description="description(role)" />
             </div>
