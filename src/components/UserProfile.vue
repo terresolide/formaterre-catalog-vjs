@@ -36,12 +36,12 @@ const config = useConfig()
     max-height:calc(100vh - 30px);
     width:calc(100% - 80px);
     min-width:600px;
-    top: 50%;
+    top: 5px;
     left: 50%;
     line-height:1.2;
     text-align: left;
     padding:0px 10px 10px 10px;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0);
     box-shadow: 0 0px 20px rgba(0,0,0,0.7);
     z-index:11;
     overflow-y:scroll;

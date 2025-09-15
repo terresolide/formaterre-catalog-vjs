@@ -33,6 +33,11 @@ function description (role) {
 }
 
 function toggleClient (evt) {
+   var target = event.target
+    while (!target.classList.contains('role-line')) {
+        target = target.parentNode
+    }
+    target.classList.toggle('deployed')
 }
 function showRole (name) {
     return true
@@ -45,14 +50,14 @@ onMounted(() => {
 </script>
 <template>
  <!-- entête client -->
- <div v-if="0 && client && client.roles.length > 0">
+ <div v-if="0 && client && client.roles.length > 0" >
     <div class="role-line deployed" >
       <div  class="title-client" style="cursor:pointer;text-align:left;"  >
          <span style="font-weight:800;">{{tr(client.title)}}</span> 
       </div>
     </div>
   </div>
- <div v-else-if="(client.groups && Object.keys(client.groups).length > 0) || (client.roles && client.roles.length > 0)" class="role-line">
+ <div v-else-if="(client.groups && Object.keys(client.groups).length > 0) || (client.roles && client.roles.length > 0)" class="role-line deployed">
 
     <div  class="title-client"   @click="toggleClient($event)">
         <span style="font-weight:800;">{{tr(client.title)}}</span> 
@@ -69,7 +74,7 @@ onMounted(() => {
      
  </div>
  <!-- liste des roles -->   
- <div :class="client-content">
+ <div class="client-content">
     <!-- ligne select all --> 
     <template v-if="(client.groups && Object.keys(client.groups).length > 2) || (client.roles && client.roles.length > 2)">
 
@@ -95,82 +100,84 @@ onMounted(() => {
         </div>
     </div>
     </template>
-    <template v-for="(role,index) in client.roles">
-     <div  class="role-line"   v-show='showRole(role.name)'>
-
+    <template v-for="(role,key in client.roles">
+        <div  class="role-line"   v-show='showRole(role.name)'>
             <div>{{tr(role.title)}}</div>
             <div class="fmt-center">
             <tooltip-box :description="description(role)" />
             </div>
             <div v-for="key in ['view', 'download']" class="fmt-center">
-                   <span v-if="user.roles[name] && user.roles[name].indexOf(role.name) >= 0" style="color:green;" :title="$t('ACCEPTED')">
-                             <font-awesome-icon icon="fa-solid fa-check" /> 
-                   </span>
-       
-                 <!-- <span v-else-if="role.status">
-                          <span v-if="role.status === 'WAITING'">
-                            <i class="fa fa-clock-o" ></i>
-                          </span>
-                          <span v-else-if="role.status && role.status === 'REJECTED'">
-                            <i class="fa fa-close" style="color:darkred;"></i>
-                          </span>
-                          <span v-if="role.status === 'CONDITION'" :title="$t('CONDITION')">
-                              <router-link :to="{name:'Charter', params: {id: role.charterId}}">
-                                   <i class="fa fa-pencil" ></i>
-                               </router-link> 
-                          </span>
-                 </span>
-                 <span v-else-if="(Object.keys(role.parameters).length === 0 || !role.parameters.charter)">
-                          <input  type="checkbox" :value="name + '.' + role.name" 
+                <span v-if="user.roles[name] && user.roles[name].roles && user.roles[name].roles.indexOf(role.name) >= 0" style="color:green;" :title="$t('ACCEPTED')">
+                      <font-awesome-icon icon="fa-solid fa-check" /> 
+                </span>
+                <span v-else-if="role.status">
+                    <span v-if="role.status === 'WAITING'">
+                      <i class="fa fa-clock-o" ></i>
+                    </span>
+                    <span v-else-if="role.status && role.status === 'REJECTED'">
+                      <i class="fa fa-close" style="color:darkred;"></i>
+                    </span>
+                    <span v-if="role.status === 'CONDITION'" :title="$t('CONDITION')">
+                        {{role.charterId}}
+                        <!--<router-link :to="{name:'Charter', params: {id: role.charterId}}">
+                             <i class="fa fa-pencil" ></i>
+                         </router-link> -->
+                    </span>
+                </span>
+                <span v-else-if="(Object.keys(role.parameters).length === 0 || !role.parameters.charter)">
+                      <input  type="checkbox" :value="name + '.' + role.name" 
                       :checked="checkedRoles.indexOf(name + '.' + role.name) >= 0" @click="changeRole($event)" />
-                     </span>
-                     <span v-else-if="role.charterId" :title="$t('CONDITION')" >
-                         <router-link :to="{name:'Charter', params: {id: role.charterId}}">
+                </span>
+                <span v-else-if="role.charterId" :title="$t('CONDITION')" >
+                    {{role.charterId}}
+                       <!--  <router-link :to="{name:'Charter', params: {id: role.charterId}}">
                                <i class="fa fa-pencil" ></i>
-                       </router-link> 
-                     </span>-->
+                       </router-link> -->
+                </span>
             </div>
             <div class="fmt-center">
-             <!-- <span v-if="role.charterId">
-               <router-link v-if="role.charterId" :to="{name: 'Charter', params: {id: role.charterId}}">
-              <span v-if="$store.getters['charters/isSigned'](role.charterId)">
-                {{$t('signed')}}
-               </span>
+                <span v-if="role.charterId">
+               <!-- <router-link v-if="role.charterId" :to="{name: 'Charter', params: {id: role.charterId}}">
+                    <span v-if="$store.getters['charters/isSigned'](role.charterId)">
+                        {{$t('signed')}}
+                    </span>
                     <span  v-else :title="$t('CONDITION')">
                      <i class="fa fa-pencil"></i>
                     </span>
-           </router-link> 
-          </span>
-          <span v-else><em>{{$t('no_charter')}}</em></span> -->
-        </div>
+                    </router-link> -->
+                </span>
+                <span v-else><em>{{$t('no_charter')}}</em></span> 
+            </div>
    
-  </div>
-   </template>
-      
-     </div>
+        </div>
+    </template>
+    </div>
 
 
 </template>
 <style scoped>
- div.title-client {
+div.title-client {
     cursor:pointer;
     text-align:left;
- }
- div.title-client::before {
-  content: ' + ';
+}
+div.title-client::before {
+    content: ' + ';
 }
 div.deployed div.title-client::before {
-  content: ' - ';
+    content: ' - ';
 }
 div.client-content {
- display:block;
+    display:none;
 }
 div.deployed + div.client-content {
-  display:block;
+    display:block;
 }
 
 div.client-content div.role-line:nth-child(2n + 1) {
-  background: #f3f3f3;
+    background: #f3f3f3;
 }
 
+div.client-content div.role-line > div:first-child {
+    text-align:right;
+}
 </style>
