@@ -13,7 +13,7 @@ const {name, client} = defineProps({
 const data = reactive({
     selectAll: false
 })
-const checkedRoles = []
+const checkedRoles = defineModel()
 const config = useConfig()
 const user = useUser()
 function tr (obj) {
@@ -38,6 +38,9 @@ function toggleClient (evt) {
         target = target.parentNode
     }
     target.classList.toggle('deployed')
+}
+function changeRole (role) {
+    checkedRoles.value.push(role)
 }
 function showRole (name) {
     return true
@@ -125,8 +128,8 @@ onMounted(() => {
                     </span>
                 </span>
                 <span v-else-if="(Object.keys(role.parameters).length === 0 || !role.parameters.charter)">
-                      <input  type="checkbox" :value="name + '.' + role.name" 
-                      :checked="checkedRoles.indexOf(name + '.' + role.name) >= 0" @click="changeRole($event)" />
+                      <input  type="checkbox" v-model="checkedRoles" :value="name + '.' + role.name" />
+                    <!--  :checked="checkedRoles.indexOf(name + '.' + role.name) >= 0" @click="changeRole(name + '.' + role.name)" /> -->
                 </span>
                 <span v-else-if="role.charterId" :title="$t('CONDITION')" >
                     {{role.charterId}}

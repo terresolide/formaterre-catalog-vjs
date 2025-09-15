@@ -21,6 +21,7 @@ onMounted(() => {
 })
 </script>
 <template>
+{{data.checkedRoles}}
     <div class="role-line" style="font-weight:700;background:#e3e3e3;" >
          <div></div>
          <div></div>
@@ -48,12 +49,12 @@ onMounted(() => {
  
      <!-- GLOBAL ROLES -->
      <div v-if="client.roles.global" style="border-top: 1px dotted black;padding:0px;" >
-        <role-client :client="client.roles.global" name="global" :checked-roles="data.checkedRoles" @roleChange="selectRole" />
+        <role-client :client="client.roles.global" name="global" v-model="data.checkedRoles" @roleChange="selectRole" />
      </div>
      <!--  CLIENT ROLES -->
      <template v-for="(client,clientName) in client.roles">
         <div  v-if="clientName !== 'global'" style="border-top: 1px dotted black;padding:0px;">
-           <role-client :client="client" :name="clientName" :checked-roles="data.checkedRoles" @roleChange="selectRole" />
+           <role-client :client="client" :name="clientName" v-model="data.checkedRoles" @roleChange="selectRole" />
         </div>
      </template>
      <div>
