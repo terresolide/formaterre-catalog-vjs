@@ -48,12 +48,12 @@ onMounted(() => {
  
      <!-- GLOBAL ROLES -->
      <div v-if="client.roles.global" style="border-top: 1px dotted black;padding:0px;" >
-        <role-client :client="client.roles.global" name="global" v-model="data.checkedRoles" @roleChange="selectRole" />
+        <role-client :client="client.roles.global" name="global" :charters="client.charters" v-model="data.checkedRoles" @roleChange="selectRole" />
      </div>
      <!--  CLIENT ROLES -->
-     <template v-for="(client,clientName) in client.roles">
+     <template v-for="(cl,clientName) in client.roles">
         <div  v-if="clientName !== 'global'" style="border-top: 1px dotted black;padding:0px;">
-           <role-client :client="client" :name="clientName" v-model="data.checkedRoles" @roleChange="selectRole" />
+           <role-client :client="cl" :name="clientName" :charters="client.charters" v-model="data.checkedRoles" @roleChange="selectRole" />
         </div>
      </template>
      <div>

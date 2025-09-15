@@ -3,11 +3,15 @@ import {onMounted, reactive} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {useUser} from '@/stores/user.js'
 import TooltipBox from '@/components/TooltipBox.vue'
-const {name, client} = defineProps({
+const {name, client, charters} = defineProps({
     name: String,
     client: {
         type: Object,
         default: null
+    },
+    charters: {
+        type: Array,
+        default: () => []
     }
 })
 const data = reactive({
@@ -113,20 +117,19 @@ onMounted(() => {
             <tooltip-box :description="description(role)" />
             </div>
             <div v-for="key in ['view', 'download']" class="fmt-center">
-                <span v-if="user.roles[name] && user.roles[name].roles && user.roles[name].roles.indexOf(role.name) >= 0" style="color:green;" :title="$t('ACCEPTED')">
+                <span v-if="user.roles[name] && user.roles[name].roles && user.roles[name].roles.indexOf(role.name) >= 0" style="color:green;" >
                       <font-awesome-icon icon="fa-solid fa-check" /> 
                 </span>
               
                 <span v-else-if="role.status">
-                  {{role.status}}
-                    <span v-if="role.status === 'WAITING'">
-                      <i class="fa fa-clock-o" ></i>
+                    <span v-if="role.status === 'WAITING'" :title="$t('WAITING')">
+                      <font-awesome-icon icon="fa-solid fa-clock" /> 
                     </span>
-                    <span v-else-if="role.status && role.status === 'REJECTED'">
-                      <i class="fa fa-close" style="color:darkred;"></i>
+                    <span v-else-if="role.status && role.status === 'REJECTED'"  :title="$t('REJECTED')" >
+                      <span  style="color:darkred;">&times;</span>
                     </span>
                     <span v-if="role.status === 'CONDITION'" :title="$t('CONDITION')">
-                        {{role.charterId}}
+                        <font-awesome-icon icon="fa-solid fa-pencil" /> 
                         <!--<router-link :to="{name:'Charter', params: {id: role.charterId}}">
                              <i class="fa fa-pencil" ></i>
                          </router-link> -->
@@ -137,25 +140,23 @@ onMounted(() => {
                     <!--  :checked="checkedRoles.indexOf(name + '.' + role.name) >= 0" @click="changeRole(name + '.' + role.name)" /> -->
                 </span>
                 <span v-else-if="role.charterId" :title="$t('CONDITION')" >
-                    {{role.charterId}}
+                    <font-awesome-icon icon="fa-solid fa-pencil" /> 
                        <!--  <router-link :to="{name:'Charter', params: {id: role.charterId}}">
                                <i class="fa fa-pencil" ></i>
                        </router-link> -->
                 </span>
             </div>
             <div class="fmt-center">
-                <span v-if="role.charterId">
-                {{role.charterId}}
-               <!-- <router-link v-if="role.charterId" :to="{name: 'Charter', params: {id: role.charterId}}">
-                    <span v-if="$store.getters['charters/isSigned'](role.charterId)">
+                <template v-if="role.charterId">
+                    <template v-if="charters && charters.indexOf(role.charterId) >= 0">
                         {{$t('signed')}}
-                    </span>
-                    <span  v-else :title="$t('CONDITION')">
-                     <i class="fa fa-pencil"></i>
-                    </span>
-                    </router-link> -->
-                </span>
-                <span v-else><em>---</em></span> 
+                    </template>
+                    <template v-else>
+                    ---
+                        <font-awesome-icon icon="fa-solid fa-pencil" /> 
+                    </template>
+                </template>
+                <template v-else>---</template> 
             </div>
    
         </div>
