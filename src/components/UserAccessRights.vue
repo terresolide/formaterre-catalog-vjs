@@ -9,10 +9,11 @@ const user = useUser()
 const client = useClient()
 const data = reactive({
     message: null,
+    asking: false,
     checkedRoles: []
 })
-const asking = false
-const uncompletedUser = computed(() => false)
+
+const uncompletedUser = computed(() => {return !user.organisation.id})
 function selectRole (obj) {
     console.log(obj)
 }
@@ -21,6 +22,7 @@ onMounted(() => {
 })
 </script>
 <template>
+   <p  v-html="$t('access_to_formater')" style="font-size:1em;font-style:italic;line-height:1.3;margin:5px 0;"></p>
     <div class="role-line role-line-header"  >
          <div></div>
          <div></div>
@@ -56,16 +58,18 @@ onMounted(() => {
            <role-client :client="cl" :name="clientName" :charters="client.charters" v-model="data.checkedRoles" @roleChange="selectRole" />
         </div>
      </template>
-     <div>
-       <p  v-html="$t('access_to_formater')" style="font-size:0.9em;font-style:italic;line-height:1;"></p>
+     <div style="margin:10px 0;">
+    
        <div style="position:relative;">
-         <div v-if="asking" style="position:absolute;left:50%;top:10%;font-size:30px;">
-           <span class="fa fa-spinner animated"></span>
+         <div v-if="!data.asking" style="position:absolute;left:50%;top:10%;font-size:30px;">
+           <font-awesome-icon icon="fa-solid fa-spinner" spin  /> 
          </div>
          <textarea style="width:100%" v-model="data.message" :placeholder="$t('add_message')"></textarea>
        </div>
-       <span  class="fmt-button" :class="{disabled: uncompleteUser || data.checkedRoles.length === 0 || asking}" :style="{background: config.state.primary}" @click="accessRequest">{{$t('access_request')}}</span>
+       <div style="text-align:right;margin:10px 0;">
+        <button  class="fmt-button" :class="{disabled: uncompleteUser || data.checkedRoles.length === 0 || data.asking}" :style="{background: config.state.primary}" @click="accessRequest">{{$t('access_request')}}</button>
        </div>
+    </div>
        <p  v-html="$t('wait_validation')" style="font-size:0.9em;color:green;line-height:1;"></p>
        <p  style="color:darkred;">Erreur : {{data.errorAsk}}</p>
      

@@ -6,8 +6,7 @@ export const useUser = defineStore('user', {
         organization: null,
         email: null,
         roles: {},
-        token:null,
-        refreshToken: null
+        sso: null
         
     }),
     actions: {
@@ -23,17 +22,20 @@ export const useUser = defineStore('user', {
                     name: user.fmt_organization
                 }
             }
-            
         },
         setOrganization (org) {
-            this.organization.id = org.id
-            this.organization.name = org.name
-            this.organization.type = org.type
+            console.log(org)
+            this.organization = {
+                id:org.id,
+                name:org.name,
+                type: org.type
+            }
         },
         reset () {
             this.name = null
             this.roles = {}
             this.email = null
+            this.organization = null
         }
     }
 })

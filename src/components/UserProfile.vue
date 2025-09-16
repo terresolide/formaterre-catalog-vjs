@@ -2,6 +2,8 @@
 import {useConfig} from '@/stores/config.js'
 import UserAttributs from '@/components/UserAttributs.vue'
 import UserAccessRights from '@/components/UserAccessRights.vue'
+import UserCharters from '@/components/UserCharters.vue'
+import UserServices from '@/components/UserServices.vue'
 const profile = defineModel()
 const config = useConfig()
 </script>
@@ -18,6 +20,10 @@ const config = useConfig()
                     <legend :style="{color: config.state.primary}">Informations</legend>
                     <user-attributs />  
                 </fieldset>
+                
+                <user-services />
+                <user-charters />  
+  
             </div>
             <div class="column-right">
                 <fieldset :style="{borderColor: config.state.primary}">
@@ -29,6 +35,15 @@ const config = useConfig()
     </div>
   </template>
 </template>
+<style>
+.profile fieldset {
+    border: 0.5px solid grey;
+    margin-bottom:10px;
+}
+.profile legend {
+    font-weight:700;
+}
+</style>
 <style scoped>
 div.profile {
     position:fixed;
@@ -73,12 +88,7 @@ div.close {
 div.close:hover {
     border-color:white;
 }
-fieldset {
-    border: 0.5px solid grey;
-}
-legend {
-    font-weight:700;
-}
+
 div.column-right {
     margin-top:10px;
 }

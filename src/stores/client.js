@@ -25,12 +25,17 @@ export const useClient = defineStore('client', {
                  realm: import.meta.env.SSO_REALM
             }
             var fdata = new URLSearchParams(post)
-            const response = await fetch(config.state.tools + '/requests/check',{
-                method: 'POST',
-                body: fdata.toString(),
+            // const response = await fetch(config.state.tools + '/requests/check',{
+            //     method: 'POST',
+            //     body: fdata.toString(),
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         'Content-Type': 'application/x-www-form-urlencoded'
+            //     }
+            // })
+            const response = await fetch(config.state.tools + '/api/user?app=' + config.state.app, {
                 headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    'Authorization': 'Bearer ' + user.sso.getToken()
                 }
             })
             const json =  await response.json()
@@ -38,6 +43,9 @@ export const useClient = defineStore('client', {
             this.roles = json.roles
             this.charters = json.charters
             this.loaded = true
+            if (json.organization) {
+                user.setOrganization(json.organization)
+            }
             return this.roles
             
         },

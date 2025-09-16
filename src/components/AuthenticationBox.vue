@@ -13,33 +13,33 @@ const config = useConfig()
 const user = useUser()
 const client = useClient()
 function login () {
-    data.sso.login()
+    user.sso.login()
 }
 function logout () {
     // on ne se déconnecte pas du sso mais uniquement l'application
-    data.sso.logout(true)
+    user.sso.logout(true)
 }
 function getSSOInformation() {
     return fetch(config.state.tools + '/api/client/' + config.state.app)
 }
 function initSSO (clientId) {
     var env = import.meta.env
-     data.sso = new AuthService(env.SSO_NAME, {
+     user.sso = new AuthService(env.SSO_NAME, {
        clientId: clientId,
        method: 'public_verifier',
        keycloakUrl: env.SSO_URL + '/realms/' + env.SSO_REALM,
        redirectUri: config.state.ssoLogin
     })
-    data.sso.add()
-    data.sso.on('authenticated', function (usr, serv) {
+    user.sso.add()
+    user.sso.on('authenticated', function (usr, serv) {
         user.set(usr)
     })
-    data.sso.on('logout', function () {
+    user.sso.on('logout', function () {
         user.reset()
         data.deployed = false
         profile = false
     })
-    data.sso.on('error', function (error) {
+    user.sso.on('error', function (error) {
         console.log(error)
     })
 }

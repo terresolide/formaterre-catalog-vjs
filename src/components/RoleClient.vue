@@ -10,8 +10,8 @@ const {name, client, charters} = defineProps({
         default: null
     },
     charters: {
-        type: Array,
-        default: () => []
+        type: Object,
+        default: () => {return {list:[],signed:[]}}
     }
 })
 const data = reactive({
@@ -85,7 +85,7 @@ onMounted(() => {
  </div>
  <!-- liste des roles -->   
  <div class="client-content">
-    <!-- ligne select all --> 
+    <!-- ligne select all  
     <template v-if="(client.groups && Object.keys(client.groups).length > 2) || (client.roles && client.roles.length > 2)">
 
      <div class="role-line">
@@ -109,7 +109,7 @@ onMounted(() => {
           </span>
         </div>
     </div>
-    </template>
+    </template> -->
     <template v-for="(role,key in client.roles">
         <div  class="role-line"   v-show='showRole(role.name)'>
             <div>{{tr(role.title, role.name)}}</div>
@@ -148,7 +148,7 @@ onMounted(() => {
             </div>
             <div class="fmt-center">
                 <template v-if="role.charterId">
-                    <template v-if="charters && charters.indexOf(role.charterId) >= 0">
+                    <template v-if="charters && charters.signed && charters.signed.indexOf(role.charterId) >= 0">
                         {{$t('signed')}}
                     </template>
                     <template v-else>

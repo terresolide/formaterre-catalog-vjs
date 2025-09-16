@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, ref} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {useUser} from '@/stores/user.js'
 const config = useConfig()
@@ -39,9 +39,11 @@ function update () {
     let post = {
         email: user.email,
         uid: user.id,
-        id: data.value.organizationId,
         name: data.value.organization,
         type: data.value.organizationType
+    }
+    if (data.value.organizationId) {
+        post.id = data.value.organizationId
     }
     var fdata = new URLSearchParams(post)
     fetch(config.state.tools + '/api/user', {
@@ -114,6 +116,15 @@ function organizationUpdated (event) {
     }     
     
 }
+watch(() => user,
+      (user) => {
+          console.log(user.organization)
+          if (user.organization) {
+              data.value.organization = user.organization.name 
+              data.value.organizationType = user.organization.type 
+              data.value.organizationId = user.organization.id
+          }
+}, {immediate: true, deep: true})
 onMounted(() => {
     getOrganizationTypes()
     reset()
