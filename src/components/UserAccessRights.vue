@@ -17,6 +17,36 @@ const uncompletedUser = computed(() => {return !user.organisation.id})
 function selectRole (obj) {
     console.log(obj)
 }
+function accessRequest() {
+    console.log(data.checkedRoles)
+    // remove role "view" if there is role "view download"
+    // var location = this.$custURL(window.location.href)
+    var checkedRoles = data.checkedRoles.filter(role => data.checkedRoles.indexOf(role + 'D') < 0)
+    var postdata = {
+        userId: user.id,
+        email: user.email,
+        app: config.state.app,
+        domain: 'http://localhost:3000/#/',
+        realm: import.meta.env.SSO_REALM,
+        message: data.message ? data.message : '',
+        role: checkedRoles,
+        lang: config.state.lang,
+        organizationId: user.organization.id
+    }
+    var fdata = new URLSearchParams(postdata)
+    var url = config.state.tools + '/requests/ask'
+    fetch(url,{
+        method: 'POST',
+        body: fdata.toString(),
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    }).then(resp => resp.json())
+    .then(json => {
+        console.log(json)
+    })
+}
 onMounted(() => {
     client.getRoles()
 })
