@@ -4,7 +4,8 @@ export const useSelection = defineStore('selection', {
   state: () => ({
     uuid: null,
     layers: [],
-    download: null
+    download: null,
+    charter: null
   }),
   actions: {
     hasLayer(layer) {
@@ -12,6 +13,9 @@ export const useSelection = defineStore('selection', {
     },
     select (uuid) {
         this.uuid = uuid
+    },
+    setCharter (id) {
+        this.charter = id
     },
     toggle(uuid) {
       if (uuid === this.uuid) {
