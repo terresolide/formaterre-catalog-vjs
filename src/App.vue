@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import {computed, onMounted, watch } from 'vue'
+import {computed, defineAsyncComponent, onMounted, watch } from 'vue'
 import { useRoute, RouterLink, RouterView } from 'vue-router'
 import {useConfig} from '@/stores/config'
 import {useCatalog} from '@/stores/catalog'
 import UserInfo from '@/components/UserInfo.vue'
+
+const CharterPage = defineAsyncComponent(
+    () => import('@/components/CharterPage.vue'),
+)
 const config = useConfig()
 config.init()
 const catalog = useCatalog()
@@ -28,6 +32,7 @@ let currentCatalog = computed(() => {
             
             <div class="wrapper">
               <user-info />
+              <charter-page include="true" />
               <nav>
                 <div>
                 <RouterLink style="padding-right:0;" to="/" >{{$t('catalog', 10)}}</RouterLink>

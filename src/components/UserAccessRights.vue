@@ -120,7 +120,7 @@ onMounted(() => {
 <style >
 div.role-line {
     display: grid;
-    grid-template-columns: minmax(200px,230px) 50px minmax(50px, 120px) minmax(50px, 130px) minmax(50px, 150px);
+    grid-template-columns: minmax(200px,230px) 50px minmax(50px, 120px) minmax(50px, 130px) minmax(50px, 180px);
     grid-gap: 5px;
     text-align:center;
 }

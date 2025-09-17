@@ -41,7 +41,17 @@ function description (role) {
     }
     return null
 }
-
+function getCharterName (id) {
+    let charter = charters.list.find(ch => ch.id === id)
+    if (!charter) {
+        return 'NOT FOUND'
+    }
+    if (charter.title && charter.title[config.state.lang]) {
+       return charter.title[config.state.lang]
+    } else {
+        return 'Charter N°' + id
+    }
+}
 function toggleClient (evt) {
    var target = event.target
     while (!target.classList.contains('role-line')) {
@@ -151,13 +161,16 @@ onMounted(() => {
             <div class="fmt-center">
                 <template v-if="role.charterId">
                     <span class="charter-link" @click="selectCharter(role.charterId)">
-                        <template v-if="charters && charters.signed && charters.signed.indexOf(role.charterId) >= 0">
-                           <span :title="$t('signed')">
+                      <div>{{getCharterName(role.charterId)}}</div>
+                       <template v-if="charters && charters.signed && charters.signed.indexOf(role.charterId) >= 0">
+                           <div :title="$t('signed')">
                                 <font-awesome-icon icon="fa-solid fa-check" style="color:green;"/>
-                           </span>
+                           </div>
                         </template>
                         <template v-else>
-                            <font-awesome-icon icon="fa-solid fa-pencil" /> 
+                            <div>
+                                <font-awesome-icon icon="fa-solid fa-pencil" /> 
+                            </div>
                         </template>
                     </span>
                 </template>
@@ -199,5 +212,17 @@ div.client-content div.role-line:nth-child(2n + 1) {
 
 div.client-content div.role-line > div:first-child {
     text-align:right;
+}
+span.charter-link {
+    display: grid;
+    grid-template-columns: 1fr 25px;
+    grid-gap: 2px;
+    text-align:right;
+}
+span.charter-link:hover {
+    background:#eee;
+}
+span.charter-link > div {
+    vertical-align:middle;
 }
 </style>
