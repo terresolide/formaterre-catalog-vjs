@@ -10,21 +10,23 @@ const client = useClient()
 const data = reactive({
     message: null,
     asking: false,
+    errorAsk: null,
+    success: false,
     checkedRoles: []
 })
 
 const uncompletedUser = computed(() => {return !user.organisation.id})
 
 function accessRequest() {
-    console.log(data.checkedRoles)
+    data.asking = true
+    var location = URL.parse(window.location.href)
     // remove role "view" if there is role "view download"
-    // var location = this.$custURL(window.location.href)
     var checkedRoles = data.checkedRoles.filter(role => data.checkedRoles.indexOf(role + 'D') < 0)
     var postdata = {
         userId: user.id,
         email: user.email,
         app: config.state.app,
-        domain: 'http://localhost:3000/#/',
+        domain: location.href,
         realm: import.meta.env.SSO_REALM,
         message: data.message ? data.message : '',
         role: checkedRoles,
@@ -42,11 +44,20 @@ function accessRequest() {
         }
     }).then(resp => resp.json())
     .then(json => {
+        data.asking = false
+        data.success = json.success
         if (json.success && json.roles) {
             json.roles.forEach(function (role) {
                 client.setRoleWaiting(role)
             })
+            data.checkedRoles = []
         }
+        if (json.error) {
+            data.errorAsk = json.error
+        }
+    }).catch((error) => {
+        data.asking = false
+        data.errorAsk = 'SERVER ERROR'
     })
 }
 onMounted(() => {
@@ -63,7 +74,7 @@ onMounted(() => {
          <div>{{$t('charter')}}</div>
     </div>
     <div class="role-line full" >
-        <div>
+        <div style="text-align:right;">
            {{$t('public_data')}}
         </div>
         <div></div>
@@ -81,19 +92,19 @@ onMounted(() => {
     </div> 
  
      <!-- GLOBAL ROLES -->
-     <div v-if="client.roles.global" style="border-top: 1px dotted black;padding:0px;" >
+     <template v-if="client.roles.global">
         <role-client :client="client.roles.global" name="global" :charters="client.charters" v-model="data.checkedRoles"  />
-     </div>
+     </template>
      <!--  CLIENT ROLES -->
      <template v-for="(cl,clientName) in client.roles">
-        <div  v-if="clientName !== 'global'" style="border-top: 1px dotted black;padding:0px;">
+        <div  v-if="clientName !== 'global'" class="list-roles" >
            <role-client :client="cl" :name="clientName" :charters="client.charters" v-model="data.checkedRoles"  />
         </div>
      </template>
      <div style="margin:10px 0;">
     
        <div style="position:relative;">
-         <div v-if="!data.asking" style="position:absolute;left:50%;top:10%;font-size:30px;">
+         <div v-if="data.asking" style="position:absolute;left:50%;top:10%;font-size:30px;">
            <font-awesome-icon icon="fa-solid fa-spinner" spin  /> 
          </div>
          <textarea style="width:100%" v-model="data.message" :placeholder="$t('add_message')"></textarea>
@@ -102,8 +113,8 @@ onMounted(() => {
         <button  class="fmt-button" :class="{disabled: uncompleteUser || data.checkedRoles.length === 0 || data.asking}" :style="{background: config.state.primary}" @click="accessRequest">{{$t('access_request')}}</button>
        </div>
     </div>
-       <p  v-html="$t('wait_validation')" style="font-size:0.9em;color:green;line-height:1;"></p>
-       <p  style="color:darkred;">Erreur : {{data.errorAsk}}</p>
+       <p v-show="data.success" class="request-success" v-html="$t('wait_validation')" ></p>
+       <p v-show="data.errorAsk" class="error">Error: {{data.errorAsk}}</p>
      
 </template>
 <style >
@@ -117,12 +128,34 @@ div.role-line-header {
     font-weight:700;
     background:#e3e3e3;
     padding: 6px 0;
+    border-bottom: 1px dotted black;
 }
 div.role-line-header div {
     word-break:break-all;
+}
+div.role-line.full {
+    padding: 6px 0;
 }
 div.client-content div.role-line:nth-child(2n + 1) {
   background: #f3f3f3;
 }
 
+</style>
+<style scoped>
+.list-roles {
+    border-top: 1px dotted black;
+    padding-top:3px;
+}
+textarea {
+    width:100%;
+    height:80px;
+}
+p.request-success {
+    font-size:0.9em;
+    color:green;
+    line-height:1;
+}
+.error {
+    color:darkred;
+}
 </style>

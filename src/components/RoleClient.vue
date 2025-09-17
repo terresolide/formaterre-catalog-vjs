@@ -152,7 +152,9 @@ onMounted(() => {
                 <template v-if="role.charterId">
                     <span class="charter-link" @click="selectCharter(role.charterId)">
                         <template v-if="charters && charters.signed && charters.signed.indexOf(role.charterId) >= 0">
-                           <font-awesome-icon icon="fa-solid fa-check" style="color:green;"/>
+                           <span :title="$t('signed')">
+                                <font-awesome-icon icon="fa-solid fa-check" style="color:green;"/>
+                           </span>
                         </template>
                         <template v-else>
                             <font-awesome-icon icon="fa-solid fa-pencil" /> 
@@ -165,8 +167,6 @@ onMounted(() => {
         </div>
     </template>
     </div>
-
-
 </template>
 <style scoped>
 span.charter-link {
@@ -178,6 +178,7 @@ span.charter-link:hover {
 div.title-client {
     cursor:pointer;
     text-align:left;
+    padding: 6px 0;
 }
 div.title-client::before {
     content: ' + ';
