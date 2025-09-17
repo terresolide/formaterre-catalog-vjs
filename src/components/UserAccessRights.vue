@@ -14,9 +14,7 @@ const data = reactive({
 })
 
 const uncompletedUser = computed(() => {return !user.organisation.id})
-function selectRole (obj) {
-    console.log(obj)
-}
+
 function accessRequest() {
     console.log(data.checkedRoles)
     // remove role "view" if there is role "view download"
@@ -44,7 +42,11 @@ function accessRequest() {
         }
     }).then(resp => resp.json())
     .then(json => {
-        console.log(json)
+        if (json.success && json.roles) {
+            json.roles.forEach(function (role) {
+                client.setRoleWaiting(role)
+            })
+        }
     })
 }
 onMounted(() => {
@@ -80,12 +82,12 @@ onMounted(() => {
  
      <!-- GLOBAL ROLES -->
      <div v-if="client.roles.global" style="border-top: 1px dotted black;padding:0px;" >
-        <role-client :client="client.roles.global" name="global" :charters="client.charters" v-model="data.checkedRoles" @roleChange="selectRole" />
+        <role-client :client="client.roles.global" name="global" :charters="client.charters" v-model="data.checkedRoles"  />
      </div>
      <!--  CLIENT ROLES -->
      <template v-for="(cl,clientName) in client.roles">
         <div  v-if="clientName !== 'global'" style="border-top: 1px dotted black;padding:0px;">
-           <role-client :client="cl" :name="clientName" :charters="client.charters" v-model="data.checkedRoles" @roleChange="selectRole" />
+           <role-client :client="cl" :name="clientName" :charters="client.charters" v-model="data.checkedRoles"  />
         </div>
      </template>
      <div style="margin:10px 0;">

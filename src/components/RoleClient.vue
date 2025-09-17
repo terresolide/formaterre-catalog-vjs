@@ -2,6 +2,7 @@
 import {onMounted, reactive} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {useUser} from '@/stores/user.js'
+import {useSelection} from '@/stores/selection.js'
 import TooltipBox from '@/components/TooltipBox.vue'
 const {name, client, charters} = defineProps({
     name: String,
@@ -20,6 +21,8 @@ const data = reactive({
 const checkedRoles = defineModel()
 const config = useConfig()
 const user = useUser()
+const selection = useSelection()
+
 function tr (obj,name) {
     var lang = config.state.lang
     if (obj[lang]) {
@@ -46,8 +49,8 @@ function toggleClient (evt) {
     }
     target.classList.toggle('deployed')
 }
-function changeRole (role) {
-    checkedRoles.value.push(role)
+function selectCharter (id) {
+    selection.setCharter(id)
 }
 function showRole (name) {
     return true
@@ -137,7 +140,6 @@ onMounted(() => {
                 </span>
                 <span v-else-if="(Object.keys(role.parameters).length === 0 || !role.parameters.charter)">
                       <input  type="checkbox" v-model="checkedRoles" :value="name + '.' + role.name" />
-                    <!--  :checked="checkedRoles.indexOf(name + '.' + role.name) >= 0" @click="changeRole(name + '.' + role.name)" /> -->
                 </span>
                 <span v-else-if="role.charterId" :title="$t('CONDITION')" >
                     <font-awesome-icon icon="fa-solid fa-pencil" /> 
@@ -148,13 +150,14 @@ onMounted(() => {
             </div>
             <div class="fmt-center">
                 <template v-if="role.charterId">
-                    <template v-if="charters && charters.signed && charters.signed.indexOf(role.charterId) >= 0">
-                        {{$t('signed')}}
-                    </template>
-                    <template v-else>
-                    ---
-                        <font-awesome-icon icon="fa-solid fa-pencil" /> 
-                    </template>
+                    <span class="charter-link" @click="selectCharter(role.charterId)">
+                        <template v-if="charters && charters.signed && charters.signed.indexOf(role.charterId) >= 0">
+                           <font-awesome-icon icon="fa-solid fa-check" style="color:green;"/>
+                        </template>
+                        <template v-else>
+                            <font-awesome-icon icon="fa-solid fa-pencil" /> 
+                        </template>
+                    </span>
                 </template>
                 <template v-else>---</template> 
             </div>
@@ -166,6 +169,12 @@ onMounted(() => {
 
 </template>
 <style scoped>
+span.charter-link {
+    cursor:pointer;
+}
+span.charter-link:hover {
+    background:#eee;
+}
 div.title-client {
     cursor:pointer;
     text-align:left;

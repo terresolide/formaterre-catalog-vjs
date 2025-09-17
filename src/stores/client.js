@@ -25,14 +25,7 @@ export const useClient = defineStore('client', {
                  realm: import.meta.env.SSO_REALM
             }
             var fdata = new URLSearchParams(post)
-            // const response = await fetch(config.state.tools + '/requests/check',{
-            //     method: 'POST',
-            //     body: fdata.toString(),
-            //     headers: {
-            //         'Accept': 'application/json',
-            //         'Content-Type': 'application/x-www-form-urlencoded'
-            //     }
-            // })
+     
             const response = await fetch(config.state.tools + '/api/user?app=' + config.state.app, {
                 headers: {
                     'Authorization': 'Bearer ' + user.sso.getToken()
@@ -51,6 +44,11 @@ export const useClient = defineStore('client', {
         },
         reset () {
             
+        },
+        setRoleWaiting (role) {
+            var partrole = role.split('.')
+            var index = this.roles[partrole[0]].roles.findIndex(r => r.name === partrole[1])
+            this.roles[partrole[0]].roles[index].status = 'WAITING'
         }
     }
 })

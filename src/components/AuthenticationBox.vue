@@ -37,7 +37,7 @@ function initSSO (clientId) {
     user.sso.on('logout', function () {
         user.reset()
         data.deployed = false
-        profile = false
+        profile.value = false
     })
     user.sso.on('error', function (error) {
         console.log(error)

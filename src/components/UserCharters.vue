@@ -1,8 +1,13 @@
 <script setup>
 import {useConfig} from '@/stores/config.js'
 import {useClient} from '@/stores/client.js'
+import {useSelection} from '@/stores/selection.js'
 const config = useConfig()
 const client = useClient()
+const selection = useSelection()
+function select (id) {
+    selection.setCharter(id)
+}
 </script>
 <template>
     <template v-if="client.charters && client.charters.list && client.charters.list.length > 0">
@@ -10,7 +15,7 @@ const client = useClient()
             <legend :style="{color: config.state.primary}">Chartes d'utilisation</legend>
             <template v-for="item in client.charters.list">
                 <div class="charter-row">
-                    <div>{{item.title[config.state.lang]}}</div>
+                    <div @click="select(item.id)">{{item.title[config.state.lang]}}</div>
                     <div>
                         <template v-if="client.charters.signed.indexOf(item.id) >=0">
                             <font-awesome-icon icon="fa-solid fa-check" style="color:green;"/>
