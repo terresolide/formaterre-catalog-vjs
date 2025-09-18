@@ -15,7 +15,7 @@ const data = reactive({
     checkedRoles: []
 })
 
-const uncompletedUser = computed(() => {return !user.organisation.id})
+const uncompletedUser = computed(() => {return !(user.organization && user.organization.id)})
 
 function accessRequest() {
     data.asking = true
@@ -51,6 +51,7 @@ function accessRequest() {
                 client.setRoleWaiting(role)
             })
             data.checkedRoles = []
+            data.message = null
         }
         if (json.error) {
             data.errorAsk = json.error
@@ -59,6 +60,10 @@ function accessRequest() {
         data.asking = false
         data.errorAsk = 'SERVER ERROR'
     })
+}
+function resetMessage () {
+    data.success =  false
+    data.errorAsk = null
 }
 onMounted(() => {
     client.getRoles()
@@ -93,12 +98,12 @@ onMounted(() => {
  
      <!-- GLOBAL ROLES -->
      <template v-if="client.roles.global">
-        <role-client :client="client.roles.global" name="global" :charters="client.charters" v-model="data.checkedRoles"  />
+        <role-client :client="client.roles.global" name="global" :charters="client.charters" v-model="data.checkedRoles" />
      </template>
      <!--  CLIENT ROLES -->
      <template v-for="(cl,clientName) in client.roles">
         <div  v-if="clientName !== 'global'" class="list-roles" >
-           <role-client :client="cl" :name="clientName" :charters="client.charters" v-model="data.checkedRoles"  />
+           <role-client :client="cl" :name="clientName" :charters="client.charters" v-model="data.checkedRoles" />
         </div>
      </template>
      <div style="margin:10px 0;">
@@ -113,8 +118,8 @@ onMounted(() => {
         <button  class="fmt-button" :class="{disabled: uncompleteUser || data.checkedRoles.length === 0 || data.asking}" :style="{background: config.state.primary}" @click="accessRequest">{{$t('access_request')}}</button>
        </div>
     </div>
-       <p v-show="data.success" class="request-success" v-html="$t('wait_validation')" ></p>
-       <p v-show="data.errorAsk" class="error">Error: {{data.errorAsk}}</p>
+       <p v-show="data.success" class="request-success" v-html="$t('wait_validation')" @click="resetMessage"></p>
+       <p v-show="data.errorAsk" class="error" @click="resetMessage">Error: {{data.errorAsk}}</p>
      
 </template>
 <style >
@@ -154,8 +159,14 @@ p.request-success {
     font-size:0.9em;
     color:green;
     line-height:1;
+    padding:5px;
+    border:1px solid green;
+    cursor: pointer;
 }
 .error {
     color:darkred;
+     padding:5px;
+    border:1px solid darkred;
+    cursor: pointer;
 }
 </style>

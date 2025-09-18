@@ -60,22 +60,22 @@ let currentCatalog = computed(() => {
 </template>
 <style>
   .clipboard-tooltip {
-  position: absolute;
-  display:none;
-  background-color: #fafafa;
-  border: 1px solid #a3a3a3;
-  font-size: smaller;
-  line-height:1;
-  text-align:left;
-  padding: 5px;
-  cursor: pointer;
-  width: 150px;
-  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.4);
-  z-index:1;
-}
-.tooltip-show + .clipboard-tooltip {
-  display:block;
-}
+        position: absolute;
+        display:none;
+        background-color: #fafafa;
+        border: 1px solid #a3a3a3;
+        font-size: smaller;
+        line-height:1;
+        text-align:left;
+        padding: 5px;
+        cursor: pointer;
+        width: 150px;
+        box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.4);
+        z-index:1;
+    }
+    .tooltip-show + .clipboard-tooltip {
+        display:block;
+    }
 
 </style>
 <style scoped>

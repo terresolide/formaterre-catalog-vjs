@@ -16,8 +16,8 @@ a,
   transition: 0.4s;
   padding: 3px;
 }
-button,
-input[type="button"] {
+button:not(.classic),
+input[type="button"]:not(.classic) {
     margin: 0 0 3px 7px;
     padding: 3px 12px;
     text-align: center;

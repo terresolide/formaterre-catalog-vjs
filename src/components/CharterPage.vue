@@ -3,6 +3,8 @@ import {computed, reactive, ref} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {useSelection} from '@/stores/selection.js'
 import {useClient} from '@/stores/client.js'
+import {useUser} from '@/stores/user.js'
+
 import VuePdfEmbed from 'vue-pdf-embed'
 
 const {include} = defineProps({
@@ -20,8 +22,12 @@ const data = reactive({
 const config = useConfig()
 const client = useClient()
 const selection = useSelection()
+const user = useUser()
 const charter = computed(() => {
    return client.charters.list.find(ch => ch.id === selection.charter)
+})
+const signed = computed(() => {
+    return client.charters.signed.indexOf(selection.charter) >= 0
 })
 const url = computed(() => {
     console.log(charter.value.file)
@@ -46,10 +52,16 @@ function  handleDocumentRender() {
       data.isLoading = false
 }
 function download () {
-  pdfRef.value.download(charter.title[config.state.lang])
+    if (charter.value) {
+        pdfRef.value.download(charter.value.title[config.state.lang])
+    }
 }
 function print() {
-  pdfRef.value.print(90, charter.title[config.state.lang], true)
+    if (charter.value) {
+        pdfRef.value.print(90, charter.value.title[config.state.lang], true)
+    }
+}
+function sign () {
 }
 </script>
 <template>
@@ -65,41 +77,57 @@ function print() {
                CHARTER NOT FOUND
             </template>            
         </h2>
-        <template v-if="url">
-            <div style="border:1px solid black;max-width:900px;margin:auto;">
-             <div class="app-header">
-                <template v-if="data.isLoading">
-                  Loading...
+        <div class="charter-content">
+            <template v-if="url">
+               <template v-if="!signed">
+                  vous n'avez pas signé la charte, en bas....
+               </template>
+                <div style="border:1px solid black;max-width:900px;margin:auto;">
+                 <div class="app-header">
+                    <template v-if="data.isLoading">
+                      Loading...
+                    </template>
+                
+                    <template v-else>
+                        <div> &nbsp;</div>
+                        <div style="text-align:center;">
+                          <button class="classic" :disabled="data.page <= 1" @click="data.page--">❮</button>
+                        
+                          {{ data.page }} / {{ data.pageCount }} &nbsp;
+                        
+                          <button class="classic" :disabled="data.page >= data.pageCount" @click="data.page++">❯</button>
+                        
+                        </div>
+                        <div style="text-align:right;" >
+                            <button class="classic" @click="download" style="padding:3px 10px;">
+                              <font-awesome-icon icon="fa-download"></font-awesome-icon>
+                            </button>
+                            <button class="classic" @click="print" style="padding:3px 10px;">
+                              <font-awesome-icon icon="fa-print"></font-awesome-icon>
+                             </button>
+                        </div>
+                       
                 </template>
-            
-                <template v-else>
-                    <div> &nbsp;</div>
-                    <div style="text-align:center;">
-                      <button class="classic" :disabled="data.page <= 1" @click="data.page--">❮</button>
-                    
-                      {{ data.page }} / {{ data.pageCount }} &nbsp;
-                    
-                      <button class="classic" :disabled="data.page >= data.pageCount" @click="data.page++">❯</button>
-                    
+                
+                </div>
+                <vue-pdf-embed ref="pdfRef" :source="url" :page="data.page" 
+               @loaded="handleDocumentLoad" @rendered="handleDocumentRender" />
+               </div>
+               <!--- form signature -->
+               <div class="form-charter">
+                    <template v-if="signed">
+                        <div  style="color:darkred;" v-html="$t('already_signed', {charter: title})"></div>
+                    </template>
+                    <input type="checkbox" v-model="accept" :disabled="!user || signed || data.searching" required /> 
+                    <span v-html="$t('accept', {charter: title})"></span> 
+                    <div v-if="success" style="color:green;" v-html="$t('sign_saved', {charter: title})"></div>
+                    <!---<div v-if="success & newRoles.length > 0" style="color:green;" v-html="$t('new_roles', {newroles: newRoles.join(',')})"></div>-->
+                    <div style="margin:20px;text-align:right;">
+                         <input type="button" value="Enregistrer" :disabled="!user || signed || data.searching" @click="send"/>
                     </div>
-                    <div style="text-align:right;" >
-                        <button class="classic" @click="download" style="padding:3px 10px;">
-                          <font-awesome-icon icon="fa-download"></font-awesome-icon>
-                        </button>
-                        <button class="classic" @click="print" style="padding:3px 10px;">
-                          <font-awesome-icon icon="fa-print"></font-awesome-icon>
-                         </button>
-                    </div>
-                   
+                </div>
             </template>
-            
-            </div>
-            <vue-pdf-embed ref="pdfRef" :source="url" :page="data.page" 
-           @loaded="handleDocumentLoad" @rendered="handleDocumentRender" />
-           </div>
-        </template>
-           
-}
+        </div> 
    </div>
    </template>
 </template>
@@ -129,6 +157,10 @@ div.charter h2 {
     margin: 0 -10px 10px -10px;
     padding: 10px;
     color: white;
+}
+div.charter-content {
+    max-height:calc(100vh - 90px);
+    overflow-y: scroll;
 }
 div.close {
     position:absolute;

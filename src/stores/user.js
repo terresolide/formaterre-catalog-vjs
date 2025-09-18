@@ -24,7 +24,6 @@ export const useUser = defineStore('user', {
             }
         },
         setOrganization (org) {
-            console.log(org)
             this.organization = {
                 id:org.id,
                 name:org.name,

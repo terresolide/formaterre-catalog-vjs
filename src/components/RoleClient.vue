@@ -161,7 +161,7 @@ onMounted(() => {
             <div class="fmt-center">
                 <template v-if="role.charterId">
                     <span class="charter-link" @click="selectCharter(role.charterId)">
-                      <div>{{getCharterName(role.charterId)}}</div>
+                      <div >{{getCharterName(role.charterId)}}</div>
                        <template v-if="charters && charters.signed && charters.signed.indexOf(role.charterId) >= 0">
                            <div :title="$t('signed')">
                                 <font-awesome-icon icon="fa-solid fa-check" style="color:green;"/>
@@ -187,6 +187,15 @@ span.charter-link {
 }
 span.charter-link:hover {
     background:#eee;
+}
+span.charter-link > div:first-child:before {
+    content: "\2192 ";
+    padding-right:2px;
+
+}
+span.charter-link:hover > div:first-child {
+    color:black;
+
 }
 div.title-client {
     cursor:pointer;
@@ -217,7 +226,7 @@ span.charter-link {
     display: grid;
     grid-template-columns: 1fr 25px;
     grid-gap: 2px;
-    text-align:right;
+    text-align:left;
 }
 span.charter-link:hover {
     background:#eee;
