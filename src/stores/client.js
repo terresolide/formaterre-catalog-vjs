@@ -43,7 +43,11 @@ export const useClient = defineStore('client', {
             
         },
         reset () {
-            
+            this.list = []
+            this.roles = {}
+            this.charters = []
+            this.loaded = false
+            this.current = null
         },
         setRoleWaiting (role) {
             var partrole = role.split('.')

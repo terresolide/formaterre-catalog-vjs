@@ -33,11 +33,13 @@ function initSSO (clientId) {
     user.sso.add()
     user.sso.on('authenticated', function (usr, serv) {
         user.set(usr)
+        client.getRoles()
     })
     user.sso.on('logout', function () {
         user.reset()
         data.deployed = false
         profile.value = false
+        client.reset()
     })
     user.sso.on('error', function (error) {
         console.log(error)

@@ -7,38 +7,49 @@ import {useUser} from '@/stores/user.js'
 
 import VuePdfEmbed from 'vue-pdf-embed'
 
-const {include} = defineProps({
-    include: {
-        type: Boolean,
-        default: true
+const {id} = defineProps({
+    id: {
+        type: Number,
+        default: -1
     }
 })
 const pdfRef = ref()
 const data = reactive({
   isLoading: true,
   page: null,
-  pageCount: null
+  pageCount: null,
+  signed: false
 })
 const config = useConfig()
 const client = useClient()
 const selection = useSelection()
 const user = useUser()
+const charterId = computed(() => {
+    if (id >= 0) {
+        return id
+    }
+    return selection.charter
+})
 const charter = computed(() => {
-   return client.charters.list.find(ch => ch.id === selection.charter)
+   
+    if (!client.loaded ) {
+        return null
+    }
+   return client.charters.list.find(ch => ch.id === charterId.value)
 })
 const signed = computed(() => {
-    return client.charters.signed.indexOf(selection.charter) >= 0
+    data.signed = signed
+    return client.charters.signed.indexOf(charterId.value) >= 0
 })
 const url = computed(() => {
-    console.log(charter.value.file)
-    if (!charter || !charter.value.file) {
+    if (!charter || !charter.value || !charter.value.file) {
         
         return null
     }
     return config.state.tools + '/pdf/' + charter.value.file[config.state.lang]
 })
 function close() {
-    if (include) {
+    if (id < 0) {
         selection.setCharter(null)
     } else {
         // back
@@ -65,9 +76,10 @@ function sign () {
 }
 </script>
 <template>
-   <template v-if="selection.charter">
+   <template v-if="selection.charter || id >= 0">
 
-   <div class="charter" :class="{include: include}">
+   <div class="charter" :class="{include: id < 0}">
+
         <h2 :style="{backgroundColor: config.state.primary}">
             <div class="close" @click="close">&times;</div>
                 <template  v-if="url">
@@ -118,15 +130,19 @@ function sign () {
                     <template v-if="signed">
                         <div  style="color:darkred;" v-html="$t('already_signed', {charter: title})"></div>
                     </template>
-                    <input type="checkbox" v-model="accept" :disabled="!user || signed || data.searching" required /> 
-                    <span v-html="$t('accept', {charter: title})"></span> 
-                    <div v-if="success" style="color:green;" v-html="$t('sign_saved', {charter: title})"></div>
+                    <input type="checkbox" v-model="data.signed" :disabled="!user || signed || data.searching" required /> 
+                    <span v-html="$t('accept_charter', {charter: charter.title[config.state.lang]})"></span> 
+                    <div v-if="data.success" style="color:green;" v-html="$t('sign_saved', {charter: charter.title[config.state.lang]})"></div>
                     <!---<div v-if="success & newRoles.length > 0" style="color:green;" v-html="$t('new_roles', {newroles: newRoles.join(',')})"></div>-->
                     <div style="margin:20px;text-align:right;">
-                         <input type="button" value="Enregistrer" :disabled="!user || signed || data.searching" @click="send"/>
+                         <input type="button" value="Enregistrer" :disabled="!user || data.signed || data.searching" @click="send"/>
                     </div>
                 </div>
             </template>
+            <template v-else-if="id >= 0">
+               pas authentifié
+            </template>
+                
         </div> 
    </div>
    </template>
@@ -134,7 +150,7 @@ function sign () {
 <style scoped>
 div.charter.include {
     position:fixed;
-    max-width: 1300px;
+    max-width: 1200px;
     background: white;
     border: 1px solid grey;
      min-width:600px;
@@ -152,6 +168,10 @@ div.charter.include {
     z-index:15;
     overflow:hidden;
 }
+div.form-charter {
+    max-width:900px;
+    margin: 20px auto;
+}
 div.charter h2 {
     position:relative;
     margin: 0 -10px 10px -10px;
@@ -159,6 +179,8 @@ div.charter h2 {
     color: white;
 }
 div.charter-content {
+    max-width: 1000px;
+    margin:auto;
     max-height:calc(100vh - 90px);
     overflow-y: scroll;
 }

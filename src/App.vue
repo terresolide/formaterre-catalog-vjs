@@ -32,7 +32,7 @@ let currentCatalog = computed(() => {
             
             <div class="wrapper">
               <user-info />
-              <charter-page include="true" />
+              <charter-page  />
               <nav>
                 <div>
                 <RouterLink style="padding-right:0;" to="/" >{{$t('catalog', 10)}}</RouterLink>
