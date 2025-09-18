@@ -104,8 +104,11 @@ function sign () {
         <div class="charter-content">
             <template v-if="url">
                <template v-if="!signed">
-                  vous n'avez pas signé la charte, en bas....
+                  <div>{{$t('to_sign')}}</div>
                </template>
+               <template v-else>
+                    <div  style="color:darkred;text-align:center;font-size:1.5rem;" v-html="$t('already_signed', {charter: charter.title[config.state.lang]})"></div>
+                </template>
                 <div style="border:1px solid black;max-width:900px;margin:auto;">
                  <div class="app-header">
                     <template v-if="data.isLoading">
@@ -139,11 +142,9 @@ function sign () {
                </div>
                <!--- form signature -->
                <div class="form-charter">
-                    <template v-if="signed">
-                        <div  style="color:darkred;" v-html="$t('already_signed', {charter: title})"></div>
-                    </template>
+                 
                     <input type="checkbox" v-model="data.signed" :disabled="!user || signed || data.searching" required /> 
-                    <span v-html="$t('accept_charter', {charter: charter.title[config.state.lang]})"></span> 
+                    <span style="margin-left:5px;" v-html="$t('accept_charter', {charter: charter.title[config.state.lang]})"></span> 
                     <div v-if="data.success" style="color:green;" v-html="$t('sign_saved', {charter: charter.title[config.state.lang]})"></div>
                     <!---<div v-if="success & newRoles.length > 0" style="color:green;" v-html="$t('new_roles', {newroles: newRoles.join(',')})"></div>-->
                     <div style="margin:20px;text-align:right;">
@@ -153,7 +154,7 @@ function sign () {
             </template>
             <template v-else-if="id >= 0">
                <div class="background-auth" :style="{backgroundImage:'url(' + background + ')'}">
-                   <div>Vous devez vous authentifié</div>
+                   <div>{{$t('must_authenticate')}}</div>
                </div>
             </template>
                 

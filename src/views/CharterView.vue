@@ -18,6 +18,7 @@
 <style scoped>
 main {
     max-width: 1200px;
+    min-height: 100vh;
     margin: auto;
 }
 
