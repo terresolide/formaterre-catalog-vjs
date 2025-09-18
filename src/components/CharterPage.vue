@@ -30,6 +30,8 @@ const charterId = computed(() => {
     }
     return selection.charter
 })
+
+
 const charter = computed(() => {
    
     if (!client.loaded ) {
@@ -47,6 +49,10 @@ const url = computed(() => {
         return null
     }
     return config.state.tools + '/pdf/' + charter.value.file[config.state.lang]
+})
+
+const background = computed(() => {
+    return new URL('@/assets/img/background-sign.png', import.meta.url).href
 })
 function close() {
     if (id < 0) {
@@ -79,16 +85,22 @@ function sign () {
    <template v-if="selection.charter || id >= 0">
 
    <div class="charter" :class="{include: id < 0}">
-
-        <h2 :style="{backgroundColor: config.state.primary}">
-            <div class="close" @click="close">&times;</div>
-                <template  v-if="url">
-                   {{charter.title[config.state.lang]}}
-                </template>
-                 <template v-else>
-               CHARTER NOT FOUND
-            </template>            
-        </h2>
+        <template v-if="id >=0">
+            <template  v-if="url">
+                <h2>{{charter.title[config.state.lang]}}</h2>
+            </template>
+        </template >
+        <template v-else>
+            <h2 :style="{backgroundColor: config.state.primary}">
+                <div class="close" @click="close">&times;</div>
+                    <template  v-if="url">
+                       {{charter.title[config.state.lang]}}
+                    </template>
+                     <template v-else>
+                   CHARTER NOT FOUND
+                </template>            
+            </h2>
+        </template>
         <div class="charter-content">
             <template v-if="url">
                <template v-if="!signed">
@@ -140,14 +152,33 @@ function sign () {
                 </div>
             </template>
             <template v-else-if="id >= 0">
-               pas authentifié
+               <div class="background-auth" :style="{backgroundImage:'url(' + background + ')'}">
+                   <div>Vous devez vous authentifié</div>
+               </div>
             </template>
                 
         </div> 
    </div>
    </template>
 </template>
+
 <style scoped>
+div.background-auth {
+    margin: 50px auto;
+    padding: 200px 0;
+    max-width:100%;
+    text-align:center;
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position:center;
+
+}
+div.background-auth > div {
+     width: 300px;
+     margin:auto;
+     font-size:2rem;
+     background: rgba(200,200,200,0.5);
+}
 div.charter.include {
     position:fixed;
     max-width: 1200px;
@@ -168,6 +199,7 @@ div.charter.include {
     z-index:15;
     overflow:hidden;
 }
+
 div.form-charter {
     max-width:900px;
     margin: 20px auto;
@@ -176,7 +208,10 @@ div.charter h2 {
     position:relative;
     margin: 0 -10px 10px -10px;
     padding: 10px;
-    color: white;
+   
+}
+div.charter.include h2 {
+     color: white;
 }
 div.charter-content {
     max-width: 1000px;
