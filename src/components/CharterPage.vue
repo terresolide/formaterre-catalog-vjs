@@ -104,7 +104,7 @@ function sign () {
         <div class="charter-content">
             <template v-if="url">
                <template v-if="!signed">
-                  <div>{{$t('to_sign')}}</div>
+                  <div style="color:darkred;text-align:center;font-size:1.5rem;" >{{$t('to_sign', {charter: charter.title[config.state.lang]})}}</div>
                </template>
                <template v-else>
                     <div  style="color:darkred;text-align:center;font-size:1.5rem;" v-html="$t('already_signed', {charter: charter.title[config.state.lang]})"></div>

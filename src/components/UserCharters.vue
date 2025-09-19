@@ -46,4 +46,7 @@ div.charter-row > div:first-child:before {
 div.charter-row > div:first-child:hover {
     color:black;
 }
+div.charter-row:hover {
+    background:rgba(139,0,0,0.3);
+}
 </style>

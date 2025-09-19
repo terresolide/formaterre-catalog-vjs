@@ -70,7 +70,19 @@ onMounted(() => {
 })
 </script>
 <template>
-   <p  v-html="$t('access_to_formater')" style="font-size:1em;font-style:italic;line-height:1.3;margin:5px 0;"></p>
+   <p   style="font-size:1em;font-style:italic;line-height:1.3;margin:5px 0;">
+   {{$t('access_to_formater')}}
+   <ul>
+     <template v-if="uncompletedUser">
+        <li style="font-weight:700;">renseigner votre organisation (à gauche),</li>
+     </template>
+     <template v-if="client.charters && client.charters.list.length > client.charters.signed.length" >
+         <li>éventuellement signer la charte d'utilisation pour ces données,</li>
+     </template>
+     <li>sélectionner les données,</li>
+     <li>finalement faire une demande en cliquant sur laquo;Demande d'accès&raquo; en bas de page.</li> 
+   </ul>
+   </p>
     <div class="role-line role-line-header"  >
          <div></div>
          <div></div>
@@ -125,7 +137,7 @@ onMounted(() => {
 <style >
 div.role-line {
     display: grid;
-    grid-template-columns: minmax(200px,230px) 50px minmax(50px, 120px) minmax(50px, 130px) minmax(50px, 180px);
+    grid-template-columns: minmax(100px,230px) 50px minmax(50px, 120px) minmax(50px, 130px) minmax(50px, 180px);
     grid-gap: 5px;
     text-align:center;
 }

@@ -149,7 +149,12 @@ onMounted(() => {
                     </span>
                 </span>
                 <span v-else-if="(Object.keys(role.parameters).length === 0 || !role.parameters.charter)">
-                      <input  type="checkbox" v-model="checkedRoles" :value="name + '.' + role.name" />
+                    <template v-if="role.charterId && charters.signed.indexOf(role.charterId) < 0">
+                        <input type="checkbox" disabled />
+                    </template>
+                    <template v-else>
+                        <input  type="checkbox" v-model="checkedRoles" :value="name + '.' + role.name" />
+                    </template>
                 </span>
                 <span v-else-if="role.charterId" :title="$t('CONDITION')" >
                     <font-awesome-icon icon="fa-solid fa-pencil" /> 
@@ -182,21 +187,7 @@ onMounted(() => {
     </div>
 </template>
 <style scoped>
-span.charter-link {
-    cursor:pointer;
-}
-span.charter-link:hover {
-    background:#eee;
-}
-span.charter-link > div:first-child:before {
-    content: "\2192 ";
-    padding-right:2px;
 
-}
-span.charter-link:hover > div:first-child {
-    color:black;
-
-}
 div.title-client {
     cursor:pointer;
     text-align:left;
@@ -227,11 +218,20 @@ span.charter-link {
     grid-template-columns: 1fr 25px;
     grid-gap: 2px;
     text-align:left;
+    cursor:pointer;
 }
 span.charter-link:hover {
-    background:#eee;
+    background:rgba(139,0,0,0.3);
 }
 span.charter-link > div {
     vertical-align:middle;
+}
+span.charter-link > div:first-child:before {
+    content: "\2192 ";
+    padding-right:2px;
+}
+span.charter-link:hover > div:first-child {
+    color:black;
+
 }
 </style>
