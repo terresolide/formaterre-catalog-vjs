@@ -38,6 +38,7 @@
     "map_view": "Map view",
     "must_authenticate": "You must login to access this page!",
     "name": "Name",
+    "new_roles": "New roles have been assigned to you: {newroles}<br>Log out/log in for them to take effect!",
     "no_record": "No records match the search",
     "or": "Or",
     "organization": "Organization",

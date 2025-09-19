@@ -38,6 +38,7 @@
     "map_view": "Vue carte",
     "must_authenticate": "Vous devez vous connecter pour accéder à cette page!",
     "name": "Nom",
+    "new_roles":"De nouveaux roles vous ont été attribués: {newroles}<br>Déconnectez-vous/reconnectez-vous pour qu'ils soient pris en compte!",
     "no_record": "Aucune fiche ne correspond à la recherche",
     "or": "Ou",
     "organization": "Organisation",

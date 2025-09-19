@@ -109,7 +109,7 @@ function sign () {
             json.roles.forEach(function (role) {
                 if (role.status === 'ACCEPTED') {
                     data.newRoles.push(role.name)
-                    client.setRoleStatus(role, role.status)
+                    client.setRoleStatus(role.client + '.'  + role.name, role.status)
                 }
             })
         }
@@ -199,7 +199,7 @@ onMounted(() => {
                     </template>
                     <span style="margin-left:5px;" v-html="$t('accept_charter', {charter: charter.title[config.state.lang]})"></span> 
                     <div v-if="data.success" style="color:green;" v-html="$t('sign_saved', {charter: charter.title[config.state.lang]})"></div>
-                    <div v-if="data.success & data.newRoles.length > 0" style="color:green;" v-html="$t('new_roles', {newroles: newRoles.join(',')})"></div>
+                    <div v-if="data.success & data.newRoles.length > 0" style="color:green;" v-html="$t('new_roles', {newroles: data.newRoles.join(',')})"></div>
                     <div style="margin:20px;text-align:right;">
                          <input type="button" value="Enregistrer" :disabled="!data.signed || data.searching || uncompletedUser" @click="sign"/>
                     </div>
