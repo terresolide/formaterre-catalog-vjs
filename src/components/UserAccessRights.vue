@@ -48,7 +48,7 @@ function accessRequest() {
         data.success = json.success
         if (json.success && json.roles) {
             json.roles.forEach(function (role) {
-                client.setRoleWaiting(role)
+                client.setRoleStatus(role, role.status)
             })
             data.checkedRoles = []
             data.message = null
@@ -70,19 +70,19 @@ onMounted(() => {
 })
 </script>
 <template>
-   <p   style="font-size:1em;font-style:italic;line-height:1.3;margin:5px 0;">
+   <div   style="font-size:1em;font-style:italic;line-height:1.3;margin:20px 0;">
    {{$t('access_to_formater')}}
-   <ul>
-     <template v-if="uncompletedUser">
-        <li style="font-weight:700;">renseigner votre organisation (à gauche),</li>
-     </template>
-     <template v-if="client.charters && client.charters.list.length > client.charters.signed.length" >
-         <li>éventuellement signer la charte d'utilisation pour ces données,</li>
-     </template>
-     <li>sélectionner les données,</li>
-     <li>finalement faire une demande en cliquant sur laquo;Demande d'accès&raquo; en bas de page.</li> 
-   </ul>
-   </p>
+        <ul>
+            <template v-if="uncompletedUser">
+               <li style="font-weight:700;color:darkred;">{{$t('save_organization')}},</li>
+            </template>
+            <template v-if="client.charters && client.charters.list.length > client.charters.signed.length" >
+                <li>{{$t('sign_charter')}},</li>
+            </template>
+            <li>{{$t('select_data')}},</li>
+            <li>{{$t('do_access_request')}}</li> 
+         </ul>
+   </div>
     <div class="role-line role-line-header"  >
          <div></div>
          <div></div>
@@ -105,7 +105,7 @@ onMounted(() => {
                 <font-awesome-icon icon="fa-solid fa-check" /> 
             </span>
         </div>
-        <div ></div>
+        <div >---</div>
     </div> 
  
      <!-- GLOBAL ROLES -->
@@ -127,7 +127,7 @@ onMounted(() => {
          <textarea style="width:100%" v-model="data.message" :placeholder="$t('add_message')"></textarea>
        </div>
        <div style="text-align:right;margin:10px 0;">
-        <button  class="fmt-button" :class="{disabled: uncompleteUser || data.checkedRoles.length === 0 || data.asking}" :style="{background: config.state.primary}" @click="accessRequest">{{$t('access_request')}}</button>
+        <button  class="fmt-button" :class="{disabled: uncompletedUser || data.checkedRoles.length === 0 || data.asking}" :style="{background: config.state.primary}" @click="accessRequest">{{$t('access_request')}}</button>
        </div>
     </div>
        <p v-show="data.success" class="request-success" v-html="$t('wait_validation')" @click="resetMessage"></p>

@@ -11,6 +11,7 @@ const data = ref({
     organizationType: null,
     organizationId: null
 })
+const inputorg = ref(null)
 const updated = computed(() => {
     if (data.value.organization && !user.organization) {
         return true
@@ -128,6 +129,9 @@ watch(() => user,
 onMounted(() => {
     getOrganizationTypes()
     reset()
+    if (!data.value.organizationId) {
+        inputorg.value.focus()
+    }
 })
 </script>
 <template>
@@ -138,7 +142,7 @@ onMounted(() => {
         <label :style="{color: config.state.primary}" >{{$t('organization')}}</label>
         <div class="subrow">   
             <label>{{$t('name')}}</label> 
-             <input style="line-height:normal;min-width:calc(100% - 65px);" v-model="data.organization" list="organizations" required 
+             <input style="line-height:normal;min-width:calc(100% - 65px);" ref="inputorg" v-model="data.organization" list="organizations" required 
              @mousedown="$event.stopPropagation()" @input="organizationUpdated($event)" > *
             <!-- <em v-if="data.organizationMessage" style="color:darkred;">{{$t('at_least_3')}}</em> -->
              <datalist id="organizations">
@@ -164,7 +168,7 @@ hr {
     width: 60%;
     margin: 10px auto;
     border-top:1px solid grey;
-    height:1px;
+    height:0.1px;
 }
 label {
     display:inline-block;

@@ -1,5 +1,5 @@
 <script setup>
-import {computed, reactive, ref} from 'vue'
+import {computed, onMounted, reactive, ref} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {useSelection} from '@/stores/selection.js'
 import {useClient} from '@/stores/client.js'
@@ -18,7 +18,9 @@ const data = reactive({
   isLoading: true,
   page: null,
   pageCount: null,
-  signed: false
+  signed: false,
+  searching: false,
+  newRoles: []
 })
 const config = useConfig()
 const client = useClient()
@@ -31,16 +33,14 @@ const charterId = computed(() => {
     return selection.charter
 })
 
-
+const uncompletedUser = computed(() => {return !(user.organization && user.organization.id)})
 const charter = computed(() => {
-   
     if (!client.loaded ) {
         return null
     }
    return client.charters.list.find(ch => ch.id === charterId.value)
 })
 const signed = computed(() => {
-    data.signed = signed
     return client.charters.signed.indexOf(charterId.value) >= 0
 })
 const url = computed(() => {
@@ -79,11 +79,54 @@ function print() {
     }
 }
 function sign () {
+    data.searching = true
+    var location = URL.parse(window.location.href)
+    var postdata = { 
+        userId: user.id, 
+        email: user.email, 
+        app: config.state.app,
+        realm: import.meta.env.SSO_REALM,
+        charterId: charterId.value, 
+        domain: location.href,
+        lang: config.state.lang, 
+        url: window.location.href
+    }
+     var fdata = new URLSearchParams(postdata)
+    var url = config.state.tools + '/api/charters/' + charterId.value
+    fetch(url,{
+        method: 'POST',
+        body: fdata.toString(),
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    }).then(resp => resp.json())
+    .then(json => {
+        data.searching = false
+        data.success = json.success
+        if (json.success) {
+            client.setSign(charterId.value)
+            json.roles.forEach(function (role) {
+                if (role.status === 'ACCEPTED') {
+                    data.newRoles.push(role.name)
+                    client.setRoleStatus(role, role.status)
+                }
+            })
+        }
+        if (json.error) {
+            data.errorAsk = json.error
+        }
+    }).catch((error) => {
+        data.searching = false
+        data.errorAsk = 'SERVER ERROR'
+    })
 }
+onMounted(() => {
+    data.signed = signed.value
+})
 </script>
 <template>
-   <template v-if="selection.charter || id >= 0">
-
+   <template v-if="charterId">
    <div class="charter" :class="{include: id < 0}">
         <template v-if="id >=0">
             <template  v-if="url">
@@ -103,7 +146,10 @@ function sign () {
         </template>
         <div class="charter-content">
             <template v-if="url">
-               <template v-if="!signed">
+               <template v-if="uncompletedUser">
+                <div style="color:darkred;text-align:center;font-size:1.5rem;" >{{$t('uncompleted_user')}}</div>
+               </template>
+               <template v-else-if="!signed">
                   <div style="color:darkred;text-align:center;font-size:1.5rem;" >{{$t('to_sign', {charter: charter.title[config.state.lang]})}}</div>
                </template>
                <template v-else>
@@ -142,13 +188,20 @@ function sign () {
                </div>
                <!--- form signature -->
                <div class="form-charter">
-                 
-                    <input type="checkbox" v-model="data.signed" :disabled="!user || signed || data.searching" required /> 
+                    <div v-if="data.searching" style="position:absolute;left:50%;top:10%;font-size:30px;">
+                        <font-awesome-icon icon="fa-solid fa-spinner" spin  /> 
+                    </div>
+                    <template v-if="signed">
+                        <input type="checkbox" checked disabled/>
+                    </template>
+                    <template v-else>
+                        <input type="checkbox" v-model="data.signed" :disabled="data.searching || uncompletedUser" /> 
+                    </template>
                     <span style="margin-left:5px;" v-html="$t('accept_charter', {charter: charter.title[config.state.lang]})"></span> 
                     <div v-if="data.success" style="color:green;" v-html="$t('sign_saved', {charter: charter.title[config.state.lang]})"></div>
-                    <!---<div v-if="success & newRoles.length > 0" style="color:green;" v-html="$t('new_roles', {newroles: newRoles.join(',')})"></div>-->
+                    <div v-if="data.success & data.newRoles.length > 0" style="color:green;" v-html="$t('new_roles', {newroles: newRoles.join(',')})"></div>
                     <div style="margin:20px;text-align:right;">
-                         <input type="button" value="Enregistrer" :disabled="!user || data.signed || data.searching" @click="send"/>
+                         <input type="button" value="Enregistrer" :disabled="!data.signed || data.searching || uncompletedUser" @click="sign"/>
                     </div>
                 </div>
             </template>
@@ -172,7 +225,6 @@ div.background-auth {
     background-size:cover;
     background-repeat: no-repeat;
     background-position:center;
-
 }
 div.background-auth > div {
      width: 300px;
@@ -246,5 +298,8 @@ div.close:hover {
   box-shadow: 0 2px 8px 4px rgba(0, 0, 0, 0.1);
   background-color: #555;
   color: #ddd;
+}
+div.form-charter {
+    position:relative;
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, reactive} from 'vue'
+import {computed, onMounted, reactive} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {useUser} from '@/stores/user.js'
 import {useSelection} from '@/stores/selection.js'
@@ -22,7 +22,7 @@ const checkedRoles = defineModel()
 const config = useConfig()
 const user = useUser()
 const selection = useSelection()
-
+const uncompletedUser = computed(() => {return !(user.organization && user.organization.id)})
 function tr (obj,name) {
     var lang = config.state.lang
     if (obj[lang]) {
@@ -141,12 +141,9 @@ onMounted(() => {
                     <span v-else-if="role.status && role.status === 'REJECTED'"  :title="$t('REJECTED')" >
                       <span  style="color:darkred;">&times;</span>
                     </span>
-                    <span v-if="role.status === 'CONDITION'" :title="$t('CONDITION')">
+                 <!--   <span v-if="role.status === 'CONDITION'" :title="$t('CONDITION')" @click="selectCharter(role.charterId)">
                         <font-awesome-icon icon="fa-solid fa-pencil" /> 
-                        <!--<router-link :to="{name:'Charter', params: {id: role.charterId}}">
-                             <i class="fa fa-pencil" ></i>
-                         </router-link> -->
-                    </span>
+                    </span> -->
                 </span>
                 <span v-else-if="(Object.keys(role.parameters).length === 0 || !role.parameters.charter)">
                     <template v-if="role.charterId && charters.signed.indexOf(role.charterId) < 0">
@@ -156,16 +153,13 @@ onMounted(() => {
                         <input  type="checkbox" v-model="checkedRoles" :value="name + '.' + role.name" />
                     </template>
                 </span>
-                <span v-else-if="role.charterId" :title="$t('CONDITION')" >
+                <span v-else-if="role.charterId" :title="$t('CONDITION')" class="pencil-link" :class="{disable:uncompletedUser}" @click="selectCharter(role.charterId)">
                     <font-awesome-icon icon="fa-solid fa-pencil" /> 
-                       <!--  <router-link :to="{name:'Charter', params: {id: role.charterId}}">
-                               <i class="fa fa-pencil" ></i>
-                       </router-link> -->
                 </span>
             </div>
             <div class="fmt-center">
                 <template v-if="role.charterId">
-                    <span class="charter-link" @click="selectCharter(role.charterId)">
+                    <span class="charter-link" :class="{disable: uncompletedUser}" @click="selectCharter(role.charterId)">
                       <div >{{getCharterName(role.charterId)}}</div>
                        <template v-if="charters && charters.signed && charters.signed.indexOf(role.charterId) >= 0">
                            <div :title="$t('signed')">
@@ -220,7 +214,16 @@ span.charter-link {
     text-align:left;
     cursor:pointer;
 }
-span.charter-link:hover {
+span.pencil-link {
+    cursor:pointer;
+    padding:2px 5px;
+}
+span.pencil-link.disable,
+span.charter-link.disable {
+    pointer-events:none;
+}
+span.charter-link:hover,
+span.pencil-link:hover {
     background:rgba(139,0,0,0.3);
 }
 span.charter-link > div {

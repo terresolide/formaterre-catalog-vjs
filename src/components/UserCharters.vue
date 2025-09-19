@@ -1,10 +1,14 @@
 <script setup>
+import {computed} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {useClient} from '@/stores/client.js'
 import {useSelection} from '@/stores/selection.js'
+import {useUser} from '@/stores/user.js'
 const config = useConfig()
 const client = useClient()
 const selection = useSelection()
+const user = useUser()
+const uncompletedUser = computed(() => {return !(user.organization && user.organization.id)})
 function select (id) {
     selection.setCharter(id)
 }
@@ -14,8 +18,8 @@ function select (id) {
         <fieldset :style="{borderColor: config.state.primary}">
             <legend :style="{color: config.state.primary}">Chartes d'utilisation</legend>
             <template v-for="item in client.charters.list">
-                <div class="charter-row">
-                    <div @click="select(item.id)">{{item.title[config.state.lang]}}</div>
+                <div class="charter-row" :class="{disable:uncompletedUser}">
+                    <div  @click="select(item.id)">{{item.title[config.state.lang]}}</div>
                     <div>
                         <template v-if="client.charters.signed.indexOf(item.id) >=0">
                             <font-awesome-icon icon="fa-solid fa-check" style="color:green;"/>
@@ -38,6 +42,9 @@ div.charter-row {
 }
 div.charter-row > div:first-child {
     cursor:pointer;
+}
+div.charter-row.disable {
+    pointer-events:none;
 }
 div.charter-row > div:first-child:before {
     content: "\2192 ";

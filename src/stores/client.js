@@ -5,7 +5,7 @@ export const useClient = defineStore('client', {
     state: () => ({
         list:[],
         roles: {},
-        charters: [],
+        charters: {list:[], signed:[]},
         loaded: false,
         current: null
         
@@ -45,14 +45,17 @@ export const useClient = defineStore('client', {
         reset () {
             this.list = []
             this.roles = {}
-            this.charters = []
+            this.charters = {list:[], signed: []}
             this.loaded = false
             this.current = null
         },
-        setRoleWaiting (role) {
+        setSign (id) {
+            this.charters.signed.push(parseInt(id))
+        },
+        setRoleStatus (role, status) {
             var partrole = role.split('.')
             var index = this.roles[partrole[0]].roles.findIndex(r => r.name === partrole[1])
-            this.roles[partrole[0]].roles[index].status = 'WAITING'
+            this.roles[partrole[0]].roles[index].status = status
         }
     }
 })
