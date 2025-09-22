@@ -9,7 +9,10 @@ const client = useClient()
         <fieldset :style="{borderColor: config.state.primary}">
             <legend :style="{color: config.state.primary}">Services</legend>
             <template v-for="item in client.list">
-               <div v-if="item.type !== 'hidden'"> {{item.domain}}</div>
+               <div v-if="item.type !== 'hidden'"> {{item.domain}}
+               <span v-if="item.sso">{{item.sso.getEmail()}}</span>
+               <button @click="item.sso.login()">se connecter</button>
+               </div>
             </template>
          </fieldset>
     </template>

@@ -1,6 +1,7 @@
 import {useConfig} from '@/stores/config.js'
 import {useUser} from '@/stores/user.js'
 import { defineStore } from 'pinia'
+import {AuthService} from 'formater-auth-service-js'
 export const useClient = defineStore('client', {
     state: () => ({
         list:[],
@@ -39,8 +40,28 @@ export const useClient = defineStore('client', {
             if (json.organization) {
                 user.setOrganization(json.organization)
             }
+            this.initSSO()
             return this.roles
             
+        },
+        initSSO () {
+            var self = this
+            this.list.forEach(function (client, index) {
+                console.log(client)
+                self.list[index].sso = new AuthService(client.clientId, {
+                    clientId: client.clientId,
+                    method: 'public_verifier',
+                    type: client.type,
+                    authUrl: client.authUrl,
+                    tokenUrl: client.refreshUrl,
+                    refreshUrl: client.refreshUrl,
+                    redirectUri: client.redirectUri
+                })
+                self.list[index].sso.add()
+                self.list[index].sso.on('authenticated', function (usr, serv) {
+                    console.log(usr)
+                })
+            })
         },
         reset () {
             this.list = []
