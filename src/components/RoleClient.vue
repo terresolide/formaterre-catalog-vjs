@@ -135,7 +135,10 @@ onMounted(() => {
                 </span>
               
                 <span v-else-if="role.status">
-                    <span v-if="role.status === 'WAITING'" :title="$t('WAITING')">
+                    <span v-if="role.status === 'ACCEPTED'" >
+                      <font-awesome-icon icon="fa-solid fa-check" style="color:green;" /> 
+                    </span>
+                    <span v-else-if="role.status === 'WAITING'" :title="$t('WAITING')">
                       <font-awesome-icon icon="fa-solid fa-clock" /> 
                     </span>
                     <span v-else-if="role.status && role.status === 'REJECTED'"  :title="$t('REJECTED')" >
@@ -150,7 +153,7 @@ onMounted(() => {
                         <input type="checkbox" disabled />
                     </template>
                     <template v-else>
-                        <input  type="checkbox" v-model="checkedRoles" :value="name + '.' + role.name" />
+                        <input  type="checkbox" v-model="checkedRoles" :value="name + '.' + role.name" :disabled="uncompletedUser"/>
                     </template>
                 </span>
                 <span v-else-if="role.charterId" :title="$t('CONDITION')" class="pencil-link" :class="{disable:uncompletedUser}" @click="selectCharter(role.charterId)">

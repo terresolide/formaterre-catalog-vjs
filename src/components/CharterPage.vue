@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, reactive, ref} from 'vue'
+import {computed, onMounted, reactive, ref, watch} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {useSelection} from '@/stores/selection.js'
 import {useClient} from '@/stores/client.js'
@@ -20,7 +20,8 @@ const data = reactive({
   pageCount: null,
   signed: false,
   searching: false,
-  newRoles: []
+  newRoles: [],
+  errorAsk: null
 })
 const config = useConfig()
 const client = useClient()
@@ -35,6 +36,7 @@ const charterId = computed(() => {
 
 const uncompletedUser = computed(() => {return !(user.organization && user.organization.id)})
 const charter = computed(() => {
+    
     if (!client.loaded ) {
         return null
     }
@@ -55,6 +57,10 @@ const background = computed(() => {
     return new URL('@/assets/img/background-sign.png', import.meta.url).href
 })
 function close() {
+    data.success = false
+    data.searching = false
+    data.newRoles = []
+    data.errorAsk = null
     if (id < 0) {
         selection.setCharter(null)
     } else {
@@ -121,8 +127,13 @@ function sign () {
         data.errorAsk = 'SERVER ERROR'
     })
 }
+
 onMounted(() => {
     data.signed = signed.value
+    data.success = false
+    data.searching = false
+    data.newRoles = []
+    data.errorAsk = null
 })
 </script>
 <template>

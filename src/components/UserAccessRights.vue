@@ -48,7 +48,7 @@ function accessRequest() {
         data.success = json.success
         if (json.success && json.roles) {
             json.roles.forEach(function (role) {
-                client.setRoleStatus(role, role.status)
+                client.setRoleStatus(role, 'WAITING')
             })
             data.checkedRoles = []
             data.message = null
@@ -67,6 +67,7 @@ function resetMessage () {
 }
 onMounted(() => {
     client.getRoles()
+    resetMessage()
 })
 </script>
 <template>
