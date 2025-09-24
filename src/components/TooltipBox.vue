@@ -1,11 +1,15 @@
 <script setup>
 import {useTemplateRef} from 'vue'
-const {icon,description} = defineProps({
+const {icon,description,color} = defineProps({
     icon: {
         type: String,
         default: 'fa-solid fa-circle-info'
     },
-    description: null
+    description: null,
+    style: {
+        type: String,
+        default: 'color:#000;'
+    }
 })
 const tooltip = useTemplateRef('tooltip')
 function hideTooltip() {
@@ -25,7 +29,7 @@ function showTooltip (event) {
 </script>
 <template>
  <div v-if="description" class="tooltip-container" style="position:relative;">
-      <span ref="tooltip" @click="showTooltip($event)">
+      <span ref="tooltip" @click="showTooltip($event)" :style="style">
           <font-awesome-icon :icon="icon" /> 
       </span>
       <div class="fmt-tooltip" @click="hideTooltip()" v-html="description"></div>

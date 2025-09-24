@@ -42,25 +42,28 @@ export const useClient = defineStore('client', {
             }
             this.initSSO()
             return this.roles
-            
         },
         initSSO () {
             var self = this
             this.list.forEach(function (client, index) {
                 console.log(client)
-                self.list[index].sso = new AuthService(client.clientId, {
-                    clientId: client.clientId,
-                    method: 'public_verifier',
-                    type: client.type,
-                    authUrl: client.authUrl,
-                    tokenUrl: client.refreshUrl,
-                    refreshUrl: client.refreshUrl,
-                    redirectUri: client.redirectUri
-                })
-                self.list[index].sso.add()
-                self.list[index].sso.on('authenticated', function (usr, serv) {
-                    console.log(usr)
-                })
+                if (client.type !== 'internal' && client.type !== 'hidden') {
+                    self.list[index].sso = new AuthService(client.clientId, {
+                        clientId: client.clientId,
+                        method: client.method,
+                        type: client.type,
+                        authUrl: client.authUrl,
+                        tokenUrl: client.refreshUrl,
+                        refreshUrl: client.refreshUrl,
+                        logoutUrl: client.logoutUrl,
+                        redirectUri: client.redirectUri
+                    })
+                    self.list[index].sso.add()
+                    self.list[index].sso.on('authenticated', function (usr, serv) {
+                        console.log(usr)
+                        // comparaison email et rôles si sso externe et lien clients internes....
+                    })
+                }
             })
         },
         reset () {

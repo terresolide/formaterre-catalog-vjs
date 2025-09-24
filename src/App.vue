@@ -59,6 +59,9 @@ let currentCatalog = computed(() => {
   <RouterView />
 </template>
 <style>
+    input[type=checkbox] {
+        cursor:pointer;
+    }
   .clipboard-tooltip {
         position: absolute;
         display:none;
