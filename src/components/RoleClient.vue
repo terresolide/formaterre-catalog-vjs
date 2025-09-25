@@ -84,6 +84,7 @@ onMounted(() => {
 
     <div  class="title-client"   @click="toggleClient($event)">
         <span style="font-weight:800;">{{tr(client.title)}}</span> 
+        <template v-if="client.client"> ({{client.client.name}})</template>
      </div>
      <div class="fmt-center" style="clear:both;">
         <tooltip-box :description="description(client)" />

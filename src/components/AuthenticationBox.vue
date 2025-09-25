@@ -24,7 +24,8 @@ function getSSOInformation() {
 }
 function initSSO (clientId) {
     var env = import.meta.env
-     user.sso = new AuthService(env.SSO_NAME, {
+    AuthService.setSize(1050, 800)
+    user.sso = new AuthService(env.SSO_NAME, {
        clientId: clientId,
        method: 'public_verifier',
        keycloakUrl: env.SSO_URL + '/realms/' + env.SSO_REALM,

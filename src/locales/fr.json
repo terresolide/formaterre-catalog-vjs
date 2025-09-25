@@ -81,5 +81,7 @@
     "update": "Mise à jour",
     "wait_validation": "Votre demande a bien été enregistrée auprès de nos services. Un email vous a été envoyé. Elle sera traitée le plus rapidement possible.",
     "WAITING": "En cours de traitement",
+    "warning": "Attention",
+    "warning_user_client": "Vous êtes connecté(e) sur {sso} en tant que <em>{email}</em>, utilisateur différent de <em>{user}</em>.",
     "your_profile": "Votre profile"
 }

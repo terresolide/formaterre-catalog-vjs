@@ -35,6 +35,12 @@ export const useClient = defineStore('client', {
             const json =  await response.json()
             this.list = json.clients
             this.roles = json.roles
+            // search external sso for roles
+            for(var name in this.roles) {
+                if (this.roles[name].externalClient) {
+                    this.roles[name].client = this.list.find(cl => cl.clientId === this.roles[name].externalClient)
+                }
+            }
             this.charters = json.charters
             this.loaded = true
             if (json.organization) {
@@ -46,7 +52,6 @@ export const useClient = defineStore('client', {
         initSSO () {
             var self = this
             this.list.forEach(function (client, index) {
-                console.log(client)
                 if (client.type !== 'internal' && client.type !== 'hidden') {
                     self.list[index].sso = new AuthService(client.clientId, {
                         clientId: client.clientId,
@@ -58,10 +63,12 @@ export const useClient = defineStore('client', {
                         logoutUrl: client.logoutUrl,
                         redirectUri: client.redirectUri
                     })
+                   
                     self.list[index].sso.add()
                     self.list[index].sso.on('authenticated', function (usr, serv) {
                         console.log(usr)
                         // comparaison email et rôles si sso externe et lien clients internes....
+                        self.list[index].warning = true
                     })
                 }
             })

@@ -81,5 +81,7 @@
     "update": "Update",
     "wait_validation": "Your request has been registered with our services. An email has been sent to you. It will be treated as quickly as possible",
     "WAITING": "Currently bein processed",
+    "warning": "Warning",
+    "warning_user_client": "You are logged in to {sso} as <em>{email}</em>, a different user than <em>{user}</em>.",
     "your_profile": "Your profile"
 }

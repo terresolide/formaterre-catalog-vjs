@@ -51,9 +51,12 @@ div.fmt-tooltip {
   text-align:left;
   padding: 5px;
   cursor: pointer;
-  width: 150px;
+  width: 250px;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.4);
   z-index:1;
+}
+b {
+    font-weight: 700;
 }
 .tooltip-show + div.fmt-tooltip {
   display:block;
