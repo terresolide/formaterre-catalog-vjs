@@ -1,5 +1,6 @@
 <script setup>
 import { computed} from 'vue';
+import {useUser} from '@/stores/user.js'
 import {useSelection} from '@/stores/selection'
 const {links, service, mode} = defineProps({
     links: Array,
@@ -9,17 +10,26 @@ const {links, service, mode} = defineProps({
         default: 'box'
     }
 })
+const user = useUser()
 const selection = useSelection()
 const isDisable = computed(() => {return false})
 function commandLine(index) {
     selection.setDownload(links[index])
 }
+const access = computed(() => {
+    if (!links[0].access || links[0].access.download === 'free') {
+        return 1
+    }
+    if (!user.email) {
+        return -1
+    }
+    return user.roles
+})
 function download (index) {
 }
 </script>
-<template>
- 
-     
+<template>     
+    {{access}}
      <template v-if="links.length === 1 && mode === 'box'">
         <div class="mtdt-related-type" :title="links[0].name">
             <a :href="links[0].url" target="_blank" download  style="color:white;"><font-awesome-icon icon="fa-solid fa-download" /></a>

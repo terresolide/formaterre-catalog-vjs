@@ -12,18 +12,21 @@ const {icon,description,color} = defineProps({
     }
 })
 const tooltip = useTemplateRef('tooltip')
-function hideTooltip() {
+function hideTooltip(event) {
+    event.preventDefault()
+    event.stopPropagation()
     document.querySelectorAll('.tooltip-show').forEach(function (node) {
       node.classList.remove('tooltip-show')
     })
 }
 function showTooltip (event) {
     event.preventDefault()
+    event.stopPropagation()
     if (event.target.classList.contains('tooltip-show')) {
       event.target.classList.remove('tooltip-show')
       return
     }
-    hideTooltip()
+    hideTooltip(event)
     tooltip.value.classList.add('tooltip-show')
 }
 </script>
@@ -32,7 +35,7 @@ function showTooltip (event) {
       <span ref="tooltip" @click="showTooltip($event)" :style="style">
           <font-awesome-icon :icon="icon" /> 
       </span>
-      <div class="fmt-tooltip" @click="hideTooltip()" v-html="description"></div>
+      <div class="fmt-tooltip" @click="hideTooltip($event)" v-html="description"></div>
 </div> 
 </template>
 <style scoped>

@@ -52,7 +52,7 @@ function getCharterName (id) {
         return 'Charter N°' + id
     }
 }
-function toggleClient (evt) {
+function toggleClient (event) {
    var target = event.target
     while (!target.classList.contains('role-line')) {
         target = target.parentNode
@@ -64,6 +64,11 @@ function selectCharter (id) {
 }
 function showRole (name) {
     return true
+}
+function login (evt, client) {
+    evt.preventDefault()
+    evt.stopPropagation()
+    client.sso.login()
 }
 onMounted(() => {
     console.log(name)
@@ -84,7 +89,24 @@ onMounted(() => {
 
     <div  class="title-client"   @click="toggleClient($event)">
         <span style="font-weight:800;">{{tr(client.title)}}</span> 
-        <template v-if="client.client"> ({{client.client.name}})</template>
+        <template v-if="client.client"> 
+            <template v-if="client.client.sso">
+                ({{client.client.name}}<template v-if="client.client.sso.getEmail() && client.client.sso.getEmail() !== user.email">
+                      &nbsp;<tooltip-box icon="fa-solid fa-triangle-exclamation" :description="$t('warning_user_client', {sso: client.client.name, email: client.client.sso.getEmail(), user: user.email})" style="color:darkred;font-size:1.2rem;"/>
+                </template>)
+               <!-- <template v-if="client.client.sso.getEmail()">
+                    <span class="button" @click="client.client.sso.logout()"><font-awesome-icon icon="fa-solid fa-right-from-bracket" /> </span>
+                </template>
+                <template v-else >
+                    <span class="button" @click="login($event, client.client)"><font-awesome-icon icon="fa-solid fa-right-to-bracket" /> </span>
+                </template> --->
+               
+            </template>
+            <template v-else>
+                ({{client.client.name}})
+            </template>
+        </template>
+       
      </div>
      <div class="fmt-center" style="clear:both;">
         <tooltip-box :description="description(client)" />

@@ -3,9 +3,6 @@ import { reactive } from 'vue';
 import MetadataBox from '@/components/MetadataBox.vue'
 import MetadataPage from '@/components/MetadataPage.vue'
 
-// import { useSelection } from '@/stores/selection'
-
-// const CommandLine = defineAsyncComponent(() => import('@/components/CommandLine.vue'))
 const props = defineProps({
     list: Array,
     inside: {

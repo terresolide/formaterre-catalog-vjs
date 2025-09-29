@@ -149,7 +149,6 @@
     }
     elasticsearch.getRecords(query)
     .then(json => {
-        console.log(json)
         if (json.list) {
           console.log(json.list)
           data.list = json.list

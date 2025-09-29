@@ -1,8 +1,8 @@
+import {useClient} from '@/stores/client.js'
 export function stacRequester (url, fixed={}, limit=24, cds) {
-    console.log(fixed)
-    console.log(url)
+    const client = useClient()
     const stacParameters = []
-    
+    console.log(url)
     const mappingParameters =  {}
     for (var key in fixed) {
         mappingParameters[key.replace(':', '_')] = key
@@ -22,8 +22,6 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
     const stacProperties = ['beam_ids', 'instrument', 'instrument_mode', 'orbit_state', 'platform', 'polarizations', 'relative_orbit']
 
     function getRecords (parent, route) {
-        console.log(parent)
-        console.log(route)
         prepareRequest(route)
         return new Promise((successCallback, failureCallback) => {
             fetch(searchUrl,  {
@@ -175,7 +173,8 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
                   url: feature.assets[key].href,
                   name: key,
                   type: 'download',
-                  description: ''
+                  description: '',
+                  access: parent.links.api.STAC.access
               })
             }
         }
@@ -185,7 +184,8 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
                   url: feature.properties.endpoint_url,
                   name: tab[tab.length - 1],
                   type: 'download',
-                  description: ''
+                  description: '',
+                  access: parent.links.api.STAC.access
               })
         }
         for (var key in feature.properties) {
