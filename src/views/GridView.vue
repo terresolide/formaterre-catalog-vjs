@@ -48,18 +48,24 @@
             if (!stacAccess) {
                 return {view:true, download:true}
             }
-            if (stacAccess && !user.email) {
+            if (!user.email) {
                 console.log('ici')
                 return {view: stacAccess.view === "free" ? 1 : -1, download: stacAccess.download === "free" ? 1: -1}
             }
+            console.log(stacAccess)
             if (user.email) {
+                var acc = {view: user.hasRole(stacAccess.view), download: user.hasRole(stacAccess.download)}
+                
             }
             var url = new URL(stac.url)
             var cl = client.getSSO(url.hostname)
-            if ( cl ) {
-                // afficher le client courrant auquel se connecter
-                client.setCurrent(cl)
+            if ( !cl ) {
+                return acc
             }
+            
+             // afficher le client courrant auquel se connecter
+            client.setCurrent(cl)
+           
             console.log(cl)
         }
         return {view: 1, download:1}

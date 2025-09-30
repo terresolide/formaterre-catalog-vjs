@@ -10,6 +10,28 @@ export const useUser = defineStore('user', {
         
     }),
     actions: {
+        hasRole (role, clients) {
+            if (role === 'free') {
+                return 1
+            }
+            // peut-être faut-il déterminer le client??? pour le moment non!
+            if (clients) {
+                for (var key in clients) {
+                   var roles = this.roles[key].roles.join(',')
+                    if (roles.includes(role)) {
+                        return 1
+                    }
+                }
+            } else {
+                for (var key in this.roles) {
+                    var roles = this.roles[key].roles.join(',')
+                    if (roles.includes(role)) {
+                        return 1
+                    }
+                }
+            }
+            return -1
+        },
         set (user) {
             this.id = user.sub
             this.name = user.name
