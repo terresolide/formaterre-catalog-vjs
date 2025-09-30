@@ -41,8 +41,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
             })
         })
     }
-    function treatmentJson (json) {
-    }
+    
     function prepareRequest( newroute) {
         // initParameters()
         

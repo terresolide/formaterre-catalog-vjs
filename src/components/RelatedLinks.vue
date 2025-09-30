@@ -9,6 +9,10 @@ import LayerLinks from '@/components/LayerLinks.vue'
 const props = defineProps({
     uuid: String,
     links: Object,
+    access: {
+        type: Object,
+        default: null
+    },
     mode: {
         type: String,
         default:'box'
@@ -16,8 +20,10 @@ const props = defineProps({
 })
 let config = useConfig()
 let selection = useSelection()
-let links = computed(() => {})
-let access = { view: 'free', download: 'free' }
+
+let computedAccess = computed(() => {
+    return { view: 'free', download: 'free' }
+})
 let selectedUuid = computed(() => selection.uuid)
 function select() {
     selection.toggle(props.uuid)
@@ -44,7 +50,7 @@ function select() {
       </div>
   -->
   <template v-if="props.links.download && props.links.download.length > 0">
-    <download-links :links="props.links.download" :mode="props.mode"></download-links>
+    <download-links :links="props.links.download" :access="computedAccess" mode="props.mode"></download-links>
   </template>
 
   <!-- commander les données -->

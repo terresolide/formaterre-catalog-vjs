@@ -2,9 +2,10 @@
 import { computed} from 'vue';
 import {useUser} from '@/stores/user.js'
 import {useSelection} from '@/stores/selection'
-const {links, service, mode} = defineProps({
+const {links, service, access, mode} = defineProps({
     links: Array,
     service: null,
+    access: Object,
     mode: {
         type: String,
         default: 'box'
@@ -16,15 +17,7 @@ const isDisable = computed(() => {return false})
 function commandLine(index) {
     selection.setDownload(links[index])
 }
-const access = computed(() => {
-    if (!links[0].access || links[0].access.download === 'free') {
-        return 1
-    }
-    if (!user.email) {
-        return -1
-    }
-    return user.roles
-})
+
 function download (index) {
 }
 </script>

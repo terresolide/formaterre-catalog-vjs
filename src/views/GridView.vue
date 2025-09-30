@@ -1,5 +1,5 @@
 <script setup>
-  import { defineAsyncComponent, reactive, watch, onMounted } from 'vue';
+  import { computed, defineAsyncComponent, reactive, watch, onMounted } from 'vue';
   import { useRoute, useRouter } from "vue-router"
   import { useElasticsearch } from '@/stores/elasticsearch';
   import { useSelection } from '@/stores/selection'
@@ -32,6 +32,16 @@
   const route = useRoute()
   const router = useRouter()
   const config = useConfig()
+  const access = computed(() => {
+        if (!data.metadata) {
+            return null
+        }
+        if (data.metadata.stac) {
+            var stac = data.metadata.links.api.STAC
+            console.log(stac)
+        }
+        return {view: true, download:true}
+  })
   function mergeAggregations (aggregations) {
     if (Object.keys(data.aggregations).length === 0 || data.reset) {
       data.aggregations = aggregations
@@ -96,6 +106,7 @@
             data.bbox = data.metadata.geojson
             getRecords(route.query)
       }
+      // calcule l'accès pour les enfants??? ou dans computed???
   }
   function launchStac () {
       if (!data.stacRequester) {
@@ -180,7 +191,7 @@
               <div style="text-align:center;margin:15px 0;">
                 <PageNavigation :tot="data.pagination" :inside="true"></PageNavigation>
               </div>
-              <MetadataList :list="data.list" :inside="true"></MetadataList>
+              <MetadataList :list="data.list" :access="access" :inside="true"></MetadataList>
             </div>
        </metadata-page>
     </template>

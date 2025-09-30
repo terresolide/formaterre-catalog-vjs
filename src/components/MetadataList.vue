@@ -5,6 +5,10 @@ import MetadataPage from '@/components/MetadataPage.vue'
 
 const props = defineProps({
     list: Array,
+    access: {
+        type: Object,
+        default:null
+    },
     inside: {
         type: Boolean,
         default: false
@@ -30,7 +34,7 @@ function close () {
        <template v-if="props.list.length > 0">
            <div class="container-flex"> 
                 <template v-for="item in props.list"  :key="item.uuid">
-                     <metadata-box :metadata="item" @show="show(item)"></metadata-box> 
+                     <metadata-box :metadata="item" :access="access" @show="show(item)"></metadata-box> 
                 </template>
             </div>
         </template>
