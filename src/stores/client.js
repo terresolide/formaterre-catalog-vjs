@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import {AuthService} from 'formater-auth-service-js'
 export const useClient = defineStore('client', {
     state: () => ({
+        current: null,
         list:[],
         roles: {},
         charters: {list:[], signed:[]},
@@ -83,6 +84,9 @@ export const useClient = defineStore('client', {
             this.charters = {list:[], signed: []}
             this.loaded = false
             this.current = null
+        },
+        setCurrent (client) {
+            this.current = client
         },
         setSign (id) {
             this.charters.signed.push(parseInt(id))

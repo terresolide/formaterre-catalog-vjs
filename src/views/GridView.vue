@@ -39,6 +39,7 @@
   const client = useClient()
   const access = computed(() => {
         if (!data.metadata) {
+            client.setCurrent(null)
             return null
         }
         if (data.metadata.stac) {
@@ -51,11 +52,17 @@
                 console.log('ici')
                 return {view: stacAccess.view === "free" ? 1 : -1, download: stacAccess.download === "free" ? 1: -1}
             }
+            if (user.email) {
+            }
             var url = new URL(stac.url)
             var cl = client.getSSO(url.hostname)
+            if ( cl ) {
+                // afficher le client courrant auquel se connecter
+                client.setCurrent(cl)
+            }
             console.log(cl)
         }
-        return {view: true, download:true}
+        return {view: 1, download:1}
   })
   function mergeAggregations (aggregations) {
     if (Object.keys(data.aggregations).length === 0 || data.reset) {
