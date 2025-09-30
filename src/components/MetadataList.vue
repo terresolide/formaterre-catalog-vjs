@@ -34,7 +34,7 @@ function close () {
        <template v-if="props.list.length > 0">
            <div class="container-flex"> 
                 <template v-for="item in props.list"  :key="item.uuid">
-                     <metadata-box :metadata="item" :access="access" @show="show(item)"></metadata-box> 
+                     <metadata-box :metadata="item" :access="props.access" @show="show(item)"></metadata-box> 
                 </template>
             </div>
         </template>

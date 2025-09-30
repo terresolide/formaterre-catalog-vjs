@@ -49,6 +49,10 @@ export const useClient = defineStore('client', {
             this.initSSO()
             return this.roles
         },
+        getSSO (domain) {
+            console.log(this.list)
+            return this.list.find(cl => cl.domain === domain)
+        },
         initSSO () {
             var self = this
             this.list.forEach(function (client, index) {

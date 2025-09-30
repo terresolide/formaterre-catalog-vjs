@@ -50,7 +50,7 @@ function select() {
       </div>
   -->
   <template v-if="props.links.download && props.links.download.length > 0">
-    <download-links :links="props.links.download" :access="computedAccess" mode="props.mode"></download-links>
+    <download-links :links="props.links.download" :access="props.access" mode="props.mode"></download-links>
   </template>
 
   <!-- commander les données -->

@@ -4,6 +4,9 @@
   import { useElasticsearch } from '@/stores/elasticsearch';
   import { useSelection } from '@/stores/selection'
   import { useConfig } from '@/stores/config'
+  
+  import { useClient } from '@/stores/client'
+  import { useUser } from '@/stores/user'
   import MetadataList from '@/components/MetadataList.vue'
   import FormGrid from '@/components/FormGrid.vue'
   import PageNavigation from '@/components/PageNavigation.vue'
@@ -32,13 +35,25 @@
   const route = useRoute()
   const router = useRouter()
   const config = useConfig()
+  const user = useUser()
+  const client = useClient()
   const access = computed(() => {
         if (!data.metadata) {
             return null
         }
         if (data.metadata.stac) {
             var stac = data.metadata.links.api.STAC
-            console.log(stac)
+            var stacAccess = stac.access
+            if (!stacAccess) {
+                return {view:true, download:true}
+            }
+            if (stacAccess && !user.email) {
+                console.log('ici')
+                return {view: stacAccess.view === "free" ? 1 : -1, download: stacAccess.download === "free" ? 1: -1}
+            }
+            var url = new URL(stac.url)
+            var cl = client.getSSO(url.hostname)
+            console.log(cl)
         }
         return {view: true, download:true}
   })
@@ -181,6 +196,7 @@
 
 <template>
   <main>
+  {{access}}
     <FormGrid :aggregations="data.aggregations" :list="data.list" :bbox="data.bbox"></FormGrid>
     <template v-if="selection.download">
         <command-line :download="selection.download"></command-line>
