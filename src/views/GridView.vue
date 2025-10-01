@@ -39,6 +39,9 @@
   const client = useClient()
   const access = computed(() => {
         if (!data.metadata) {
+            // voir le sso pour le catalogue....
+            
+            // sinon
             client.setCurrent(null)
             return null
         }
@@ -49,13 +52,11 @@
                 return {view:true, download:true}
             }
             if (!user.email) {
-                console.log('ici')
                 return {view: stacAccess.view === "free" ? 1 : -1, download: stacAccess.download === "free" ? 1: -1}
             }
             console.log(stacAccess)
             if (user.email) {
                 var acc = {view: user.hasRole(stacAccess.view), download: user.hasRole(stacAccess.download)}
-                
             }
             var url = new URL(stac.url)
             var cl = client.getSSO(url.hostname)
@@ -64,10 +65,14 @@
             }
             
              // afficher le client courrant auquel se connecter
+             console.log('client courrant')
+             console.log(cl)
             client.setCurrent(cl)
            
             console.log(cl)
         }
+        // cas Opensearch
+        // sinon voir où indiquer la contrainte d'accès dans les métadonnées... dans constraints ce serait loguique!
         return {view: 1, download:1}
   })
   function mergeAggregations (aggregations) {

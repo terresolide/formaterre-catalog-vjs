@@ -1,9 +1,10 @@
 <script setup>
-import {reactive, onMounted} from 'vue'
+import {computed, reactive, onMounted} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {AuthService} from 'formater-auth-service-js'
 import {useUser} from '@/stores/user.js'
 import {useClient} from '@/stores/client.js'
+
 
 const profile = defineModel()
 const data = reactive({
@@ -12,6 +13,7 @@ const data = reactive({
 const config = useConfig()
 const user = useUser()
 const client = useClient()
+
 function login () {
     user.sso.login()
 }
@@ -63,6 +65,26 @@ onMounted(() => {
 </script>
 <template> 
     <template v-if="user.email">
+        <template v-if="client.current">
+            <div class="client-box">Service <a :href="client.current.accountUrl" target="_blank"> {{client.current.name}}</a></div>
+                   <div>
+                     <template v-if="client.current.sso && client.current.sso.getEmail() && client.current.sso.getEmail() !== user.email">
+                        <tooltip-box icon="fa-solid fa-triangle-exclamation" :description="$t('warning_user_client', {sso: client.current.name, email: client.current.sso.getEmail(), user: user.email})" style="color:darkred;font-size:1.2rem;"/>
+                     </template>
+                   </div>
+                   <div>
+                       <template v-if="client.current.sso && client.current.sso.getEmail()">
+                           <span class="button" @click="client.current.sso.logout()">
+                                 <font-awesome-icon icon="fa-solid fa-right-from-bracket" /> 
+                           </span>
+                       </template>
+                       <template v-else-if="client.current.sso">
+                        <span class="button" @click="client.current.sso.login()">
+                             <font-awesome-icon icon="fa-solid fa-right-to-bracket" /> 
+                       </span>
+                       </template>
+                    </div>
+        </template>
         <span class="user" >{{user.email}} <font-awesome-icon icon="fa-solid fa-caret-down"/></span>
         <div class="user user-menu" >
            <div @click="profile = !profile" :class="{actived: profile}">
@@ -77,6 +99,10 @@ onMounted(() => {
     </template>
 </template>
 <style scoped>
+div.client-box,
+div.client-box div {
+    display:inline-block;
+}
 span.user {
     cursor: pointer;
 }
