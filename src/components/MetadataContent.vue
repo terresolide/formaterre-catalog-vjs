@@ -9,8 +9,9 @@ import KeywordList from '@/components/KeywordList.vue'
 import StacParameters from '@/components/StacParameters.vue'
 
 const moment = inject('moment')
-const {metadata} = defineProps({
-    metadata: Object
+const {metadata, access} = defineProps({
+    metadata: Object,
+    access: Object
 })
 const config = useConfig()
 </script>
@@ -18,7 +19,6 @@ const config = useConfig()
     <div class="metadata-container">
         <div class="main-column">
 
-            
             <div class="description" v-if="metadata.description" v-html="metadata.description" />
             <dl>
                <dt :style="{color: config.state.primary}">{{$t('identifier')}}</dt>
@@ -75,15 +75,17 @@ const config = useConfig()
                 <dd>
                   {{$t('resource_type')}}: {{metadata.representation}}
                 <br>
-                  {{$t('resolution')}}: 
-                  <template v-if="metadata.resolution.length === 1">
-                   {{metadata.resolution[0]}}
-                   </template>
-                   <template v-else-if="metadata.resolution.length > 0">
-                       <ul>
-                         <li v-for="item in metadata.resolution">{{item}}</li>
-                       </ul>
-                    </template>
+                <template v-if="metadata.resolution">
+                      {{$t('resolution')}}: 
+                      <template v-if="metadata.resolution.length === 1">
+                       {{metadata.resolution[0]}}
+                       </template>
+                       <template v-else-if="metadata.resolution.length > 0">
+                           <ul>
+                             <li v-for="item in metadata.resolution">{{item}}</li>
+                           </ul>
+                        </template>
+                </template>
                 <br>
                    {{$t('ref_system')}}: 
                    <template v-if="metadata.crs.length === 1">
@@ -135,7 +137,8 @@ const config = useConfig()
             </div>
         
             <div>
-              <related-links :links="metadata.links" :uuid="metadata.uuid" mode="page"/> 
+                <related-links :links="metadata.links" :uuid="metadata.uuid" :access="access" mode="page"/> 
+            
             </div>
             <div>
                 <div class="mtdt-related-type" :title="$t('keywords')" style="{backgroundColor: config.state.primary}">

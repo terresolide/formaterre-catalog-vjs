@@ -4,8 +4,12 @@ import { useConfig } from "@/stores/config.js"
 // import { useSelection } from "@/stores/selection.js"
 import ExportLinks from '@/components/ExportLinks.vue'
 import MetadataContent from '@/components/MetadataContent.vue'
-const {metadata,inside, color} = defineProps({
+const {metadata,access, inside, color} = defineProps({
     metadata: {
+        type: Object,
+        default: null
+    },
+    access: {
         type: Object,
         default: null
     },
@@ -55,16 +59,16 @@ function close () {
             <template v-if="!inside">
                 <div v-for="(tab,index) in tabs" class="mtdt-tab" :class="{'selected': data.currentTab === index}" @click="data.currentTab = index">{{$t(index)}}</div>
             </template>
-            <export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
+            <export-links v-if="metadata.exportLinks" export-links="metadata.exportLinks"></export-links> 
         </div>
         <template v-if="inside">
             <div>
-                <metadata-content :metadata="metadata" />
+                <metadata-content :metadata="metadata" :access="access" />
             </div>
         </template>
         <template v-else>
             <div v-show="data.currentTab === 'description'">
-             <metadata-content :metadata="metadata" />
+             <metadata-content :metadata="metadata" :access="access" />
             </div>
             <div v-show="data.currentTab === 'search'">
                 <slot></slot>

@@ -22,14 +22,13 @@ function download (index) {
 }
 </script>
 <template>     
-    {{access}}
      <template v-if="links.length === 1 && mode === 'box'">
-        <div class="mtdt-related-type" :title="links[0].name">
+        <div class="mtdt-related-type" :title="links[0].name" :class="{disabled: access.download < 0}">
             <a :href="links[0].url" target="_blank" download  style="color:white;"><font-awesome-icon icon="fa-solid fa-download" /></a>
         </div>
      </template>
      <template v-else>
-         <div class="mtdt-related-type" :title="$t('download_link')">
+         <div class="mtdt-related-type" :title="$t('download_link')" :class="{disabled: access.download < 0}">
              <font-awesome-icon icon="fa-solid fa-download"  />
              <font-awesome-icon v-if="mode === 'box'"
               style="margin-left: 2px"
@@ -54,7 +53,7 @@ function download (index) {
       </div>
   </template>
   <template v-else>
-       <div class="mtdt-related-type" :title="$t('command_line')" >
+       <div class="mtdt-related-type" :class="{disabled: access.download < 0}" :title="$t('command_line')" >
         <font-awesome-icon icon="fa-solid fa-terminal" />
       </div>
        <div v-if="links.length > 1 || mode === 'page'" class="mtdt-expand mtdt-links">

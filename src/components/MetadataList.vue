@@ -17,6 +17,7 @@ const props = defineProps({
 const data = reactive({
     metadata: null
 })
+const access = {view: -1, download: -1}
 // const selection = useSelection()
 
 function show(metadata) {
@@ -28,7 +29,7 @@ function close () {
 </script>
 <template>
     <template v-if="data.metadata">
-       <metadata-page :metadata="data.metadata" inside="true" @close="close"/>
+       <metadata-page :metadata="data.metadata" :access="access" :inside="true" @close="close"/>
     </template>
      <div class="wrapper-group-2" :class="{inside: props.inside}">
        <template v-if="props.list.length > 0">

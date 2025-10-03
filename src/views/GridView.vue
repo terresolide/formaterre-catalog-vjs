@@ -43,7 +43,7 @@
             
             // sinon
             client.setCurrent(null)
-            return null
+            return {view: 1, download: 1}
         }
         if (data.metadata.stac) {
             var stac = data.metadata.links.api.STAC
@@ -63,13 +63,14 @@
             if ( !cl ) {
                 return acc
             }
+            data.metadata.service = cl
+            // fusionne les droits d'accès et l'authentification
+            if (cl.sso.getEmail()) {
+                return acc
+            } else {
+                return {view: acc.view > 0 ? 0 : -1, download: acc.download > 0 ? 0 : -1 }
+            }
             
-             // afficher le client courrant auquel se connecter
-             console.log('client courrant')
-             console.log(cl)
-            client.setCurrent(cl)
-           
-            console.log(cl)
         }
         // cas Opensearch
         // sinon voir où indiquer la contrainte d'accès dans les métadonnées... dans constraints ce serait loguique!
@@ -220,7 +221,7 @@
         <command-line :download="selection.download"></command-line>
     </template>
     <template v-if="route.params.id">
-       <metadata-page :metadata="data.metadata" @close="close">
+       <metadata-page :metadata="data.metadata" :access="access" @close="close">
             <div>
               <div style="text-align:center;margin:15px 0;">
                 <PageNavigation :tot="data.pagination" :inside="true"></PageNavigation>
@@ -234,7 +235,7 @@
           <div style="text-align:center;margin:15px 0;">
             <PageNavigation :tot="data.pagination"></PageNavigation>
           </div>
-          <MetadataList :list="data.list"></MetadataList>
+          <MetadataList :list="data.list" :access="access"></MetadataList>
         </div>
     </template>
   </main>
