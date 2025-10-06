@@ -137,7 +137,7 @@ const config = useConfig()
             </div>
         
             <div>
-                <related-links :links="metadata.links" :uuid="metadata.uuid" :access="access" mode="page"/> 
+                <related-links :links="metadata.links" :uuid="metadata.uuid" :sso="metadata.service" :access="access" mode="page"/> 
             
             </div>
             <div>

@@ -59,7 +59,7 @@ function close () {
             <template v-if="!inside">
                 <div v-for="(tab,index) in tabs" class="mtdt-tab" :class="{'selected': data.currentTab === index}" @click="data.currentTab = index">{{$t(index)}}</div>
             </template>
-            <export-links v-if="metadata.exportLinks" export-links="metadata.exportLinks"></export-links> 
+            <export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
         </div>
         <template v-if="inside">
             <div>

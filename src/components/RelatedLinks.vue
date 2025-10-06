@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, reactive } from 'vue'
 import { useConfig } from '@/stores/config'
 import { useSelection } from '@/stores/selection'
 // const SimpleLinks = () => import('@/components/SimpleLinks.vue')
@@ -10,6 +10,10 @@ const props = defineProps({
     uuid: String,
     links: Object,
     access: {
+        type: Object,
+        default: null
+    },
+    sso: {
         type: Object,
         default: null
     },
@@ -25,11 +29,16 @@ let computedAccess = computed(() => {
     return { view: 'free', download: 'free' }
 })
 let selectedUuid = computed(() => selection.uuid)
+
+let data = reactive({
+    needAuth: false
+})
 function select() {
     selection.toggle(props.uuid)
 }
 </script>
 <template>
+<div v-if="props.sso"  v-show="data.needAuth" style="position:fixed;background:white;z-index:1000;">vous devez vous authentifier auprès de <em>{{sso.name}}</em></div>
 
   <div v-if="props.mode === 'box'"
     class="mtdt-related-type"
@@ -37,11 +46,12 @@ function select() {
     :title="$t('localize')"
     @click="select"
   >
+
     <font-awesome-icon icon="fa-solid fa-circle-dot" />
   </div>
   <!-- afficher la couche sur la carte -->
   <template v-if="props.links.layers && props.links.layers.length > 0">
-    <layer-links :links="props.links.layers" :uuid="uuid" :access="access" :mode="props.mode"></layer-links>
+    <layer-links :links="props.links.layers" :uuid="uuid" :access="props.access" :mode="props.mode"></layer-links>
   </template>
   <!-- instrument -->
   <!--
@@ -50,7 +60,7 @@ function select() {
       </div>
   -->
   <template v-if="props.links.download && props.links.download.length > 0">
-    <download-links :links="props.links.download" :access="props.access" mode="props.mode"></download-links>
+    <download-links :links="props.links.download" :access="props.access" mode="props.mode" @click="data.needAuth=true"></download-links>
   </template>
 
   <!-- commander les données -->
@@ -96,6 +106,12 @@ span.disabled,
 .mtdt-expand span.disabled {
   pointer-events: none;
   opacity: 0.5;
+}
+.mtdt-related-type.notAuthenticated,
+a.notAuthenticated,
+span.notAuthenticated,
+.mtdt-expand span.notAuthenticated {
+  opacity: 0.8;
 }
 .mtdt-related-type:hover {
   opacity: 1;

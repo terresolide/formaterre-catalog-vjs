@@ -11,6 +11,7 @@ const {links, service, access, mode} = defineProps({
         default: 'box'
     }
 })
+const emit = defineEmits(['click'])
 const user = useUser()
 const selection = useSelection()
 const isDisable = computed(() => {return false})
@@ -19,16 +20,20 @@ function commandLine(index) {
 }
 
 function download (index) {
+    if (access.download === 0) {
+        emit('click')
+        return
+    }
 }
 </script>
 <template>     
      <template v-if="links.length === 1 && mode === 'box'">
-        <div class="mtdt-related-type" :title="links[0].name" :class="{disabled: access.download < 0}">
+        <div class="mtdt-related-type" :title="links[0].name" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}">
             <a :href="links[0].url" target="_blank" download  style="color:white;"><font-awesome-icon icon="fa-solid fa-download" /></a>
         </div>
      </template>
      <template v-else>
-         <div class="mtdt-related-type" :title="$t('download_link')" :class="{disabled: access.download < 0}">
+         <div class="mtdt-related-type" :title="$t('download_link')" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}">
              <font-awesome-icon icon="fa-solid fa-download"  />
              <font-awesome-icon v-if="mode === 'box'"
               style="margin-left: 2px"
@@ -48,12 +53,12 @@ function download (index) {
   </div>
   <!-- téléchargement en ligne de commande si un seul lien-->
   <template v-if="links.length === 1 && mode === 'box'" >
-      <div class="mtdt-related-type" :title="$t('command_line')" @click="commandLine(0)">
+      <div class="mtdt-related-type" :title="$t('command_line')" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}" @click="commandLine(0)">
         <font-awesome-icon icon="fa-solid fa-terminal" />
       </div>
   </template>
   <template v-else>
-       <div class="mtdt-related-type" :class="{disabled: access.download < 0}" :title="$t('command_line')" >
+       <div class="mtdt-related-type" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}" :title="$t('command_line')" >
         <font-awesome-icon icon="fa-solid fa-terminal" />
       </div>
        <div v-if="links.length > 1 || mode === 'page'" class="mtdt-expand mtdt-links">
