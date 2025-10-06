@@ -79,7 +79,21 @@ let currentCatalog = computed(() => {
     .tooltip-show + .clipboard-tooltip {
         display:block;
     }
-
+    div.warning {
+        color:darkred;
+    }
+    div.warning button {
+        background: darkred;
+    }
+    .fmt-close {
+        border:1px dotted white;
+        padding: 3px;
+        border-radius:3px;
+        cursor: pointer;
+    }
+    .fmt-close:hover {
+        border-color:black;
+    }
 </style>
 <style scoped>
 .capitelize::first-letter {

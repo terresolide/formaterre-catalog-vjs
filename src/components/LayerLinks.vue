@@ -18,6 +18,10 @@ const props = defineProps({
       return { view: 'free', download: 'free' }
     },
   },
+  sso: {
+      type:Object,
+      default: null
+  }
 })
 let config = useConfig()
 let selection = useSelection()

@@ -2,13 +2,17 @@
 import { computed} from 'vue';
 import {useUser} from '@/stores/user.js'
 import {useSelection} from '@/stores/selection'
-const {links, service, access, mode} = defineProps({
+const {links, service, access, mode, sso} = defineProps({
     links: Array,
     service: null,
     access: Object,
     mode: {
         type: String,
         default: 'box'
+    },
+    sso: {
+        type: Object,
+        default:null
     }
 })
 const emit = defineEmits(['click'])
@@ -16,7 +20,11 @@ const user = useUser()
 const selection = useSelection()
 const isDisable = computed(() => {return false})
 function commandLine(index) {
-    selection.setDownload(links[index])
+    if (access.download === 0) {
+        emit('click')
+        return
+    }
+    selection.setDownload(links[index], props.sso.sso.getToken())
 }
 
 function download (index) {
@@ -27,7 +35,7 @@ function download (index) {
     }
 }
 </script>
-<template>     
+<template>   
      <template v-if="links.length === 1 && mode === 'box'">
         <div class="mtdt-related-type" :title="links[0].name" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}"
         @click="download(0)">
@@ -36,18 +44,18 @@ function download (index) {
      </template>
      <template v-else>
          <div class="mtdt-related-type" :title="$t('download_link')" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}">
-             <font-awesome-icon icon="fa-solid fa-download"  />
-             <font-awesome-icon v-if="mode === 'box'"
+            <font-awesome-icon icon="fa-solid fa-download"  />
+            <font-awesome-icon v-if="mode === 'box'"
               style="margin-left: 2px"
               icon="fa-solid fa-caret-down"
-             />
+            />
         </div>
      </template>
 
   <div v-if="links.length > 1 || mode === 'page'" class="mtdt-expand mtdt-links">
     <ul>
       <template v-for="(link, index) in links">
-        <li @click="download(index)" style="cursor:pointer;">
+        <li @click="download(index)" style="cursor:pointer;" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}">
           <a :href="link.url" target="_blank" download :title="link.description">{{ link.name }}</a>
         </li>
       </template>

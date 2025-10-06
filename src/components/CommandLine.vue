@@ -5,7 +5,7 @@ import { useSelection } from '@/stores/selection'
 const selection = useSelection()
 
 const isGeodes = false
-const token = null
+
 const button = ref()
 
 const file = computed(() => {
@@ -30,10 +30,10 @@ function close () {
 function copy2clipboard (e) {
 
       var target = e.target
-      if (isGeodes) {
+      if (selection.download.token) {
         var text = 'curl -k -L -H "Authorization: Bearer ' + token + '" ' + selection.download.url  + ' -o ' + selection.download.name
-      } else if (token) {
-        var text = 'curl ' + selection.download.url  + '?_bearer=' + token + ' -o ' + selection.download.name
+      // } else if (token) {
+      //  var text = 'curl ' + selection.download.url  + '?_bearer=' + token + ' -o ' + selection.download.name
       } else {
         var text = 'curl ' + selection.download.url  + ' -o ' + selection.download.name
       }
@@ -95,14 +95,6 @@ function removeTooltip ()
    border-radius: 3px;
    box-shadow: 2px 3px 3px 3px rgba(0, 0, 0, 0.5);
 }
-.fmt-close {
-  border:1px dotted white;
-  padding: 3px;
-  border-radius:3px;
-  cursor: pointer;
-}
-.fmt-close:hover {
-  border-color:black;
-}
+
 
 </style>

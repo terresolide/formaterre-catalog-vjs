@@ -214,8 +214,16 @@
 </script>
 
 <template>
+  <template v-if="selection.sso">
+    <div   class="warning" >
+        <div @click="selection.setSSO(null)" class="fmt-close" >
+            <font-awesome-icon icon="fa-solid fa-remove" />
+        </div>
+        <div> {{$t('connect_to_sso', {sso: selection.sso.name})}}</div>
+        <div style="text-align:right;"><button @click="selection.sso.sso.login()">{{$t('login')}}</button></div>
+    </div>
+  </template>
   <main>
-  {{access}}
     <FormGrid :aggregations="data.aggregations" :list="data.list" :bbox="data.bbox"></FormGrid>
     <template v-if="selection.download">
         <command-line :download="selection.download"></command-line>
@@ -226,7 +234,7 @@
               <div style="text-align:center;margin:15px 0;">
                 <PageNavigation :tot="data.pagination" :inside="true"></PageNavigation>
               </div>
-              <MetadataList :list="data.list" :access="access" :inside="true"></MetadataList>
+              <MetadataList :list="data.list" :access="access" :sso="data.metadata.service" :inside="true"></MetadataList>
             </div>
        </metadata-page>
     </template>
@@ -248,5 +256,28 @@ div.grid-content {
   max-width: calc(100% - 330px);
   margin-left:330px;
 }
-
+div.warning {
+    position:fixed;
+    padding: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align:left;
+    font-size: 1.5em;
+    border: 1px solid darkred;
+    background: white;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.5);
+    z-index:100;
+}
+div.warning div.fmt-close {
+   font-size: 1rem;
+   position:absolute;
+   right: 1px;
+   top: 1px;
+   padding:0 1px;
+   line-height:1;
+}
+div.warning div.fmt-close:hover {
+    border-color: darkred;
+}
 </style>

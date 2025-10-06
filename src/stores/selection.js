@@ -5,7 +5,8 @@ export const useSelection = defineStore('selection', {
     uuid: null,
     layers: [],
     download: null,
-    charter: null
+    charter: null,
+    sso: null
   }),
   actions: {
     hasLayer(layer) {
@@ -16,6 +17,9 @@ export const useSelection = defineStore('selection', {
     },
     setCharter (id) {
         this.charter = id
+    },
+    setSSO (sso) {
+        this.sso = sso
     },
     toggle(uuid) {
       if (uuid === this.uuid) {
@@ -37,7 +41,8 @@ export const useSelection = defineStore('selection', {
         return true
       }
     },
-    setDownload(obj) {
+    setDownload(obj, token) {
+        obj.token = token
         this.download = obj
     }
   },

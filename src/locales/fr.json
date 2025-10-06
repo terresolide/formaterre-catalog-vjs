@@ -15,6 +15,7 @@
     "command_line": "Télécharger en ligne de commande",
     "command_to_execute": "Commande à executer",
     "CONDITION": "Signez la charte d'utilisation",
+    "connect_to_sso": "Vous êtes connecté(e) au catalogue mais pas au service «{sso}».",
     "constraints": "Contrainte(s)",
     "copied_clipboard": "Copié dans le presse-papier.",
     "copy": "Copier",

@@ -33,16 +33,16 @@ let selectedUuid = computed(() => selection.uuid)
 let data = reactive({
     needAuth: false
 })
-function display () {
-    console.log('click')
-    data.needAuth = true
+function displayLogin () {
+    selection.setSSO(props.sso)
 }
 function select() {
     selection.toggle(props.uuid)
 }
 </script>
 <template>
-<div v-if="props.sso"  v-show="data.needAuth" style="position:fixed;background:white;z-index:1000;">vous devez vous authentifier auprès de <em>{{sso.name}}</em></div>
+
+
 
   <div v-if="props.mode === 'box'"
     class="mtdt-related-type"
@@ -55,7 +55,7 @@ function select() {
   </div>
   <!-- afficher la couche sur la carte -->
   <template v-if="props.links.layers && props.links.layers.length > 0">
-    <layer-links :links="props.links.layers" :uuid="uuid" :access="props.access" :mode="props.mode"></layer-links>
+    <layer-links :links="props.links.layers" :uuid="uuid" :access="props.access" :sso="props.sso" :mode="props.mode" @click="displayLogin"></layer-links>
   </template>
   <!-- instrument -->
   <!--
@@ -64,7 +64,7 @@ function select() {
       </div>
   -->
   <template v-if="props.links.download && props.links.download.length > 0">
-    <download-links :links="props.links.download" :access="props.access" mode="props.mode" @click="display"></download-links>
+    <download-links :links="props.links.download" :access="props.access" :sso="props.sso" :mode="props.mode" @click="displayLogin"></download-links>
   </template>
 
   <!-- commander les données -->

@@ -11,11 +11,15 @@ let catalogs = useCatalog()
 let route = useRoute()
 
 
-const {metadata, access} = defineProps({
+const {metadata, access, sso} = defineProps({
     metadata: Object,
     access: {
         type:Object,
         default: null
+    },
+    sso: {
+        type: Object,
+        default:null
     }
 })
 const emit = defineEmits(['show'])
@@ -99,7 +103,7 @@ function show () {
                 </template>
             </div>
             <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:4px;width:calc(100% - 100px);">
-              <related-links :uuid="metadata.id" :links="metadata.links" :access="access"></related-links></div>
+              <related-links :uuid="metadata.id" :links="metadata.links" :sso="sso" :access="access"></related-links></div>
         </div>
       
     </div>

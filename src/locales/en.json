@@ -15,6 +15,7 @@
     "command_line": "Download from command line",
     "command_to_execute": "Commande à executer",
     "CONDITION": "Sign the use charter!",
+    "connect_to_sso": "You are connected to the catalog but not to the service «{sso}».",
     "constraints": "Constraint(s)",
     "copied_clipboard": "Copied to clipboard.",
     "copy": "Copy",

@@ -53,14 +53,15 @@ onMounted(() => {
     if (config.state.clientId) {
         initSSO(config.state.clientId)
         return
+    } else {
+        getSSOInformation()
+        .then(resp => resp.json())
+        .then(json => {
+            if (json && json.client) {
+                initSSO(json.client.clientId)
+            }
+        })
     }
-    getSSOInformation()
-    .then(resp => resp.json())
-    .then(json => {
-        if (json && json.client) {
-            initSSO(json.client.clientId)
-        }
-    })
 })
 </script>
 <template> 
