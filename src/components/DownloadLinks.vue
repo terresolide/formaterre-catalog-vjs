@@ -20,6 +20,7 @@ function commandLine(index) {
 }
 
 function download (index) {
+    console.log('click dans download')
     if (access.download === 0) {
         emit('click')
         return
@@ -28,8 +29,9 @@ function download (index) {
 </script>
 <template>     
      <template v-if="links.length === 1 && mode === 'box'">
-        <div class="mtdt-related-type" :title="links[0].name" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}">
-            <a :href="links[0].url" target="_blank" download  style="color:white;"><font-awesome-icon icon="fa-solid fa-download" /></a>
+        <div class="mtdt-related-type" :title="links[0].name" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}"
+        @click="download(0)">
+            <font-awesome-icon icon="fa-solid fa-download" />
         </div>
      </template>
      <template v-else>

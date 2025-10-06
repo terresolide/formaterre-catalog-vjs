@@ -33,6 +33,10 @@ let selectedUuid = computed(() => selection.uuid)
 let data = reactive({
     needAuth: false
 })
+function display () {
+    console.log('click')
+    data.needAuth = true
+}
 function select() {
     selection.toggle(props.uuid)
 }
@@ -60,7 +64,7 @@ function select() {
       </div>
   -->
   <template v-if="props.links.download && props.links.download.length > 0">
-    <download-links :links="props.links.download" :access="props.access" mode="props.mode" @click="data.needAuth=true"></download-links>
+    <download-links :links="props.links.download" :access="props.access" mode="props.mode" @click="display"></download-links>
   </template>
 
   <!-- commander les données -->
