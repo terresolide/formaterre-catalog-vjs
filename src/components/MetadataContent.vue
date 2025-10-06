@@ -18,7 +18,7 @@ const config = useConfig()
 <template>
     <div class="metadata-container">
         <div class="main-column">
-
+            {{access}}
             <div class="description" v-if="metadata.description" v-html="metadata.description" />
             <dl>
                <dt :style="{color: config.state.primary}">{{$t('identifier')}}</dt>
@@ -137,7 +137,7 @@ const config = useConfig()
             </div>
         
             <div>
-                <related-links :links="metadata.links" :uuid="metadata.uuid" :sso="metadata.service" :access="access" mode="page"/> 
+                <related-links :links="metadata.links" :uuid="metadata.uuid" :sso-id="metadata.ssoId" :access="access" mode="page"/> 
             
             </div>
             <div>

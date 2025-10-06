@@ -9,8 +9,8 @@ const props = defineProps({
         type: Object,
         default:null
     },
-    sso:  {
-        type: Object,
+    ssoId:  {
+        type: String,
         default: null
     },
     inside: {
@@ -39,7 +39,7 @@ function close () {
        <template v-if="props.list.length > 0">
            <div class="container-flex"> 
                 <template v-for="item in props.list"  :key="item.uuid">
-                     <metadata-box :metadata="item" :access="props.access" :sso="props.sso" @show="show(item)"></metadata-box> 
+                     <metadata-box :metadata="item" :access="props.access" :sso-id="props.ssoId" @show="show(item)"></metadata-box> 
                 </template>
             </div>
         </template>

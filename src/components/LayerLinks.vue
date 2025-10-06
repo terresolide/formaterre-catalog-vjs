@@ -18,7 +18,7 @@ const props = defineProps({
       return { view: 'free', download: 'free' }
     },
   },
-  sso: {
+  ssoId: {
       type:Object,
       default: null
   }
@@ -37,7 +37,7 @@ function hasSelectedLayer() {
   return false
 }
 function select(index) {
-  selection.toggleLayer(props.links[index])
+  selection.toggleLayer(props.links[index], ssoId)
 }
 </script>
 <template>

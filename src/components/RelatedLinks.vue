@@ -13,8 +13,8 @@ const props = defineProps({
         type: Object,
         default: null
     },
-    sso: {
-        type: Object,
+    ssoId: {
+        type: String,
         default: null
     },
     mode: {
@@ -55,7 +55,7 @@ function select() {
   </div>
   <!-- afficher la couche sur la carte -->
   <template v-if="props.links.layers && props.links.layers.length > 0">
-    <layer-links :links="props.links.layers" :uuid="uuid" :access="props.access" :sso="props.sso" :mode="props.mode" @click="displayLogin"></layer-links>
+    <layer-links :links="props.links.layers" :uuid="uuid" :access="props.access" :sso-id="props.ssoId" :mode="props.mode" @click="displayLogin"></layer-links>
   </template>
   <!-- instrument -->
   <!--
@@ -64,7 +64,7 @@ function select() {
       </div>
   -->
   <template v-if="props.links.download && props.links.download.length > 0">
-    <download-links :links="props.links.download" :access="props.access" :sso="props.sso" :mode="props.mode" @click="displayLogin"></download-links>
+    <download-links :links="props.links.download" :access="props.access" :sso-id="props.ssoId" :mode="props.mode" @click="displayLogin"></download-links>
   </template>
 
   <!-- commander les données -->

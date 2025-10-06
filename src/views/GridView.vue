@@ -63,13 +63,16 @@
             if ( !cl ) {
                 return acc
             }
-            data.metadata.service = cl
+            data.metadata.ssoId = cl.sso.getId()
+            client.setCurrent(cl)
             // fusionne les droits d'accès et l'authentification
+            console.log(cl.sso.getEmail())
             if (cl.sso.getEmail()) {
-                return acc
-            } else {
+                
                 return {view: acc.view > 0 ? 0 : -1, download: acc.download > 0 ? 0 : -1 }
-            }
+            } else {
+                return acc
+            } 
             
         }
         // cas Opensearch
@@ -234,7 +237,7 @@
               <div style="text-align:center;margin:15px 0;">
                 <PageNavigation :tot="data.pagination" :inside="true"></PageNavigation>
               </div>
-              <MetadataList :list="data.list" :access="access" :sso="data.metadata.service" :inside="true"></MetadataList>
+              <MetadataList :list="data.list" :access="access" :ssoId="data.metadata.ssoId" :inside="true"></MetadataList>
             </div>
        </metadata-page>
     </template>

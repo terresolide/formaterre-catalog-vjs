@@ -42,6 +42,7 @@ export const useSelection = defineStore('selection', {
       }
     },
     setDownload(obj, token) {
+        console.log(token)
         obj.token = token
         this.download = obj
     }

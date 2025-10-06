@@ -4,8 +4,6 @@ import { useSelection } from '@/stores/selection'
 
 const selection = useSelection()
 
-const isGeodes = false
-
 const button = ref()
 
 const file = computed(() => {
@@ -66,8 +64,9 @@ function removeTooltip ()
     <div><b>Archive</b>: {{selection.download.name}}</div>
     <div><b>{{$t('command_to_execute')}}:</b></div>
       <div style="display:inline-block;font-family: monospace;max-height:200px;overflow:scroll;padding:3px;width:calc(100% - 100px);color:#5ddc5d;background:#333;">
-      <template v-if="isGeodes">curl -k -L -H "Authorization:Bearer {{token}}" {{selection.download.url}} -o {{file}}</template>
-      <template v-else-if="token">curl {{selection.download.url}}?_bearer={{token}} -o {{file}}</template>
+      <template v-if="selection.download.ssoId">curl -k -L -H "Authorization:Bearer {{token}}" {{selection.download.url}} -o {{file}}</template>
+     <!-- <template v-else-if="token">curl {{selection.download.url}}?_bearer={{token}} -o {{file}}</template>
+      -->
       <template v-else >curl {{selection.download.url}}  -o {{file}}</template>
       </div>
       <div style="display:inline-block;vertical-align:top;max-width:95px;margin-left:5px;">

@@ -2,16 +2,15 @@
 import { computed} from 'vue';
 import {useUser} from '@/stores/user.js'
 import {useSelection} from '@/stores/selection'
-const {links, service, access, mode, sso} = defineProps({
+const {links,  access, mode, ssoId} = defineProps({
     links: Array,
-    service: null,
     access: Object,
     mode: {
         type: String,
         default: 'box'
     },
-    sso: {
-        type: Object,
+    ssoId: {
+        type: String,
         default:null
     }
 })
@@ -24,7 +23,8 @@ function commandLine(index) {
         emit('click')
         return
     }
-    selection.setDownload(links[index], props.sso.sso.getToken())
+
+    selection.setDownload(links[index], ssoId)
 }
 
 function download (index) {
