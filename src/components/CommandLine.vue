@@ -1,9 +1,10 @@
 <script setup >
 import {computed, ref} from 'vue'
 import { useSelection } from '@/stores/selection'
+import { useClient} from '@/stores/client'
 
 const selection = useSelection()
-
+const client = useClient()
 const button = ref()
 
 const file = computed(() => {
@@ -21,6 +22,12 @@ const file = computed(() => {
                 return null
         }
       } 
+})
+const currentClient = computed(() => {
+    if (client.current) {
+        console.log(client.current.sso._token)
+        return client.current
+    }
 })
 function close () {
     selection.setDownload(null)
@@ -64,7 +71,7 @@ function removeTooltip ()
     <div><b>Archive</b>: {{selection.download.name}}</div>
     <div><b>{{$t('command_to_execute')}}:</b></div>
       <div style="display:inline-block;font-family: monospace;max-height:200px;overflow:scroll;padding:3px;width:calc(100% - 100px);color:#5ddc5d;background:#333;">
-      <template v-if="selection.download.ssoId">curl -k -L -H "Authorization:Bearer {{token}}" {{selection.download.url}} -o {{file}}</template>
+      <template v-if="currentClient.sso.getToken()">curl -k -L -H "Authorization:Bearer {{currentClient.sso.getToken()}}" {{selection.download.url}} -o {{file}}</template>
      <!-- <template v-else-if="token">curl {{selection.download.url}}?_bearer={{token}} -o {{file}}</template>
       -->
       <template v-else >curl {{selection.download.url}}  -o {{file}}</template>

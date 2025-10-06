@@ -41,10 +41,13 @@ export const useSelection = defineStore('selection', {
         return true
       }
     },
-    setDownload(obj, token) {
-        console.log(token)
-        obj.token = token
-        this.download = obj
+    setDownload(obj, sso) {
+        if (!obj) {
+            this.download = null
+        } else {
+            obj.ssoId = ssoId
+            this.download = obj
+        }
     }
   },
 })
