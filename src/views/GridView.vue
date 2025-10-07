@@ -69,9 +69,9 @@
             console.log(cl.sso.getEmail())
             if (cl.sso.getEmail()) {
                 
-                return {view: acc.view > 0 ? 0 : -1, download: acc.download > 0 ? 0 : -1 }
-            } else {
                 return acc
+            } else {
+                return {view: acc.view > 0 ? 0 : -1, download: acc.download > 0 ? 0 : -1 }
             } 
             
         }

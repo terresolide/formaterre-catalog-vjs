@@ -41,7 +41,7 @@ export const useSelection = defineStore('selection', {
         return true
       }
     },
-    setDownload(obj, sso) {
+    setDownload(obj, ssoId) {
         if (!obj) {
             this.download = null
         } else {

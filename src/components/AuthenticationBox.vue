@@ -4,6 +4,7 @@ import {useConfig} from '@/stores/config.js'
 import {AuthService} from 'formater-auth-service-js'
 import {useUser} from '@/stores/user.js'
 import {useClient} from '@/stores/client.js'
+import TooltipBox from '@/components/TooltipBox.vue'
 
 
 const profile = defineModel()
