@@ -1,7 +1,11 @@
 <script setup>
-import { computed} from 'vue';
+// import { computed} from 'vue';
 import {useUser} from '@/stores/user.js'
+import {useConfig} from '@/stores/config.js'
 import {useSelection} from '@/stores/selection'
+import {useClient} from '@/stores/client'
+import streamSaver  from 'streamsaver'
+  
 const {links,  access, mode, ssoId} = defineProps({
     links: Array,
     access: Object,
@@ -14,10 +18,13 @@ const {links,  access, mode, ssoId} = defineProps({
         default:null
     }
 })
+
 const emit = defineEmits(['click'])
 const user = useUser()
 const selection = useSelection()
-const isDisable = computed(() => {return false})
+const client = useClient()
+const config = useConfig()
+
 function commandLine(index) {
     if (access.download === 0) {
         emit('click')
@@ -28,11 +35,97 @@ function commandLine(index) {
 }
 
 function download (index) {
-    console.log('click dans download')
     if (access.download === 0) {
         emit('click')
         return
     }
+    if (ssoId) {
+        var sso = client.getSsoFromId(ssoId)
+        var link = links[index]
+        getTokenInHeader(link, sso.sso.getToken())
+    }
+}
+function getTokenInHeader (link, token) {
+    if (!config.state.streamSaver) {
+            config.state.streamSaver = streamSaver
+         }
+     var url = link.url 
+         console.log(url)
+         var name = link.name
+
+        // UTILISATION D'UN STREAM WRITER
+         var  headers = {}
+        // url = 'https://geodes-portal.cnes.fr/api/download/URN:FEATURE:DATA:gdh:03684236-bf97-339c-b789-60ff7541893c:V1/files/3fee0d25f8d65705a0af7205342daf14'
+        // url = 'https://catalog.formater/test.zip'
+         if (token) {
+           // url += '?_bearer=' + this.token
+           headers['Authorization'] = 'Bearer ' + token
+           // headers = {}
+         }
+         var filename = name || url.substring(url.lastIndexOf('/') + 1) + '.zip'
+        // const fileStream = streamSaver.createWriteStream(name)
+        const ac = new AbortController()
+        const signal = ac.signal
+        selection.writableStreams.push(ac)
+        fetch(url, {headers: headers, signal: signal}).then(res => {
+          if (!res.ok ) {
+            console.log(res.status)
+            switch (res.status) {
+             
+              case 403:
+              // this.message = this.$i18n.t('download_forbidden')
+              
+              break
+              case 404:
+              // this.message = 'NOT FOUND'
+              
+              break
+              default:
+                if (res.body.ErrorMessage) {
+                 // this.message = res.body.ErrorMessage
+                } else {
+                // this.message = 'An error has occured'
+                }
+            }
+            return res
+          }
+          // get filename
+          var headerDisposition = res.headers.get('Content-Disposition')
+          if (headerDisposition) {
+            var match = headerDisposition.match(/filename[^;\n=]*=(\\?\"|'){0,1}([^\\?\"']*)(\\?\"|'){0,1}/i)
+            if (match) {
+              filename = match[2]
+            }
+          }
+          var options = {}
+          var size = res.headers.get('Content-Length')
+          if (size) {
+            options.size = size
+          }
+          console.log(res.headers)
+          const fileStream = config.state.streamSaver.createWriteStream(filename, options)
+          const readableStream = res.body
+          
+          // more optimized
+          if (window.WritableStream && readableStream.pipeTo) {
+            return readableStream.pipeTo(fileStream, {signal: signal})
+              .then(() => {
+                // _this.$set(_this.download[index], 'disabled', false)
+                selection.writableStreams.pop()}, 
+              () => {
+                // _this.$set(_this.download[index], 'disabled', false)
+                selection.writableStreams.pop()
+              })
+          }
+          window.writer = fileStream.getWriter()
+
+          const reader = res.body.getReader()
+          const pump = () => reader.read()
+            .then(res => res.done
+              ? writer.close()
+              : writer.write(res.value).then(pump))
+          pump()
+        })
 }
 </script>
 <template>   

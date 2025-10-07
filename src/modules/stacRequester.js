@@ -177,16 +177,24 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
               })
             }
         }
-        if (feature.properties.endpoint_url) {
-             var tab = feature.properties.endpoint_url.split('/')
-             properties.links.download.push({
-                  url: feature.properties.endpoint_url,
-                  name: tab[tab.length - 1],
-                  type: 'download',
-                  description: '',
-                  access: parent.links.api.STAC.access
-              })
-        }
+        properties.links.download.push({
+              url: 'https://geodes-portal.cnes.fr/api/download/URN:FEATURE:DATA:gdh:03684236-bf97-339c-b789-60ff7541893c:V1/files/3fee0d25f8d65705a0af7205342daf14',
+              name: key,
+              type: 'download',
+              description: '',
+              access: parent.links.api.STAC.access
+          })
+        
+        // if (feature.properties.endpoint_url) {
+        //      var tab = feature.properties.endpoint_url.split('/')
+        //      properties.links.download.push({
+        //           url: feature.properties.endpoint_url,
+        //           name: tab[tab.length - 1],
+        //           type: 'download',
+        //           description: '',
+        //           access: parent.links.api.STAC.access
+        //       })
+        // }
         for (var key in feature.properties) {
           // if (['datetime', 'start_datetime', 'end_datetime'].indexOf(key) < 0) {
             if (['identifier', 'instrument', 'subtitle', 'platform', 'product:type', 'grid:code'].indexOf(key) >= 0) {

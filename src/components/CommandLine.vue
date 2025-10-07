@@ -23,10 +23,12 @@ const file = computed(() => {
         }
       } 
 })
+// Normalement, il faut aller chercher le token, du bon sso,
 const currentClient = computed(() => {
     if (client.current) {
-        console.log(client.current.sso._token)
         return client.current
+    } else {
+        // à voir
     }
 })
 function close () {
@@ -35,8 +37,8 @@ function close () {
 function copy2clipboard (e) {
 
       var target = e.target
-      if (selection.download.token) {
-        var text = 'curl -k -L -H "Authorization: Bearer ' + token + '" ' + selection.download.url  + ' -o ' + selection.download.name
+      if (currentClient && currentClient.value && currentClient.value.sso.getToken()) {
+        var text = 'curl -k -L -H "Authorization: Bearer ' + currentClient.value.sso.getToken() + '" ' + selection.download.url  + ' -o ' + selection.download.name
       // } else if (token) {
       //  var text = 'curl ' + selection.download.url  + '?_bearer=' + token + ' -o ' + selection.download.name
       } else {

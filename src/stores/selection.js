@@ -6,7 +6,8 @@ export const useSelection = defineStore('selection', {
     layers: [],
     download: null,
     charter: null,
-    sso: null
+    sso: null,
+    writableStreams: []
   }),
   actions: {
     hasLayer(layer) {
