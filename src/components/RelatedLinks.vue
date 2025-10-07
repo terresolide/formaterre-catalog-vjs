@@ -34,7 +34,7 @@ let data = reactive({
     needAuth: false
 })
 function displayLogin () {
-    selection.setSSO(props.sso)
+    selection.setSSO(props.ssoId)
 }
 function select() {
     selection.toggle(props.uuid)

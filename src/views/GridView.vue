@@ -54,10 +54,7 @@
             if (!user.email) {
                 return {view: stacAccess.view === "free" ? 1 : -1, download: stacAccess.download === "free" ? 1: -1}
             }
-            console.log(stacAccess)
-            if (user.email) {
-                var acc = {view: user.hasRole(stacAccess.view), download: user.hasRole(stacAccess.download)}
-            }
+            var acc = {view: user.hasRole(stacAccess.view), download: user.hasRole(stacAccess.download)}
             var url = new URL(stac.url)
             var cl = client.getSSO(url.hostname)
             if ( !cl ) {
@@ -79,6 +76,7 @@
         // sinon voir où indiquer la contrainte d'accès dans les métadonnées... dans constraints ce serait loguique!
         return {view: 1, download:1}
   })
+  
   function mergeAggregations (aggregations) {
     if (Object.keys(data.aggregations).length === 0 || data.reset) {
       data.aggregations = aggregations
@@ -214,6 +212,10 @@
         mergeAggregations(values)
     })
   }
+  function loginSelection() {
+      client.getSsoFromId(selection.sso).sso.login()
+      selection.setSSO(null)
+  }
 </script>
 
 <template>
@@ -222,8 +224,8 @@
         <div @click="selection.setSSO(null)" class="fmt-close" >
             <font-awesome-icon icon="fa-solid fa-remove" />
         </div>
-        <div> {{$t('connect_to_sso', {sso: selection.sso.name})}}</div>
-        <div style="text-align:right;"><button @click="selection.sso.sso.login()">{{$t('login')}}</button></div>
+        <div> {{$t('connect_to_sso', {sso: client.getSsoFromId(selection.sso).name})}}</div>
+        <div style="text-align:right;"><button @click="loginSelection">{{$t('login')}}</button></div>
     </div>
   </template>
   <main>
