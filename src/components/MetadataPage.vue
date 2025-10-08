@@ -141,7 +141,7 @@ div.metadata-content.metadata-single {
     position:absolute;
     left:-330px;
     top:5px;
-    z-index:100;
+    z-index:10;
     border: 1px solid #333;
     border-radius: 5px 5px;
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.5);

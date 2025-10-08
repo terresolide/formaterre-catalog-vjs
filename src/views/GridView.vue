@@ -213,13 +213,15 @@
     })
   }
   function loginSelection() {
-      client.getSsoFromId(selection.sso).sso.login()
-      selection.setSSO(null)
+      
+    client.getSsoFromId(selection.sso).sso.login()
+    selection.setSSO(null)
+    
   }
 </script>
 
 <template>
-  <template v-if="selection.sso">
+  <template v-if="selection.sso && !client.getSsoFromId(selection.sso).sso.getEmail()">
     <div   class="warning" >
         <div @click="selection.setSSO(null)" class="fmt-close" >
             <font-awesome-icon icon="fa-solid fa-remove" />
