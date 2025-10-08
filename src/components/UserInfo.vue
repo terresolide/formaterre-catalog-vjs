@@ -11,7 +11,7 @@ const data = reactive({
 </script>
 <template>
  <div class="user-info" >
-    <a><font-awesome-icon icon="fa-solid fa-basket-shopping"/> {{$t('basket')}}</a>
+    <a><font-awesome-icon icon="fa-solid fa-basket-shopping"/> {{$t('basket')}}</a> |
     <authentication-box v-model="data.profile"/>
     <user-profile v-model="data.profile" />
    

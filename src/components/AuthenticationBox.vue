@@ -68,24 +68,22 @@ onMounted(() => {
 <template> 
     <template v-if="user.email">
         <template v-if="client.current">
-            <div class="client-box">Service <a :href="client.current.accountUrl" target="_blank"> {{client.current.name}}</a></div>
-                   <div>
-                     <template v-if="client.current.sso && client.current.sso.getEmail() && client.current.sso.getEmail() !== user.email">
-                        <tooltip-box icon="fa-solid fa-triangle-exclamation" :description="$t('warning_user_client', {sso: client.current.name, email: client.current.sso.getEmail(), user: user.email})" style="color:darkred;font-size:1.2rem;"/>
-                     </template>
-                   </div>
-                   <div>
-                       <template v-if="client.current.sso && client.current.sso.getEmail()">
-                           <span class="button" @click="client.current.sso.logout()">
-                                 <font-awesome-icon icon="fa-solid fa-right-from-bracket" /> 
-                           </span>
-                       </template>
-                       <template v-else-if="client.current.sso">
-                        <span class="button" @click="client.current.sso.login()">
-                             <font-awesome-icon icon="fa-solid fa-right-to-bracket" /> 
-                       </span>
-                       </template>
-                    </div>
+            <div class="client-box">Service <a :href="client.current.accountUrl" target="_blank"> {{client.current.name}}</a>
+             
+                <template v-if="client.current.sso && client.current.sso.getEmail() && client.current.sso.getEmail() !== user.email">
+                   <tooltip-box icon="fa-solid fa-triangle-exclamation" :description="$t('warning_user_client', {sso: client.current.name, email: client.current.sso.getEmail(), user: user.email})" style="color:darkred;font-size:1.2rem;"/>
+                </template>
+                <template v-if="client.current.sso && client.current.sso.getEmail()">
+                    <span class="button" @click="client.current.sso.logout()">
+                          <font-awesome-icon icon="fa-solid fa-right-from-bracket" /> 
+                    </span>
+                </template>
+                <template v-else-if="client.current.sso">
+                     <span class="button" @click="client.current.sso.login()">
+                          <font-awesome-icon icon="fa-solid fa-right-to-bracket" /> 
+                    </span>
+                </template>
+            </div>
         </template>
         <span class="user" >{{user.email}} <font-awesome-icon icon="fa-solid fa-caret-down"/></span>
         <div class="user user-menu" >
@@ -101,9 +99,22 @@ onMounted(() => {
     </template>
 </template>
 <style scoped>
-div.client-box,
-div.client-box div {
+span.button {
+    margin-left:5px;
+    padding:0 2px;
+    cursor:pointer;
+    border:1px dotted transparent;
+}
+span.button:hover {
+    border-color: var(--text-color);
+}
+div.client-box {
     display:inline-block;
+    margin: 0 10px;
+}
+div.client-box:after {
+    content: "|";
+    padding-left:10px;
 }
 span.user {
     cursor: pointer;
