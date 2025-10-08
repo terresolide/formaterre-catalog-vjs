@@ -177,9 +177,10 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
               })
             }
         }
+        // pour test
         properties.links.download.push({
               url: 'https://geodes-portal.cnes.fr/api/download/URN:FEATURE:DATA:gdh:03684236-bf97-339c-b789-60ff7541893c:V1/files/3fee0d25f8d65705a0af7205342daf14',
-              name: key,
+              name: 'SENTINEL-1-TEST.zip',
               type: 'download',
               description: '',
               access: parent.links.api.STAC.access
