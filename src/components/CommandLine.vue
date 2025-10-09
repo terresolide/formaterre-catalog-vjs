@@ -27,8 +27,10 @@ const file = computed(() => {
 const currentClient = computed(() => {
     if (client.current) {
         return client.current
+    } else if (selection.download.ssoId) {
+        return client.getSsoFromId(selection.download.ssoId)
     } else {
-        // à voir
+        null
     }
 })
 function close () {
@@ -73,8 +75,8 @@ function removeTooltip ()
     <div><b>Archive</b>: {{selection.download.name}}</div>
     <div><b>{{$t('command_to_execute')}}:</b></div>
       <div style="display:inline-block;font-family: monospace;max-height:200px;overflow:scroll;padding:3px;width:calc(100% - 100px);color:#5ddc5d;background:#333;">
-      <template v-if="currentClient.sso.getToken()">curl -k -L -H "Authorization:Bearer {{currentClient.sso.getToken()}}" {{selection.download.url}} -o {{file}}</template>
-     <!-- <template v-else-if="token">curl {{selection.download.url}}?_bearer={{token}} -o {{file}}</template>
+      <template v-if="currentClient && currentClient.sso.getToken()">curl -k -L -H "Authorization:Bearer {{currentClient.sso.getToken()}}" {{selection.download.url}} -o {{selection.download.name}}</template>
+     <!-- <template v-else-if="token">curl {{selection.download.url}}?_bearer={{token}} -o {{selection.download.name}}</template>
       -->
       <template v-else >curl {{selection.download.url}}  -o {{file}}</template>
       </div>

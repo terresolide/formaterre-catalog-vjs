@@ -43,6 +43,12 @@ function download (index) {
         var sso = client.getSsoFromId(ssoId)
         var link = links[index]
         getTokenInHeader(link, sso.sso.getToken())
+    } else {
+        var a = document.createElement('a')
+        a.setAttribute('href', links[index].url)
+        a.setAttribute('target', '_blanck');
+        document.body.append(a)
+        a.click()
     }
 }
 function getTokenInHeader (link, token) {
