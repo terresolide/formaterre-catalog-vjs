@@ -63,7 +63,6 @@
             data.metadata.ssoId = cl.sso.getId()
             client.setCurrent(cl)
             // fusionne les droits d'accès et l'authentification
-            console.log(cl.sso.getEmail())
             if (cl.sso.getEmail()) {
                 
                 return acc
@@ -76,7 +75,13 @@
         // sinon voir où indiquer la contrainte d'accès dans les métadonnées... dans constraints ce serait loguique!
         return {view: 1, download:1}
   })
-  
+  const tokenClientCurrent = computed(() => {
+        var token = null
+        if (client.current) {
+            token = client.current.sso.getToken()
+        }
+        return token
+  })
   function mergeAggregations (aggregations) {
     if (Object.keys(data.aggregations).length === 0 || data.reset) {
       data.aggregations = aggregations
@@ -93,6 +98,7 @@
     return data.aggregations
 
   }
+
   watch(() => route,
    (newroute) => {
       console.log('--- WATCH ROUTE DANS GRID VIEW ---')
@@ -144,6 +150,7 @@
       // calcule l'accès pour les enfants??? ou dans computed???
   }
   function launchStac () {
+     
       if (!data.stacRequester) {
           getStacRequester()
           .then(x => { 
@@ -156,10 +163,12 @@
       }
   }
   function getStacRecords () {
+      
       var stac = data.metadata.links.api.STAC
+      
       stac.query = Object.assign(stac.query, {'product:type': ['INTERFEROGRAM', 'TIMESERIE', 'AUXILIARYDATA']})
       var requester = data.stacRequester(stac.url, stac.query, config.state.size, data.metadata.cds)
-      requester.getRecords(data.metadata, route)
+      requester.getRecords(data.metadata, route, tokenClientCurrent.value)
       .then(json => { 
             if (json.list) {
               console.log(json.list)

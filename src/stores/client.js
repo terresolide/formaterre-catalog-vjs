@@ -51,7 +51,6 @@ export const useClient = defineStore('client', {
             return this.roles
         },
         getSSO (domain) {
-            console.log(this.list)
             return this.list.find(cl => cl.domain === domain)
         },
         getSsoFromId (ssoId) {
@@ -77,6 +76,7 @@ export const useClient = defineStore('client', {
                         console.log(usr)
                         // comparaison email et rôles si sso externe et lien clients internes....
                         self.list[index].warning = true
+                        // prévient le requêteur que authentifié!
                     })
                 }
             })

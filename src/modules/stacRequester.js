@@ -7,6 +7,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
     for (var key in fixed) {
         mappingParameters[key.replace(':', '_')] = key
     }
+    
     const parameters =  {page: 1, limit: limit, query: {}, sortBy:[{direction: 'desc',field: 'start_datetime' }]}
     const predefined =  {
          start: "start",
@@ -20,12 +21,19 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
     const searchUrl = url
     const count = 0
     const stacProperties = ['beam_ids', 'instrument', 'instrument_mode', 'orbit_state', 'platform', 'polarizations', 'relative_orbit']
-
-    function getRecords (parent, route) {
+    let token = null
+    function setToken (tk) {
+        token = tk
+    }
+    function getRecords (parent, route, token) {
         prepareRequest(route)
+        var headers =  {'Content-Type': 'application/json'}
+        if (token) {
+            headers['Authorization'] = "Bearer " + token
+        }
         return new Promise((successCallback, failureCallback) => {
             fetch(searchUrl,  {
-                    headers: {'Content-Type': 'application/json'},
+                    headers: headers ,
                     method: 'POST',
                     body: JSON.stringify(parameters)
             }).then(rep => rep.json())
@@ -178,13 +186,13 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
             }
         }
         // pour test
-        properties.links.download.push({
-              url: 'https://geodes-portal.cnes.fr/api/download/URN:FEATURE:DATA:gdh:03684236-bf97-339c-b789-60ff7541893c:V1/files/3fee0d25f8d65705a0af7205342daf14',
-              name: 'SENTINEL-1-TEST.zip',
-              type: 'download',
-              description: '',
-              access: parent.links.api.STAC.access
-          })
+        // properties.links.download.push({
+        //       url: 'https://geodes-portal.cnes.fr/api/download/URN:FEATURE:DATA:gdh:03684236-bf97-339c-b789-60ff7541893c:V1/files/3fee0d25f8d65705a0af7205342daf14',
+        //       name: 'SENTINEL-1-TEST.zip',
+        //       type: 'download',
+        //       description: '',
+        //       access: parent.links.api.STAC.access
+        //   })
         
         // if (feature.properties.endpoint_url) {
         //      var tab = feature.properties.endpoint_url.split('/')
@@ -289,5 +297,5 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
       this.$emit('parametersChange', {api: this.describe, parameters:this.stacParameters, mapping: this.predefined, fixed: []})
       this.getRecords(this.$route)
     }
-    return {getRecords: getRecords}
+    return {getRecords: getRecords, setToken: setToken}
 }
