@@ -37,9 +37,9 @@ let currentCatalog = computed(() => {
                 <div>
                 <RouterLink style="padding-right:0;" to="/" >{{$t('catalog', 10)}}</RouterLink>
                 <template v-if="currentCatalog"> / 
-                <img :src="config.state.api + '/images/harvesting/' + currentCatalog.logo" height="25" style="vertical-align:middle;" > {{currentCatalog.name}}</template>
+                <img :src="config.state.geonetwork + '/images/harvesting/' + currentCatalog.logo" height="25" style="vertical-align:middle;" > {{currentCatalog.name}}</template>
               </div>
-              <div style="text-align:center;width:calc(100% - 300px);">
+              <div style="text-align:center;width:calc(100% - 370px);">
                 <template v-if="route.params.catalog">
                   <RouterLink :to="{name: 'catalog-map', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
                   <RouterLink :to="{name: 'catalog-grid', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>

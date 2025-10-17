@@ -13,6 +13,19 @@ export const useElasticsearch = defineStore('elasticsearch', {
       config: null,
       aggregations: {
         step1: {
+          cdos: { 
+            terms: {
+              field: 'th_formaterre_cdos.default',
+              size: 50
+            },
+            meta: {
+              type: 'dimension',
+              thesaurus: 'formaterre_cdos',
+              icon: 'fa-solid fa-users',
+              label: {fr: 'Catalogues', en: 'Catalogs'},
+              sort: 1
+            }
+          },
           groupOwner: {
             terms: {
               field: 'groupOwner',
@@ -22,7 +35,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             meta: {
               type: 'dimension',
               icon: 'fa-solid fa-database',
-              label: {fr: 'Catalogue', en: 'Catalog'},
+              label: {fr: 'Entrepôts', en: 'Repository'},
               sort: 0
             }
           },
@@ -133,12 +146,16 @@ export const useElasticsearch = defineStore('elasticsearch', {
             var reset = routeName !== this.name
             this.name = routeName
             this.groupOwner = null
+            this.catalog = null
             this.uuid = metadataId
             let catalogs = this.getCatalogs()
             this.reset = reset || catal !== catalogs.getName()
             let catalog = this.catalogs.setCatalog(catalogName)
             if (catalog) {
-                this.groupOwner = catalog.id
+                this.catalog = {
+                    id: catalog.id,
+                    thesaurus: 'cdos' // voir comment on le passe
+                }
             }
         },
         getCatalogs () {
@@ -242,9 +259,9 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
                 parameters.query.bool.must.push(term)
             }
-            if (this.groupOwner) {
-                parameters.query.bool.filter.push({term: {groupOwner: this.groupOwner }})
-                delete aggregations['groupOwner']
+            if (this.catalog) {
+                parameters.query.bool.filter.push({terms: {'th_formaterre_cdos_tree.key':[ this.catalog.id] }})
+                delete aggregations[this.catalog.thesaurus]
             }
 
             for(var key in aggregations) {
@@ -332,6 +349,9 @@ export const useElasticsearch = defineStore('elasticsearch', {
                     }
                 })
             })
+        },
+        setThesaurus (name) {
+            this.thesaurus = name
         },
         treatmentJson (json) {
             let config = this.getConfig()
@@ -447,6 +467,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
         translate(thesaurus, uris) {
             var self = this
             let config = this.getConfig()
+
             return new Promise(function (resolve, reject) {
                 var id = uris.join(',')
                 var lang = config.state.lang === 'fr' ? 'fre' : 'eng'
@@ -625,7 +646,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 var buckets = agg.buckets
                 let catalog = useCatalog()
                 let groups = catalog.groups
-
+                console.log(catalog.groups)
                 var toTranslate = []
                 var thesaurus = agg.meta.thesaurus || null
 

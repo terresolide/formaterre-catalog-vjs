@@ -55,7 +55,7 @@ function select() {
   </div>
   <!-- afficher la couche sur la carte -->
   <template v-if="props.links.layers && props.links.layers.length > 0">
-    <layer-links :links="props.links.layers" :uuid="uuid" :access="props.access" :sso-id="props.ssoId" :mode="props.mode" @click="displayLogin"></layer-links>
+    <layer-links :links="props.links.layers" :uuid="uuid" :access="props.access" :sso-id="props.ssoId" :mode="props.mode" ></layer-links>
   </template>
   <!-- instrument -->
   <!--

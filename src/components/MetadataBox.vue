@@ -93,7 +93,7 @@ function show () {
             <div  class="mtdt-center">
                 <template v-if="!catalog && metadata.catalog">
                   <router-link :to="{name: 'catalog-grid', params: {catalog: metadata.catalog.name.toLowerCase()}}" :title="metadata.catalog.name">
-                    <img :src="config.state.api + '/images/harvesting/' + metadata.catalog.logo"   height="31" />
+                    <img :src="config.state.geonetwork + '/images/harvesting/' + metadata.catalog.logo"   height="31" />
                   </router-link>
                 </template>
                 <template v-else-if="metadata.provider">

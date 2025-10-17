@@ -4,6 +4,8 @@ import {useConfig} from './config'
 export const useCatalog = defineStore('catalog', {
   state: () => ({
     list: [],
+    thesaurus: null,
+    catalogs: null,
     groups: null,
     initialized: false,
     current: null
@@ -12,12 +14,35 @@ export const useCatalog = defineStore('catalog', {
     async init () {
         if (!this.initialized) {
             const config = useConfig()
-            fetch(config.state.geonetwork + '/srv/api/groups?withReservedGroup=false', {headers: {'accept':'application/json'}})
+            var url = config.state.geonetwork + '/srv/api/groups?withReservedGroup=false'
+            if (config.state.tools) {
+                if (config.state.app) {
+                    url = config.state.tools + '/api/tiles/' + config.state.app
+                } else {
+                    url = config.state.tools + '/api/groups'
+                }
+            }
+            fetch(url, {headers: {'accept':'application/json'}})
             .then(resp => resp.json())
             .then(json => {
                 this.initialized = true
-                this.list = json
-                this.getGroups()
+                if (json.thesaurus) {
+                    this.list = json.tiles
+                    this.thesaurus = json.tile
+                } else {
+                    this.list = json
+                    this.thesaurus = 'groupOwner'
+                }
+                console.log(this.list)
+                if (this.thesaurus === 'groupOwner') {
+                    this.groups = {}
+                    var self = this
+                    this.list.forEach(function (o) {
+                         self.groups[o.id] = o
+                    })
+                } else {
+                    this.getGroups()
+                }
             })
         }
     },
@@ -45,14 +70,29 @@ export const useCatalog = defineStore('catalog', {
       return this.current
     },
     getGroups () {
-        var self = this
-        if (!this.groups) {
+         const config = useConfig()
+        var url = config.state.geonetwork + '/srv/api/groups?withReservedGroup=false'
+        fetch(url, {headers: {'accept':'application/json'}})
+        .then(resp => resp.json())
+        .then(json => {
+            console.log(json)
             this.groups = {}
+            var self = this
+             json.forEach(function (o) {
+                 self.groups[o.id] = o
+            })
+        })
+        
+    },
+    getCatalogs () {
+        var self = this
+        if (!this.catalogs) {
+            this.catalogs = {}
             this.list.forEach(function (o) {
-                self.groups[o.id] = o
+                self.catalogs[o.id] = o
             })
         }
-        return this.groups
+        return this.catalogs
     },
     getName () {
         if (this.current) {

@@ -1,10 +1,15 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import {useCatalog} from '@/stores/catalog';
+import {useClient} from '@/stores/client';
 import CatalogBox from './CatalogBox.vue';
 let catalog = useCatalog()
+let client = useClient()
 const list = computed(() => {
   return catalog.list
+})
+onMounted(() => {
+    client.setCurrent(null)
 })
 </script>
 <template>
@@ -141,7 +146,7 @@ div.wrapper-group{
     line-height: 1.1;
     text-align:justify;
     text-decoration:none;
-    color: black;
+    color:var(--color-text);
   }
   a.service-link:not(.md-button):not(.md-bottom-bar-item):hover{
     opacity:1;
@@ -151,7 +156,6 @@ div.wrapper-group{
   a.service-link div.service-description {
     text-align: left;
     text-shadow:none;
-    color:black;
   }
   @media screen and (max-width: 767px) {
     h3,

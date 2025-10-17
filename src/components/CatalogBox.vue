@@ -1,24 +1,30 @@
 <script setup>
 import { RouterLink} from 'vue-router'
 import {useConfig} from '@/stores/config';
-const props = defineProps({
+const {catalog} = defineProps({
     catalog: Object
 })
 let config = useConfig()
 </script>
 <template>
     <div class="element-flex">
-        <router-link class="service-link" :to="{name: 'catalog-grid', params: {catalog: props.catalog.name.toLowerCase()}}">
+        <router-link class="service-link" :to="{name: 'catalog-grid', params: {catalog: catalog.name.toLowerCase()}}">
             <figure >
-	         <img v-if="props.catalog.logo" :src="config.state.api + '/images/harvesting/' + props.catalog.logo" />
-             <div >{{props.catalog.name}}</div>
+	         <img v-if="catalog.logo" :src="config.state.geonetwork + '/images/harvesting/' + catalog.logo" />
+             <div >{{catalog.label[config.state.locale]}}</div>
 	       </figure>
-           <h3 style="color:black;margin:5px 0;">{{props.catalog.name}}</h3>
-           {{ props.catalog }}
+           <h3 style="margin:5px 0;">{{catalog.label[config.state.locale]}}</h3>
+           <div v-html="catalog.description[config.state.locale]"></div>
         </router-link>
+        <div class="catalog-footer" >
+            <div>Contact: {{catalog.email}}</div>
+            <div>Website: <a href="catalog.website" target="_blank">Website</a></div>
+        </div>
     </div>
 </template>
 <style scoped>
+
+
 figure div {
   position:absolute;
   top:100px;
@@ -33,5 +39,15 @@ figure div {
  -webkit-text-shadow: 0 0 3px #000;
  -webkit-box-sizing: content-box;
  box-sizing: content-box;
+}
+div.catalog-footer {
+     position:absolute;
+     padding:3px 10px;
+     text-align:
+     left;bottom:0;
+     line-height:1.1;
+     width:100%;
+     left:0;
+     background:#f3f3f3;
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+// import { computed } from 'vue'
 import { useConfig } from '@/stores/config'
 import { useSelection } from '@/stores/selection'
 const props = defineProps({
@@ -37,7 +37,7 @@ function hasSelectedLayer() {
   return false
 }
 function select(index) {
-  selection.toggleLayer(props.links[index], ssoId)
+  selection.toggleLayer(props.links[index], props.ssoId)
 }
 </script>
 <template>

@@ -83,6 +83,7 @@
         return token
   })
   function mergeAggregations (aggregations) {
+    console.log(aggregations)
     if (Object.keys(data.aggregations).length === 0 || data.reset) {
       data.aggregations = aggregations
       data.reset = false
@@ -210,11 +211,13 @@
           data.pagination = Object.assign(data.pagination, json.pagination)
           data.bbox = null
         }
+         console.log(json.aggregations)
         if (json.list.length === 0 && data.metadata && data.metadata.stac) {
             launchStac()
 
             return {}
         } else {
+            console.log(json.aggregations)
             return elasticsearch.treatmentAggregations(json.aggregations)
         }
     }).then(values => {
