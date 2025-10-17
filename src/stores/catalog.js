@@ -79,6 +79,7 @@ export const useCatalog = defineStore('catalog', {
             this.groups = {}
             var self = this
              json.forEach(function (o) {
+                 o.logo = config.state.geonetwork + '/images/harvesting/' + o.logo
                  self.groups[o.id] = o
             })
         })

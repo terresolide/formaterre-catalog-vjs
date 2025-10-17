@@ -10,7 +10,7 @@ let config = useConfig()
     <div class="element-flex">
         <router-link class="service-link" :to="{name: 'catalog-grid', params: {catalog: catalog.name.toLowerCase()}}">
             <figure >
-	         <img v-if="catalog.logo" :src="config.state.geonetwork + '/images/harvesting/' + catalog.logo" />
+	         <img v-if="catalog.logo" :src="catalog.logo" />
              <div >{{catalog.label[config.state.locale]}}</div>
 	       </figure>
            <h3 style="margin:5px 0;">{{catalog.label[config.state.locale]}}</h3>

@@ -37,7 +37,7 @@ let currentCatalog = computed(() => {
                 <div>
                 <RouterLink style="padding-right:0;" to="/" >{{$t('catalog', 10)}}</RouterLink>
                 <template v-if="currentCatalog"> / 
-                <img :src="config.state.geonetwork + '/images/harvesting/' + currentCatalog.logo" height="25" style="vertical-align:middle;" > {{currentCatalog.name}}</template>
+                <img :src="currentCatalog.logo" height="25" style="vertical-align:middle;" > {{currentCatalog.name}}</template>
               </div>
               <div style="text-align:center;width:calc(100% - 370px);">
                 <template v-if="route.params.catalog">
