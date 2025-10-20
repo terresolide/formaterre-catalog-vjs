@@ -3,6 +3,8 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import path from 'path'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 const PACKAGE = require('./package.json')
 
 const prodUrl = PACKAGE.production.url + '/' + PACKAGE.name + '@' + PACKAGE.version +  '/dist/'
@@ -13,7 +15,16 @@ export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
+    viteStaticCopy({
+      targets: [
+        {
+          src: path.resolve(__dirname, './src/assets/img') + '/[!.]*', // 1️⃣
+          dest: './assets/img'
+        }
+      ]
+    })
   ],
+  filenameHashing: false,
   envPrefix: 'SSO_',
   experimental: {
 	  renderBuiltUrl(filename, hostType) {
