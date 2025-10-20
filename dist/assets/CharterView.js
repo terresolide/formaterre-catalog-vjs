@@ -1,0 +1,1 @@
+import{_ as t,c as o,k as s,h as c,g as a,w as n,o as r}from"./index.js";import _ from"./CharterPage.js";const m={__name:"CharterView",setup(p){const e=n();return(u,i)=>(r(),o("main",null,[a(e).params.id?(r(),s(_,{key:0,id:parseInt(a(e).params.id)},null,8,["id"])):c("",!0)]))}},f=t(m,[["__scopeId","data-v-733eb289"]]);export{f as default};
