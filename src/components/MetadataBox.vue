@@ -155,13 +155,14 @@ div.element-metadata-flex {
   }
  div.element-metadata-flex h3 {
     margin: 0px -10px 0px -10px;
-    padding: 5px;
+    padding: 3px 5px;
     color: white;
     text-align: left;
     min-height:40px;
-    max-height:40px;
+    max-height:44px;
     cursor: pointer;
     line-height:1;
+    font-size:1.2rem;
     overflow: hidden;
     word-break: break-all;
   }

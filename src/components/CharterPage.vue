@@ -260,7 +260,7 @@ div.charter.include {
     padding:0px 10px 10px 10px;
     transform: translate(-50%, 0);
     box-shadow: 0 0px 20px rgba(0,0,0,0.7);
-    z-index:15;
+    z-index:115;
     overflow:hidden;
 }
 

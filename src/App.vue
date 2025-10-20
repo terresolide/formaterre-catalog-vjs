@@ -37,7 +37,7 @@ let currentCatalog = computed(() => {
                 <div>
                 <RouterLink style="padding-right:0;" to="/" >{{$t('catalog', 10)}}</RouterLink>
                 <template v-if="currentCatalog"> / 
-                <img :src="currentCatalog.logo" height="25" style="vertical-align:middle;" > {{currentCatalog.name}}</template>
+                <img :src="currentCatalog.logo" class="icon-tile"> {{currentCatalog.name}}</template>
               </div>
               <div style="text-align:center;width:calc(100% - 370px);">
                 <template v-if="route.params.catalog">
@@ -59,6 +59,20 @@ let currentCatalog = computed(() => {
   <RouterView />
 </template>
 <style>
+/**
+pour wordpress
+**/
+ div[id="app"] a {
+     text-decoration:none;
+ }
+ div[id="app"] h1::after {
+     display:none;
+}
+ img.icon-tile {
+     max-height: 30px;
+     vertical-align:middle;
+     border: 2px solid gray;
+}
     input[type=checkbox] {
         cursor:pointer;
     }

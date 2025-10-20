@@ -39,6 +39,7 @@ const config = useConfig()
 .profile fieldset {
     border: 0.5px solid grey;
     margin-bottom:10px;
+    padding: 5px;
 }
 .profile legend {
     font-weight:700;
@@ -60,7 +61,7 @@ div.profile {
     padding:0px 10px 10px 10px;
     transform: translate(-50%, 0);
     box-shadow: 0 0px 20px rgba(0,0,0,0.7);
-    z-index:11;
+    z-index:101;
     overflow:hidden;
 }
 

@@ -55,7 +55,7 @@ div.large-container {
     width: 90%;
     height: 500px;
     background: lightgrey;
-    z-index:99;
+    z-index:100;
     resize:both;
     overflow:hidden;
     -webkit-box-shadow: 0 0px 3px rgba(0,0,0,0.5);

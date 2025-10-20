@@ -129,7 +129,7 @@ div.user-menu {
     right:0;
     top:18px;
     text-align:left;
-    z-index:15;
+    z-index:115;
 }
 
 div.user-menu div{
