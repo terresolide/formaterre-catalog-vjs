@@ -23,7 +23,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
               thesaurus: 'formaterre_cdos',
               icon: 'fa-solid fa-users',
               label: {fr: 'Catalogues', en: 'Catalogs'},
-              sort: 1
+              sort: 0
             }
           },
           groupOwner: {
@@ -36,7 +36,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
               type: 'dimension',
               icon: 'fa-solid fa-database',
               label: {fr: 'Entrepôts', en: 'Repository'},
-              sort: 0
+              sort: 1
             }
           },
           discipline: {
@@ -259,20 +259,21 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
                 parameters.query.bool.must.push(term)
             }
+           
             if (this.catalog) {
                 parameters.query.bool.filter.push({terms: {'th_formaterre_cdos_tree.key':[ this.catalog.id] }})
                 delete aggregations[this.catalog.thesaurus]
             }
 
             for(var key in aggregations) {
-                console.log(aggregations[key].terms.field)
-                console.log(query)
+                // console.log(aggregations[key].terms.field)
+                // console.log(query)
                 query[aggregations[key].terms.field + '_tree.key']
-                if (query[aggregations[key].terms.field.replace('_tree.key','')]) {
-                   // query[key] = query[aggregations[key].terms.field.replace('_tree.key','')]
-                   // delete query[aggregations[key].terms.field.replace('_tree.key','')]
-                    parameters.query.bool.filter.push({terms: {'th_formater-platform-gn.key':  query[aggregations[key].terms.field.replace('_tree.key','')]}})
-                }
+                // if (query[aggregations[key].terms.field.replace('_tree.key','')]) {
+                //    // query[key] = query[aggregations[key].terms.field.replace('_tree.key','')]
+                //    // delete query[aggregations[key].terms.field.replace('_tree.key','')]
+                //    // parameters.query.bool.filter.push({terms: {'th_formater-platform-gn.key':  query[aggregations[key].terms.field.replace('_tree.key','')]}})
+                // }
   
                 if (query [key] ) {
                     if (aggregations[key].meta.type === 'dimension') {
@@ -515,6 +516,9 @@ export const useElasticsearch = defineStore('elasticsearch', {
         treatmentLinks (list, id) {
             let config = this.getConfig()
             var links = {}
+            if (!list) {
+                return links
+            }
             list.forEach((lk, index) => {
             switch(lk.protocol) {
                case 'OpenSearch':

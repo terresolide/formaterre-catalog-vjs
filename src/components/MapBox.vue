@@ -89,6 +89,7 @@ function addLayer(layer) {
       addWMSLayer(layer, metaId)
       break
     case 'GetMap':
+    case 'OGC:WMS-1.1.1-http-get-map':
       if (!layer.options) {
         layer.options = {
           id: layer.id,

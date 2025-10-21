@@ -123,7 +123,6 @@ div.mtdt-center {
 div.mtdt-center img {
     vertical-align:middle;
     max-height:31px;
-    height:31px;
     max-width:80px;
     padding-bottom:1px;
 }

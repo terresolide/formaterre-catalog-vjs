@@ -65,6 +65,10 @@ pour wordpress
  div[id="app"] a {
      text-decoration:none;
  }
+ div[id="app"] a:hover {
+    background:rgba(139,0,0,0.3);
+    color:var(--color-text);
+ }
  div[id="app"] h1::after {
      display:none;
 }

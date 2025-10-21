@@ -118,7 +118,7 @@ div span:first-child {
 }
 label {
     display: inline-block;
-    width:calc(100% - 60px);
+    width:calc(100% - 100px);
     margin-right:10px;
 }
 div span:last-child {
