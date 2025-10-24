@@ -11,15 +11,17 @@ let config = useConfig()
         <router-link class="service-link" :to="{name: 'catalog-grid', params: {catalog: catalog.name.toLowerCase()}}">
             <figure >
 	         <img v-if="catalog.logo" :src="catalog.logo" />
-             <div >{{catalog.label[config.state.locale]}}</div>
+             <div >{{catalog.label}}</div>
 	       </figure>
-           <h3 style="margin:5px 0;">{{catalog.label[config.state.locale]}}</h3>
-           <div v-html="catalog.description[config.state.locale]"></div>
+           <h3 style="margin:5px 0;">{{catalog.label}}</h3>
+           <div v-html="catalog.description"></div>
         </router-link>
-        <div class="catalog-footer" >
-            <div>Contact: {{catalog.email}}</div>
-            <div>Website: <a href="catalog.website" target="_blank">Website</a></div>
-        </div>
+        <template v-if="catalog.email || catalog.website">
+            <div class="catalog-footer" >
+                <div>Contact: {{catalog.email}}</div>
+                <div>Website: <a href="catalog.website" target="_blank">Website</a></div>
+            </div>
+        </template>
     </div>
 </template>
 <style scoped>

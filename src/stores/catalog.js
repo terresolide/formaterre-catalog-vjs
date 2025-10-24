@@ -7,6 +7,8 @@ export const useCatalog = defineStore('catalog', {
     thesaurus: null,
     catalogs: null,
     groups: null,
+    organismThesaurus: null,
+    organisms: null,
     initialized: false,
     current: null
   }),
@@ -22,19 +24,28 @@ export const useCatalog = defineStore('catalog', {
                     url = config.state.tools + '/api/groups'
                 }
             }
-            fetch(url, {headers: {'accept':'application/json'}})
+            fetch(url, {headers: {'accept':'application/json', 'accept-language': config.state.lang}})
             .then(resp => resp.json())
             .then(json => {
                 this.initialized = true
-                if (json.thesaurus) {
+                if (json.tileThesaurus) {
                     this.list = json.tiles
                     this.thesaurus = json.tile
                 } else {
                     this.list = json
                     this.thesaurus = 'groupOwner'
                 }
+                if (json.datacenterThesaurus) {
+                    this.organismThesaurus = json.datacenterThesaurus
+                    var self = this
+                    this.organisms = {}
+                    json.datacenters.forEach(function (o) {
+                         self.organisms[o.id] = o
+                    })
+                }
+                console.log(this.organisms)
                 console.log(this.list)
-                if (this.thesaurus === 'groupOwner') {
+                if (this.tileThesaurus === 'groupOwner') {
                     this.groups = {}
                     var self = this
                     this.list.forEach(function (o) {

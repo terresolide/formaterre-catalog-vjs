@@ -96,6 +96,7 @@
         data.aggregations[key].category = []
       }
     }
+    console.log(data.aggregations)
     return data.aggregations
 
   }

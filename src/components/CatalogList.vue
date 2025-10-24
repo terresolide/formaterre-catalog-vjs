@@ -151,6 +151,7 @@ div.wrapper-group{
   a.service-link:not(.md-button):not(.md-bottom-bar-item):hover{
     opacity:1;
     text-decoration:none;
+    background: transparent;
   }
   
   a.service-link div.service-description {

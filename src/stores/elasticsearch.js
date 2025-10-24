@@ -13,16 +13,16 @@ export const useElasticsearch = defineStore('elasticsearch', {
       config: null,
       aggregations: {
         step1: {
-          cdos: { 
+          theme: { 
             terms: {
-              field: 'th_formaterre_cdos.default',
+              field: 'th_formaterre_themes_tree.key',
               size: 50
             },
             meta: {
               type: 'dimension',
-              thesaurus: 'formaterre_cdos',
+              thesaurus: 'formaterre_themes',
               icon: 'fa-solid fa-users',
-              label: {fr: 'Catalogues', en: 'Catalogs'},
+              label: {fr: 'Thématiques', en: 'Themes'},
               sort: 0
             }
           },
@@ -67,16 +67,16 @@ export const useElasticsearch = defineStore('elasticsearch', {
               sort: 4
             }
           },
-          distributor: {
+          provider: {
             terms: {
-              field: 'th_formater-distributor.default',
+              field: 'th_formater_provider.default',
               size: 50
             },
             meta: {
               type: 'dimension',
-              thesaurus: 'formater-distributor',
+              thesaurus: 'formater_provider',
               icon: 'fa-solid fa-users',
-              label: {fr: 'Distributeur', en: 'Distributor'},
+              label: {fr: 'Fournisseur', en: 'Provider'},
               sort: 1
             }
 
@@ -93,6 +93,19 @@ export const useElasticsearch = defineStore('elasticsearch', {
               label: {fr: 'Plateforme', en: 'Platform'},
               sort: 3,
               icon: 'fa-solid fa-rocket'
+            }
+          },
+          cdos: { 
+            terms: {
+              field: 'th_formaterre_cdos_tree.key',
+              size: 50
+            },
+            meta: {
+              type: 'dimension',
+              thesaurus: 'formaterre_cdos',
+              icon: 'fa-solid fa-users',
+              label: {fr: 'CDOS (en cours)', en: 'CDOS (on going)'},
+              sort: 5
             }
           }
         },
@@ -261,7 +274,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             }
            
             if (this.catalog) {
-                parameters.query.bool.filter.push({terms: {'th_formaterre_cdos_tree.key':[ this.catalog.id] }})
+                parameters.query.bool.filter.push({terms: {'th_formaterre_themes_tree.key':[ this.catalog.id] }})
                 delete aggregations[this.catalog.thesaurus]
             }
 
@@ -649,8 +662,10 @@ export const useElasticsearch = defineStore('elasticsearch', {
 
                 var buckets = agg.buckets
                 let catalog = useCatalog()
+                console.log(catalog.organisms)
                 let groups = catalog.groups
                 console.log(catalog.groups)
+                
                 var toTranslate = []
                 var thesaurus = agg.meta.thesaurus || null
 
@@ -658,9 +673,12 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 buckets.forEach(function (item, index) {
 
                     if (type === 'dimension') {
+                        
                         if (key === 'groupOwner') {
 
                             var label = groups[parseInt(item.key)].name
+                        } else if (key === catalog.organismThesaurus.th_slug) {
+                            var label = catalog.organisms[item.key].label
                         } else {
                             var label = item.key
                         }
@@ -669,9 +687,8 @@ export const useElasticsearch = defineStore('elasticsearch', {
                             key: item.key,
                             count: item.doc_count
                         })
+                        
                     } else if (type === 'select' && !isKey ) {
-                       console.log(label)
-                       console.log(item)
                        aggregation.category.push( item.key )
                     } else {
                         var keys = item.key.split('^')
@@ -686,6 +703,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                         delete item.doc_count
                     }
                 })
+                console.log(aggregation)
                 // translate
                 if (!isKey) {
                   resolve(aggregation)

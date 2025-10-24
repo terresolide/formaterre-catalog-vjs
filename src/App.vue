@@ -39,7 +39,7 @@ let currentCatalog = computed(() => {
                 <template v-if="currentCatalog"> / 
                 <img :src="currentCatalog.logo" class="icon-tile"> {{currentCatalog.name}}</template>
               </div>
-              <div style="text-align:center;width:calc(100% - 370px);">
+              <div style="text-align:center;width:calc(100% - 380px);">
                 <template v-if="route.params.catalog">
                   <RouterLink :to="{name: 'catalog-map', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
                   <RouterLink :to="{name: 'catalog-grid', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
