@@ -69,7 +69,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
           },
           provider: {
             terms: {
-              field: 'th_formater_provider.default',
+              field: 'th_formaterre_provider_tree.key',
               size: 50
             },
             meta: {
@@ -647,6 +647,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 if (agg.meta && agg.meta.label) {
                     label = agg.meta.label[lang] ? agg.meta.label[lang] : agg.meta.label
                 }
+             
                 var aggStore = self.aggregations[self.step][key]
                 var tab = aggStore.terms.field.split('.')
                 var isKey = tab.length > 1 && tab[1] === 'key'
@@ -659,10 +660,19 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
 
                 var type = (agg.meta && agg.meta.type) || 'dimension'
-
+                console.log(key)
+                console.log(type)
                 var buckets = agg.buckets
                 let catalog = useCatalog()
                 console.log(catalog.organisms)
+                console.log('key=', key)
+                if (key === catalog.organismThesaurus.th_slug) {
+                    isKey = false
+                }
+                 if (key === catalog.thesaurus.th_slug) {
+                    isKey = false
+                }
+                console.log('slug = ' , catalog.organismThesaurus.th_slug)
                 let groups = catalog.groups
                 console.log(catalog.groups)
                 
@@ -678,7 +688,11 @@ export const useElasticsearch = defineStore('elasticsearch', {
 
                             var label = groups[parseInt(item.key)].name
                         } else if (key === catalog.organismThesaurus.th_slug) {
+                            
                             var label = catalog.organisms[item.key].label
+                        } else if ( key === catalog.thesaurus.th_slug ) {
+                            var val = catalog.list.find(x => x.id === item.key)
+                            var label = val.label
                         } else {
                             var label = item.key
                         }
@@ -703,7 +717,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                         delete item.doc_count
                     }
                 })
-                console.log(aggregation)
+                console.log(aggregation.category)
                 // translate
                 if (!isKey) {
                   resolve(aggregation)

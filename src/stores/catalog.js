@@ -30,7 +30,7 @@ export const useCatalog = defineStore('catalog', {
                 this.initialized = true
                 if (json.tileThesaurus) {
                     this.list = json.tiles
-                    this.thesaurus = json.tile
+                    this.thesaurus = json.tileThesaurus
                 } else {
                     this.list = json
                     this.thesaurus = 'groupOwner'
@@ -43,8 +43,6 @@ export const useCatalog = defineStore('catalog', {
                          self.organisms[o.id] = o
                     })
                 }
-                console.log(this.organisms)
-                console.log(this.list)
                 if (this.tileThesaurus === 'groupOwner') {
                     this.groups = {}
                     var self = this

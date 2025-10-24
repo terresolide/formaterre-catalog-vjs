@@ -222,6 +222,7 @@
             return elasticsearch.treatmentAggregations(json.aggregations)
         }
     }).then(values => {
+        console.log(values)
         mergeAggregations(values)
     })
   }
