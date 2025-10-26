@@ -21,8 +21,8 @@ export const useElasticsearch = defineStore('elasticsearch', {
             meta: {
               type: 'dimension',
               thesaurus: 'formaterre_themes',
-              icon: 'fa-solid fa-users',
-              label: {fr: 'Thématiques', en: 'Themes'},
+              icon: 'fa-solid fa-object-group',
+              label: {fr: 'Thématique', en: 'Theme'},
               sort: 0
             }
           },
@@ -103,7 +103,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             meta: {
               type: 'dimension',
               thesaurus: 'formaterre_cdos',
-              icon: 'fa-solid fa-users',
+              icon: 'fa-solid fa-user-group',
               label: {fr: 'CDOS (en cours)', en: 'CDOS (on going)'},
               sort: 5
             }
@@ -166,8 +166,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             let catalog = this.catalogs.setCatalog(catalogName)
             if (catalog) {
                 this.catalog = {
-                    id: catalog.id,
-                    thesaurus: 'cdos' // voir comment on le passe
+                    id: catalog.id
                 }
             }
         },
@@ -272,9 +271,11 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
                 parameters.query.bool.must.push(term)
             }
-           
+            var catalogs = this.getCatalogs()
             if (this.catalog) {
-                parameters.query.bool.filter.push({terms: {'th_formaterre_themes_tree.key':[ this.catalog.id] }})
+                var terms = {}
+                terms['th_' + catalogs.thesaurus.th_name + '_tree.key'] = [this.catalog.id]
+                parameters.query.bool.filter.push({terms: terms})
                 delete aggregations[this.catalog.thesaurus]
             }
 
@@ -660,21 +661,19 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
 
                 var type = (agg.meta && agg.meta.type) || 'dimension'
-                console.log(key)
-                console.log(type)
                 var buckets = agg.buckets
                 let catalog = useCatalog()
-                console.log(catalog.organisms)
-                console.log('key=', key)
                 if (key === catalog.organismThesaurus.th_slug) {
                     isKey = false
                 }
-                 if (key === catalog.thesaurus.th_slug) {
+                if (key === catalog.thesaurus.th_slug) {
                     isKey = false
                 }
-                console.log('slug = ' , catalog.organismThesaurus.th_slug)
+                if (key === 'groupOwner') {
+                     isKey = false
+                }
+               
                 let groups = catalog.groups
-                console.log(catalog.groups)
                 
                 var toTranslate = []
                 var thesaurus = agg.meta.thesaurus || null
@@ -695,13 +694,17 @@ export const useElasticsearch = defineStore('elasticsearch', {
                             var label = val.label
                         } else {
                             var label = item.key
+                            if (isKey) {
+                                toTranslate.push(item.key)
+                            }
                         }
-                        aggregation.category.push({
-                            label: label,
-                            key: item.key,
-                            count: item.doc_count
-                        })
-                        
+                        if (!isKey) {
+                            aggregation.category.push({
+                                label: label,
+                                key: item.key,
+                                count: item.doc_count
+                            })
+                        }
                     } else if (type === 'select' && !isKey ) {
                        aggregation.category.push( item.key )
                     } else {
@@ -717,7 +720,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
                         delete item.doc_count
                     }
                 })
-                console.log(aggregation.category)
                 // translate
                 if (!isKey) {
                   resolve(aggregation)
@@ -725,6 +727,11 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
                 self.translate(thesaurus, toTranslate)
                 .then(translated => {
+                    if (key === 'cdos') {
+                        console.log(buckets)
+                        console.log(toTranslate)
+                        console.log(translated)
+                    }
                     buckets.forEach(function (item, index) {
                       if (translated[item.uri]) {
                         if (translated[item.uri].label) {
@@ -733,11 +740,24 @@ export const useElasticsearch = defineStore('elasticsearch', {
                             buckets[index].label = translated[item.uri]
                         }
                       }
+                      if (translated[item.key]) {
+                        if (translated[item.key].label) {
+                            buckets[index].label = translated[item.key].label
+                        } else {
+                            buckets[index].label = translated[item.key]
+                        }
+                      }
                     })
-                    if (type === 'select') {
+                    if (key === 'cdos') {
+                       console.log(buckets)
+                    }     
+                    if (type === 'select' || type === 'dimension') {
+                        console.log(buckets)
+                        
                         var category = []
                         buckets.forEach(function(item) {
-                            category.push({ uri: item.uri, label: item.label })
+                            console.log(item)
+                            category.push({key: item.key, label: item.label, count: item.doc_count})
                         })
                     } else {
                         const arrayToTree = (arr, parent = '') =>

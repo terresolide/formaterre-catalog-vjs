@@ -43,9 +43,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {faAsterisk,faBasketShopping, faCalendar,faCaretDown,faCaretLeft,faCaretRight,faCaretUp,faCheck, faCircleDot,
         faCircleInfo, faChevronCircleLeft, faChevronCircleRight,faClipboard,faClock,faClose,faDatabase,faDownload,faEarthAmericas,
         faFile, faFileLines, faFolderOpen,  faGaugeSimpleHigh, 
-        faGraduationCap,faGrip, faKey, faLink, faLocationDot, faMagnifyingGlass,faMap,faPencil,
+        faGraduationCap,faGrip, faKey, faLink, faLocationDot, faMagnifyingGlass,faMap,faObjectGroup, faPencil,
         faPenToSquare,faPrint,faRightFromBracket,faRightToBracket,faRocket,faSatelliteDish, faSearch, faSpinner,faTerminal, 
-        faTriangleExclamation, faUser, faUsers} from '@fortawesome/free-solid-svg-icons'
+        faTriangleExclamation, faUser, faUserGroup, faUsers} from '@fortawesome/free-solid-svg-icons'
 import { setupI18n, loadLocaleMessages } from './i18n'
 import moment from 'moment'
 import fr from "moment/dist/locale/fr"
@@ -56,9 +56,9 @@ import {
 library.add(faAsterisk,faBasketShopping, faCalendar,faCaretDown,faCaretLeft,faCaretRight,faCaretUp,faCheck,faCircleDot,
             faCircleInfo,faChevronCircleLeft, faChevronCircleRight,faClipboard,faClock,faClose,faDatabase,faDownload,faEarthAmericas, 
             faFile, faFileLines, faFolderOpen, faGaugeSimpleHigh,
-            faGraduationCap, faGrip, faKey, faLink,faLocationDot, faMagnifyingGlass,faMap,faPencil,
+            faGraduationCap, faGrip, faKey, faLink,faLocationDot, faMagnifyingGlass,faMap,faObjectGroup,faPencil,
             faPenToSquare,faPrint,faRightFromBracket, faRightToBracket,faRocket, faSatelliteDish, faSearch, faSpinner, faSquare, faSquareCheck, 
-            faTerminal, faTriangleExclamation, faUser, faUsers)
+            faTerminal, faTriangleExclamation, faUser, faUserGroup,faUsers)
 
 let cfg = {}
 
