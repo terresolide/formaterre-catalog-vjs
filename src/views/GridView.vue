@@ -4,7 +4,6 @@
   import { useElasticsearch } from '@/stores/elasticsearch';
   import { useSelection } from '@/stores/selection'
   import { useConfig } from '@/stores/config'
-  
   import { useClient } from '@/stores/client'
   import { useUser } from '@/stores/user'
   import MetadataList from '@/components/MetadataList.vue'

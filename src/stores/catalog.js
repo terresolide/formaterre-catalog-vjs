@@ -5,6 +5,7 @@ export const useCatalog = defineStore('catalog', {
   state: () => ({
     list: [],
     thesaurus: null,
+    tilename: '',
     catalogs: null,
     groups: null,
     organismThesaurus: null,
@@ -30,6 +31,7 @@ export const useCatalog = defineStore('catalog', {
                 this.initialized = true
                 if (json.tileThesaurus) {
                     this.list = json.tiles
+                    this.tilename = json.tilename
                     this.thesaurus = json.tileThesaurus
                 } else {
                     this.list = json

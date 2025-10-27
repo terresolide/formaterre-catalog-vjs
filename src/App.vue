@@ -35,7 +35,7 @@ let currentCatalog = computed(() => {
               <charter-page  />
               <nav>
                 <div>
-                <RouterLink style="padding-right:0;" to="/" >{{$t('catalog', 10)}}</RouterLink>
+                <RouterLink style="padding-right:0;" to="/" >{{catalog.tilename}}</RouterLink>
                 <template v-if="currentCatalog"> / 
                 <img :src="currentCatalog.logo" class="icon-tile"> {{currentCatalog.name}}</template>
               </div>

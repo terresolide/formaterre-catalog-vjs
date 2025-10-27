@@ -41,7 +41,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import specific icons */
 import {faAsterisk,faBasketShopping, faCalendar,faCaretDown,faCaretLeft,faCaretRight,faCaretUp,faCheck, faCircleDot,
-        faCircleInfo, faChevronCircleLeft, faChevronCircleRight,faClipboard,faClock,faClose,faDatabase,faDownload,faEarthAmericas,
+        faCircleInfo, faChevronCircleLeft, faChevronCircleRight,faClipboard,faClock,faClose,faCog, faCogs,faDatabase,faDownload,faEarthAmericas,
         faFile, faFileLines, faFolderOpen,  faGaugeSimpleHigh, 
         faGraduationCap,faGrip, faKey, faLink, faLocationDot, faMagnifyingGlass,faMap,faObjectGroup, faPencil,
         faPenToSquare,faPrint,faRightFromBracket,faRightToBracket,faRocket,faSatelliteDish, faSearch, faSpinner,faTerminal, 
@@ -54,8 +54,8 @@ import {
    faSquareCheck
 } from '@fortawesome/free-regular-svg-icons'
 library.add(faAsterisk,faBasketShopping, faCalendar,faCaretDown,faCaretLeft,faCaretRight,faCaretUp,faCheck,faCircleDot,
-            faCircleInfo,faChevronCircleLeft, faChevronCircleRight,faClipboard,faClock,faClose,faDatabase,faDownload,faEarthAmericas, 
-            faFile, faFileLines, faFolderOpen, faGaugeSimpleHigh,
+            faCircleInfo,faChevronCircleLeft, faChevronCircleRight,faClipboard,faClock,faClose,faCog, faCogs,faDatabase,faDownload,faEarthAmericas, 
+            faFile, faFileLines, faFolderOpen, faGaugeSimpleHigh, 
             faGraduationCap, faGrip, faKey, faLink,faLocationDot, faMagnifyingGlass,faMap,faObjectGroup,faPencil,
             faPenToSquare,faPrint,faRightFromBracket, faRightToBracket,faRocket, faSatelliteDish, faSearch, faSpinner, faSquare, faSquareCheck, 
             faTerminal, faTriangleExclamation, faUser, faUserGroup,faUsers)
