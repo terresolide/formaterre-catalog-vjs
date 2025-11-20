@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, onMounted, watch } from 'vue'
+import {computed, defineAsyncComponent, onMounted,watch } from 'vue'
 import { useRoute, RouterLink, RouterView } from 'vue-router'
 import {useConfig} from '@/stores/config'
 import {useCatalog} from '@/stores/catalog'
 import UserInfo from '@/components/UserInfo.vue'
-
+// import sentinel1Test from '@/modules/sentinel1-test.js'
 const CharterPage = defineAsyncComponent(
     () => import('@/components/CharterPage.vue'),
 )
@@ -19,10 +19,14 @@ watch(route, () => {
 })
 onMounted(() => {
     catalog.setCatalog(route.params.catalog)
+    // sentinel1Test.search()
 })
 let currentCatalog = computed(() => { 
     return catalog.getCurrent()
 })
+let list = computed(() => {
+   return sentinel1Test.errorOrbit
+ })
 // Ajouter authentification et un store user
 </script>
 
@@ -35,22 +39,22 @@ let currentCatalog = computed(() => {
               <charter-page  />
               <nav>
                 <div>
-                <RouterLink style="padding-right:0;" to="/" >{{catalog.tilename}}</RouterLink>
-                <template v-if="currentCatalog"> / 
-                <img :src="currentCatalog.logo" class="icon-tile"> {{currentCatalog.name}}</template>
-              </div>
-              <div style="text-align:center;width:calc(100% - 380px);">
-                <template v-if="route.params.catalog">
-                  <RouterLink :to="{name: 'catalog-map', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
-                  <RouterLink :to="{name: 'catalog-grid', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
-                  <RouterLink :to="{name: 'catalog-search', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
-                </template>
-                <template v-else>
-                  <RouterLink to="/map"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
-                  <RouterLink to="/grid"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
-                  <RouterLink to="/search"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
-                </template>
-              </div>
+                    <RouterLink style="padding-right:0;" to="/" >{{catalog.tilename}}</RouterLink>
+                    <template v-if="currentCatalog"> / 
+                    <img :src="currentCatalog.logo" class="icon-tile"> {{currentCatalog.name}}</template>
+                </div>
+                <div style="text-align:center;width:calc(100% - 380px);">
+                  <template v-if="route.params.catalog">
+                    <RouterLink :to="{name: 'catalog-map', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
+                    <RouterLink :to="{name: 'catalog-grid', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
+                    <RouterLink :to="{name: 'catalog-search', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
+                  </template>
+                  <template v-else>
+                    <RouterLink to="/map"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
+                    <RouterLink to="/grid"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
+                    <RouterLink to="/search"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
+                  </template>
+                </div>
               
               </nav>
             </div>
@@ -62,6 +66,7 @@ let currentCatalog = computed(() => {
 /**
 pour wordpress
 **/
+
  div[id="app"] a {
      text-decoration:none;
  }
@@ -137,6 +142,7 @@ nav > div {
 }
 nav > div:first-child {
   width:max-content;
+  max-width:380px;
 }
 nav a.router-link-exact-active {
   color: var(--color-text);
