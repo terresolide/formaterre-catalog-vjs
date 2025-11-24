@@ -300,6 +300,7 @@ export default function (attrs) {
         var lists = description.split(';')
         var access = {}
         var query = {}
+        console.log(description)
         lists.forEach(function (tab) {
           var extract = tab.split('=')
           if (extract.length > 1 && ['search', 'view', 'download'].indexOf(extract[0]) >= 0) {

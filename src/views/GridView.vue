@@ -166,8 +166,9 @@
   function getStacRecords () {
       
       var stac = data.metadata.links.api.STAC
-      
-      stac.query = Object.assign(stac.query, {'product:type': ['INTERFEROGRAM', 'TIMESERIE', 'AUXILIARYDATA']})
+      console.log(stac.query)
+      // stac.query = Object.assign(stac.query, {'product:type': ['INTERFEROGRAM', 'TIMESERIE', 'AUXILIARYDATA']})
+      // stac.query = Object.assign(stac.query, {'grid:code': ['BALKANS']})
       var requester = data.stacRequester(stac.url, stac.query, config.state.size, data.metadata.cds)
       requester.getRecords(data.metadata, route, tokenClientCurrent.value)
       .then(json => { 

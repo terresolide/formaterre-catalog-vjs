@@ -139,14 +139,14 @@ div.metadata-content {
 }
 div.metadata-content.metadata-single {
     position:absolute;
-    left:-330px;
+    left:-335px;
     top:5px;
     z-index:10;
     border: 1px solid #333;
     border-radius: 5px 5px;
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.5);
     background: white;
-    max-width:100%;
+    max-width:calc(100% - 10px);
     
 }
 div.mtdt-tabs {

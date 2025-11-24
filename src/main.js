@@ -73,8 +73,6 @@ if (!cfg.lang) {
 
 
 moment.locale(cfg.lang)
-
-console.log(cfg.lang)
 const i18n = setupI18n({locale: cfg.lang})
 loadLocaleMessages(i18n, cfg.lang)
 import App from './App.vue'
