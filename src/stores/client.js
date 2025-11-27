@@ -2,6 +2,7 @@ import {useConfig} from '@/stores/config.js'
 import {useUser} from '@/stores/user.js'
 import { defineStore } from 'pinia'
 import {AuthService} from 'formater-auth-service-js'
+// import {AuthService} from '@/modules/AuthService.js'
 export const useClient = defineStore('client', {
     state: () => ({
         current: null,
@@ -68,12 +69,12 @@ export const useClient = defineStore('client', {
                         tokenUrl: client.refreshUrl,
                         refreshUrl: client.refreshUrl,
                         logoutUrl: client.logoutUrl,
-                        redirectUri: client.redirectUri
+                        redirectUri: client.redirectUri,
+                        provider: client.provider
                     })
                    
                     self.list[index].sso.add()
                     self.list[index].sso.on('authenticated', function (usr, serv) {
-                        console.log(usr)
                         // comparaison email et rôles si sso externe et lien clients internes....
                         self.list[index].warning = true
                         // prévient le requêteur que authentifié!

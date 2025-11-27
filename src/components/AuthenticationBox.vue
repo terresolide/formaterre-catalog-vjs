@@ -1,4 +1,5 @@
 <script setup>
+// https://sso.aeris-data.fr/auth/realms/aeris/protocol/openid-connect/auth?client_id=iagos-vjs&redirect_uri=https://iagos.aeris-data.fr/&response_type=code&scope=openid&kc_idp_hint=envri-id-staging
 import {computed, reactive, onMounted} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {AuthService} from 'formater-auth-service-js'
