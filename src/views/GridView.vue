@@ -37,6 +37,7 @@
   const user = useUser()
   const client = useClient()
   const access = computed(() => {
+        console.log('===== ACCESS CHANGE =====')
         if (!data.metadata) {
             // voir le sso pour le catalogue....
             
@@ -51,6 +52,7 @@
                 return {view:true, download:true}
             }
             if (!user.email) {
+                getRecords(route)
                 return {view: stacAccess.view === "free" ? 1 : -1, download: stacAccess.download === "free" ? 1: -1}
             }
             var acc = {view: user.hasRole(stacAccess.view), download: user.hasRole(stacAccess.download)}
@@ -63,9 +65,10 @@
             client.setCurrent(cl)
             // fusionne les droits d'accès et l'authentification
             if (cl.sso.getEmail()) {
-                
+                getRecords(route)
                 return acc
             } else {
+                getRecords(route)
                 return {view: acc.view > 0 ? 0 : -1, download: acc.download > 0 ? 0 : -1 }
             } 
             
