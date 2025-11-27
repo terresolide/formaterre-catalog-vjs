@@ -417,6 +417,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             }
             meta.quicklook = null
             if (source.overview && source.overview.length > 0) {
+
               meta.quicklook = {
                   src: source.overview[0].url,
                   title: source.overview[0].nameObject ? config.tr(source.overview[0].nameObject) : ''

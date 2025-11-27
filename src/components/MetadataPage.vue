@@ -4,6 +4,7 @@ import { useConfig } from "@/stores/config.js"
 // import { useSelection } from "@/stores/selection.js"
 import ExportLinks from '@/components/ExportLinks.vue'
 import MetadataContent from '@/components/MetadataContent.vue'
+import { useClient } from '@/stores/client.js'
 const {metadata,access, inside, color} = defineProps({
     metadata: {
         type: Object,
@@ -24,6 +25,7 @@ const {metadata,access, inside, color} = defineProps({
 })
 const emit= defineEmits(["close"])
 const config = useConfig()
+const client = useClient()
 // const selection = useSelection()
 const tabs = {
     description: 'description',
@@ -61,7 +63,15 @@ function close () {
             </template>
             <export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
         </div>
-        <div>alerte ici</div>
+        <div>{{access}}</div>
+        <template v-if="client.current && client.current.sso && access.download <=0">
+            <template v-if="access.download === 0">
+            Authentifiez-vous auprès de geodes
+            </template>
+            <template v-else>
+            Vos droits sont insuffisants
+            </template>
+        </template>
         <template v-if="inside">
             <div>
                 <metadata-content :metadata="metadata" :access="access" />
