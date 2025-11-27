@@ -71,6 +71,14 @@ export const useCatalog = defineStore('catalog', {
         }
         return this.list.find(c => c.name.toLowerCase() === name.toLowerCase())
     },
+    getGroupByName (name) {
+        for(var key in this.groups) {
+            if (this.groups[key].name === name) {
+                return this.groups[key]
+            }
+        }
+        return null
+    },
     getCatalogById (id) {
         if (!id) {
            return null

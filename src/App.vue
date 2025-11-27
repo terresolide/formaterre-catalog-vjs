@@ -24,10 +24,8 @@ onMounted(() => {
 let currentCatalog = computed(() => { 
     return catalog.getCurrent()
 })
-let list = computed(() => {
-   return sentinel1Test.errorOrbit
- })
-// Ajouter authentification et un store user
+
+
 </script>
 
 <template>
@@ -41,18 +39,21 @@ let list = computed(() => {
                 <div>
                     <RouterLink style="padding-right:0;" to="/" >{{catalog.tilename}}</RouterLink>
                     <template v-if="currentCatalog"> / 
-                    <img :src="currentCatalog.logo" class="icon-tile"> {{currentCatalog.name}}</template>
+                        <RouterLink :to="{name: 'catalog-grid', catalog: currentCatalog.name}" style="padding:0;">
+                            <img :src="currentCatalog.logo" class="icon-tile"> {{currentCatalog.name}}
+                        </RouterLink>
+                    </template>
                 </div>
                 <div style="text-align:center;width:calc(100% - 380px);">
-                  <template v-if="route.params.catalog">
-                    <RouterLink :to="{name: 'catalog-map', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
+                 <!-- <template v-if="route.params.catalog">
+                    <RouterLink :to="{name: 'catalog-map', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink> 
                     <RouterLink :to="{name: 'catalog-grid', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
-                    <RouterLink :to="{name: 'catalog-search', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
-                  </template>
-                  <template v-else>
-                    <RouterLink to="/map"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink>
+                    <RouterLink :to="{name: 'catalog-search', catalog: route.params.catalog.toLowerCase()}"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink> 
+                  </template> -->
+                  <template v-if="!route.params.catalog">
+                   <!-- <RouterLink to="/map"><font-awesome-icon icon="fa-solid fa-map" /> {{$t('map_view')}}</RouterLink> -->
                     <RouterLink to="/grid"><font-awesome-icon icon="fa-solid fa-grip" /> {{$t('grid_view')}}</RouterLink>
-                    <RouterLink to="/search"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink>
+                   <!-- <RouterLink to="/search"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /> {{$t('text_search')}}</RouterLink> -->
                   </template>
                 </div>
               

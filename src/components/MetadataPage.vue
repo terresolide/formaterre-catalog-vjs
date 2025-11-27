@@ -61,6 +61,7 @@ function close () {
             </template>
             <export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
         </div>
+        <div>alerte ici</div>
         <template v-if="inside">
             <div>
                 <metadata-content :metadata="metadata" :access="access" />

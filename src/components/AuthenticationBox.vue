@@ -5,6 +5,7 @@ import {useConfig} from '@/stores/config.js'
 import {AuthService} from 'formater-auth-service-js'
 import {useUser} from '@/stores/user.js'
 import {useClient} from '@/stores/client.js'
+import {useCatalog} from '@/stores/catalog.js'
 import TooltipBox from '@/components/TooltipBox.vue'
 
 
@@ -15,6 +16,18 @@ const data = reactive({
 const config = useConfig()
 const user = useUser()
 const client = useClient()
+const catalog = useCatalog()
+
+let logo = computed(() => {
+    if (!client.current || !client.current.sso) {
+        return null
+    }
+    var group = catalog.getGroupByName(client.current.name)
+    if (group) {
+        return group.logo
+    }
+    return null
+})
 
 function login () {
     user.sso.login()
@@ -69,7 +82,9 @@ onMounted(() => {
 <template> 
     <template v-if="user.email">
         <template v-if="client.current">
-            <div class="client-box">Service <a :href="client.current.accountUrl" target="_blank"> {{client.current.name}}</a>
+            <div class="client-box">
+                <template v-if="logo"> <img :src="logo" width="20" style="vertical-align:middle;"/></template>
+                Service  {{client.current.name}} 
              
                 <template v-if="client.current.sso && client.current.sso.getEmail() && client.current.sso.getEmail() !== user.email">
                    <tooltip-box icon="fa-solid fa-triangle-exclamation" :description="$t('warning_user_client', {sso: client.current.name, email: client.current.sso.getEmail(), user: user.email})" style="color:darkred;font-size:1.2rem;"/>
