@@ -95,7 +95,7 @@ function removeTooltip ()
    position: fixed;
    top: 50%;
    left: 50%;
-   z-index:3;
+   z-index:100;
    background: white;
    width:90%;
    max-width: 900px;

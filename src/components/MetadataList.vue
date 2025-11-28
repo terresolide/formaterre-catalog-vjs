@@ -33,7 +33,8 @@ function close () {
 </script>
 <template>
     <template v-if="data.metadata">
-       <metadata-page :metadata="data.metadata" :access="access" :inside="true" @close="close"/>
+    {{props.ssoId}}
+       <metadata-page :metadata="data.metadata" :access="props.access" :sso-id="props.ssoId" :inside="true" @close="close"/>
     </template>
      <div class="wrapper-group-2" :class="{inside: props.inside}">
        <template v-if="props.list.length > 0">

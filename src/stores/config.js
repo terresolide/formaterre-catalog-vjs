@@ -12,7 +12,8 @@ export const useConfig = defineStore('config', () => {
       locale: 'eng',
       formatDate: '',
       size:24,
-      sortBy: 'popularity'
+      sortBy: 'popularity',
+      profile: false
   }
   let dataCenters = data
   function init(conf) {

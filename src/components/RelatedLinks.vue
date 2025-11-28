@@ -137,8 +137,8 @@ span.notAuthenticated,
 .mtdt-links a:hover,
 .wrapper-content .mtdt-app .mtdt-links span:hover,
 .mtdt-links span:hover {
-  background: darkred;
-  color: white;
+  background:rgba(139,0,0,0.3);
+  color: var(--color-text);
 }
 .mtdt-layers li:hover {
   color: darkred;

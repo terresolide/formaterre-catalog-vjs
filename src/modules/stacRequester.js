@@ -79,7 +79,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         }
         for(var name in mappingParameters) {
             if (newroute.query[name]){
-                parameters.query[mappingParameters[name]] = {eq: newroute.query[name]}
+                parameters.query[mappingParameters[name]] = {in: newroute.query[name].split(',')}
             }
         }
     }
@@ -164,12 +164,17 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
        
         properties.links = {download:[]}
         for (var key in feature.assets) {
-            if (feature.assets[key].roles.indexOf('overview') >=0) {
-              properties.quicklook = {
+             if (feature.assets[key].roles.indexOf('thumbnail') >=0) {
+                 properties.quicklook = {
                   src:  feature.assets[key].href,
                   title: ''
               }
-              properties.images = [[feature.assets[key].title, feature.assets[key].href, '']]
+            }
+            else if (feature.assets[key].roles.indexOf('overview') >=0) {
+              if (!properties.images) {
+                  properties.images = []
+              }
+              properties.images.push([feature.assets[key].title, feature.assets[key].href, ''])
               // properties.thumbnail = feature.assets[key].href 
         
             } else if (feature.assets[key].roles.indexOf('data') >=0) {

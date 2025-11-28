@@ -4,8 +4,8 @@ import { useConfig } from "@/stores/config.js"
 // import { useSelection } from "@/stores/selection.js"
 import ExportLinks from '@/components/ExportLinks.vue'
 import MetadataContent from '@/components/MetadataContent.vue'
-import { useClient } from '@/stores/client.js'
-const {metadata,access, inside, color} = defineProps({
+import MessageAccess from '@/components/MessageAccess.vue'
+const {metadata,access, inside, color, ssoId} = defineProps({
     metadata: {
         type: Object,
         default: null
@@ -21,11 +21,15 @@ const {metadata,access, inside, color} = defineProps({
     color: {
         type:String,
         default: '#fff000'
+    },
+    ssoId: {
+        type:String,
+        default:null
     }
 })
 const emit= defineEmits(["close"])
 const config = useConfig()
-const client = useClient()
+
 // const selection = useSelection()
 const tabs = {
     description: 'description',
@@ -63,23 +67,15 @@ function close () {
             </template>
             <export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
         </div>
-        <div>{{access}}</div>
-        <template v-if="client.current && client.current.sso && access.download <=0">
-            <template v-if="access.download === 0">
-            Authentifiez-vous auprès de geodes
-            </template>
-            <template v-else>
-            Vos droits sont insuffisants
-            </template>
-        </template>
+        <message-access :access="access"></message-access>
         <template v-if="inside">
             <div>
-                <metadata-content :metadata="metadata" :access="access" />
+                <metadata-content :metadata="metadata" :access="access" :sso-id="ssoId" />
             </div>
         </template>
         <template v-else>
             <div v-show="data.currentTab === 'description'">
-             <metadata-content :metadata="metadata" :access="access" />
+             <metadata-content :metadata="metadata" :access="access" :sso-id="ssoId" />
             </div>
             <div v-show="data.currentTab === 'search'">
                 <slot></slot>

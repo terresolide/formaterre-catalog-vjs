@@ -9,9 +9,10 @@ import KeywordList from '@/components/KeywordList.vue'
 import StacParameters from '@/components/StacParameters.vue'
 
 const moment = inject('moment')
-const {metadata, access} = defineProps({
+const {metadata, access, ssoId} = defineProps({
     metadata: Object,
-    access: Object
+    access: Object,
+    ssoId: String
 })
 const config = useConfig()
 </script>
@@ -136,7 +137,7 @@ const config = useConfig()
             </div>
         
             <div>
-                <related-links :links="metadata.links" :uuid="metadata.uuid" :sso-id="metadata.ssoId" :access="access" mode="page"/> 
+                <related-links :links="metadata.links" :uuid="metadata.uuid" :sso-id="ssoId" :access="access" mode="page"/> 
             
             </div>
             <div>
