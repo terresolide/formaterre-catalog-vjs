@@ -19,7 +19,7 @@ const props = defineProps({
     },
   },
   ssoId: {
-      type:Object,
+      type:String,
       default: null
   }
 })
