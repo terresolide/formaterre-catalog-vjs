@@ -164,6 +164,9 @@ onMounted(() => {
     </div>
 </template>
 <style scoped>
+select:disabled {
+    color:black;
+}
 hr {
     width: 60%;
     margin: 10px auto;

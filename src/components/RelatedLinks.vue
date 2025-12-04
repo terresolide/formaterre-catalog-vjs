@@ -152,7 +152,7 @@ span.notAuthenticated,
   height: auto;
   min-width: 200px;
   max-width: 320px;
-  background: white;
+  background: var(--color-background);
   padding: 5px;
   border-radius: 3px;
   border: 1px dotted grey;

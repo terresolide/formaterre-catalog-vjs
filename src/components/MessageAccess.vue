@@ -42,18 +42,18 @@ div.msg-auth {
 }
 div.msg-auth > div {
     text-align:left;
-     border: 1px solid darkred;
+     border: 1px solid var(--text-link);
      font-weight:500;
-     color: darkred;
+     color: var(--text-link);
      padding: 10px;
      display:inline-block;
      margin: 10px 0;
-     background: #f9f9f9;
+     background: var(--color-background-mute);
 }
 b {
     font-weight:700;
 }
-button {
+button:not(.classic) {
     background: darkred;
 }
 </style>

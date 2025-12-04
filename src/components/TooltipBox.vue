@@ -8,7 +8,7 @@ const {icon,description,color} = defineProps({
     description: null,
     style: {
         type: String,
-        default: 'color:#000;'
+        default: 'color:var(--color-text-light);'
     }
 })
 const tooltip = useTemplateRef('tooltip')
@@ -47,7 +47,7 @@ function showTooltip (event) {
 div.fmt-tooltip {
   position: absolute;
   display:none;
-  background-color: #fafafa;
+  background-color: var(--color-background-soft);
   border: 1px solid #a3a3a3;
   font-size: smaller;
   line-height:1;

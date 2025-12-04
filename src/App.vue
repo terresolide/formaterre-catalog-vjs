@@ -72,8 +72,8 @@ pour wordpress
      text-decoration:none;
  }
  div[id="app"] a:hover {
-    background:rgba(139,0,0,0.3);
-    color:var(--color-text);
+    background:var(--text-link);
+    color:var(--color-background);
  }
  div[id="app"] h1::after {
      display:none;
@@ -104,10 +104,10 @@ pour wordpress
         display:block;
     }
     div.warning {
-        color:darkred;
+        color:var(--text-link);
     }
     div.warning button {
-        background: darkred;
+        background: var(--text-link);
     }
     .fmt-close {
         border:1px dotted white;

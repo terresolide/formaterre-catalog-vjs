@@ -12,7 +12,7 @@
 a,
 .green {
   text-decoration: none;
-  color: darkred;
+  color: var(--text-link);
   transition: 0.4s;
   padding: 3px;
 }

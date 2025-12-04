@@ -24,6 +24,7 @@
   --emphasis: #dd9946;
   --link: #754a15;
   --over: #8c0209; 
+  --over-light: #d4434a;
 }
 
 /* semantic color variables for this project */
@@ -37,10 +38,12 @@
 
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-1);
-
+  --color-text-light: var(--vt-c-black);
+  
   --section-gap: 160px;
   --vdp-hover-bg-color: var(--link);
   --vdp-selected-bg-color: var(--over);
+  --text-link: var(--over);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -54,6 +57,8 @@
 
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
+     --color-text-light: var(--vt-c-white);
+     --text-link: var(--over-light);
   }
 }
 

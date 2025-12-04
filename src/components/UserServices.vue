@@ -18,7 +18,7 @@ const user = useUser()
                    <div><a :href="item.accountUrl" target="_blank">{{item.name}}</a></div>
                    <div>
                      <template v-if="item.sso && item.sso.getEmail() && item.sso.getEmail() !== user.email">
-                        <tooltip-box icon="fa-solid fa-triangle-exclamation" :description="$t('warning_user_client', {sso: item.name, email: item.sso.getEmail(), user: user.email})" style="color:darkred;font-size:1.2rem;"/>
+                        <tooltip-box icon="fa-solid fa-triangle-exclamation" :description="$t('warning_user_client', {sso: item.name, email: item.sso.getEmail(), user: user.email})" style="color:var(--text-link);font-size:1.2rem;"/>
                      </template>
                    </div>
                    <div>
@@ -72,11 +72,10 @@ const user = useUser()
         padding-right:2px;
     }
     div.service-row > div:first-child:hover {
-        background:rgba(139,0,0,0.3);
-        color:black;
+      
     }
     .warning {
-        color:darkred;
+        color:var(--text-link);
         font-size: 1.2rem;
     }
     span.button {

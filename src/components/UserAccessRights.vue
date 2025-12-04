@@ -122,7 +122,7 @@ onMounted(() => {
      <div style="margin:10px 0;">
     
        <div style="position:relative;">
-         <div v-if="data.asking" style="position:absolute;left:50%;top:10%;font-size:30px;">
+         <div v-if="data.asking" style="position:absolute;left:50%;top:10%;font-size:30px;color:black;">
            <font-awesome-icon icon="fa-solid fa-spinner" spin  /> 
          </div>
          <textarea style="width:100%" v-model="data.message" :placeholder="$t('add_message')"></textarea>
@@ -144,7 +144,7 @@ div.role-line {
 }
 div.role-line-header {
     font-weight:700;
-    background:#e3e3e3;
+    background:var(--color-background-mute);
     padding: 6px 0;
     border-bottom: 1px dotted black;
 }
@@ -155,7 +155,7 @@ div.role-line.full {
     padding: 6px 0;
 }
 div.client-content div.role-line:nth-child(2n + 1) {
-  background: #f3f3f3;
+  background:var(--color-background-mute);
 }
 
 </style>

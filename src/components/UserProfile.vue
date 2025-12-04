@@ -49,7 +49,7 @@ const config = useConfig()
 div.profile {
     position:fixed;
     max-width: 1200px;
-    background: white;
+    background: var(--color-background);
     border: 1px solid grey;
     max-height:calc(100vh - 30px);
     width:calc(100% - 80px);

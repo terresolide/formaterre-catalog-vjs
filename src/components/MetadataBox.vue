@@ -145,7 +145,7 @@ div.element-metadata-flex {
   -webkit-box-shadow: 0 0px 3px rgba(0,0,0,0.5);
   box-shadow: 0 0px 3px rgba(0,0,0,0.5);
   position: relative;
-  background: #fff;
+  background: var(--color-background-soft);
   min-height:250px;
   max-height:250px;
   overflow:hidden;
@@ -200,7 +200,7 @@ div.element-metadata-flex {
    max-width: 110px;
    max-height:130px;
    display:block;
-   background: #ddd;
+   background: var(--color-background-mute);
    margin: 0px 15px 3px 0;
 }
  div.element-metadata-flex .mtdt-status {
@@ -227,7 +227,7 @@ div.element-metadata-flex {
   min-height: 28px;
   -webkit-box-sizing: content-box;
   box-sizing: content-box;
-  background:white;
+  background:var(--color-background-soft);
   overflow:visible;
 }
  div.element-metadata-flex .mtdt-footer > div{

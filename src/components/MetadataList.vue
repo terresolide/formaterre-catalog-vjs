@@ -104,7 +104,6 @@ div.wrapper-group-2.inside {
     line-height: 1.1;
     text-align:justify;
     text-decoration:none;
-    color: black;
   }
   a.service-link:not(.md-button):not(.md-bottom-bar-item):hover{
     opacity:1;

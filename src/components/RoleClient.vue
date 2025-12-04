@@ -92,7 +92,7 @@ onMounted(() => {
         <template v-if="client.client"> 
             <template v-if="client.client.sso">
                 ({{client.client.name}}<template v-if="client.client.sso.getEmail() && client.client.sso.getEmail() !== user.email">
-                      &nbsp;<tooltip-box icon="fa-solid fa-triangle-exclamation" :description="$t('warning_user_client', {sso: client.client.name, email: client.client.sso.getEmail(), user: user.email})" style="color:darkred;font-size:1.2rem;"/>
+                      &nbsp;<tooltip-box icon="fa-solid fa-triangle-exclamation" :description="$t('warning_user_client', {sso: client.client.name, email: client.client.sso.getEmail(), user: user.email})" style="color:var(--text-link);font-size:1.2rem;"/>
                 </template>)
                <!-- <template v-if="client.client.sso.getEmail()">
                     <span class="button" @click="client.client.sso.logout()"><font-awesome-icon icon="fa-solid fa-right-from-bracket" /> </span>
@@ -165,7 +165,7 @@ onMounted(() => {
                       <font-awesome-icon icon="fa-solid fa-clock" /> 
                     </span>
                     <span v-else-if="role.status && role.status === 'REJECTED'"  :title="$t('REJECTED')" >
-                      <span  style="color:darkred;">&times;</span>
+                      <span  style="color:var(--text-link);">&times;</span>
                     </span>
                  <!--   <span v-if="role.status === 'CONDITION'" :title="$t('CONDITION')" @click="selectCharter(role.charterId)">
                         <font-awesome-icon icon="fa-solid fa-pencil" /> 
@@ -227,7 +227,7 @@ div.deployed + div.client-content {
 }
 
 div.client-content div.role-line:nth-child(2n + 1) {
-    background: #f3f3f3;
+    background:var(--color-background-mute);
 }
 
 div.client-content div.role-line > div:first-child {

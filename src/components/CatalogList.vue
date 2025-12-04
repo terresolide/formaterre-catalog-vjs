@@ -69,7 +69,7 @@ div.wrapper-group{
   -webkit-box-shadow: 0 0px 3px rgba(0,0,0,0.5);
   box-shadow: 0 0px 3px rgba(0,0,0,0.5);
   position: relative;
-  background: #fff;
+  background: var(--color-background-mute);
   
   
   }
@@ -87,7 +87,7 @@ div.wrapper-group{
   width: 100%;
   left: 0;
   bottom:0;
-  background: #f9f9f9;
+  background: var(--color-background-soft);
   padding: 3px 5px;
   vertical-align: middle;
   box-sizing: border-box;
@@ -153,7 +153,9 @@ div.wrapper-group{
     text-decoration:none;
     background: transparent;
   }
-  
+  a.service-link h3 {
+      color: var(--color-heading);
+  }
   a.service-link div.service-description {
     text-align: left;
     text-shadow:none;

@@ -87,7 +87,7 @@ onMounted(() => {
                 Service  {{client.current.name}} 
              
                 <template v-if="client.current.sso && client.current.sso.getEmail() && client.current.sso.getEmail() !== user.email">
-                   <tooltip-box icon="fa-solid fa-triangle-exclamation" :description="$t('warning_user_client', {sso: client.current.name, email: client.current.sso.getEmail(), user: user.email})" style="color:darkred;font-size:1.2rem;"/>
+                   <tooltip-box icon="fa-solid fa-triangle-exclamation" :description="$t('warning_user_client', {sso: client.current.name, email: client.current.sso.getEmail(), user: user.email})" style="color:var(--text-link);font-size:1.2rem;"/>
                 </template>
                 <template v-if="client.current.sso && client.current.sso.getEmail()">
                     <span class="button" @click="client.current.sso.logout()">
@@ -151,7 +151,7 @@ div.user-menu {
 div.user-menu div{
    line-height:2;
    padding: 3px 9px;
-   background: #eee;
+   background: var(--color-background-mute);
    cursor:pointer;
    border:1px dotted grey;
    border-top:0px;
