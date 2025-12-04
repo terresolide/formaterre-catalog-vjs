@@ -174,7 +174,7 @@ const config = useConfig()
     background: #eee;
 }
 .description {
-    background: #eee;
+    background:var(--color-background-mute);
     margin: 5px 0;
     padding:5px 10px;
     border: 1px solid grey;

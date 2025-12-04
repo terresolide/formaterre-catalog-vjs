@@ -138,7 +138,7 @@ div.metadata-content {
   margin-left:340px;
   position: relative;
   height: auto;
-  background: #fff;
+  background: var( --color-background);
   overflow: hidden;
   border: 1px solid #ccc;
   border-radius: 0 0 5px 5px;
@@ -152,7 +152,7 @@ div.metadata-content.metadata-single {
     border: 1px solid #333;
     border-radius: 5px 5px;
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.5);
-    background: white;
+    background: var( --color-background);
     max-width:calc(100% - 10px);
     
 }
@@ -166,15 +166,15 @@ div.mtdt-tab,
   padding: 5px 10px;
   border:1px dotted grey;
   border-top:0px;
-  background: #eee;
+  background:var(--color-border);
   cursor: pointer;
   
 }
 div.mtdt-tab:hover,
 .mtdt-tab-export:hover{
-   background: #ccc;
+   background:var(--color-background-soft);
 }
 div.mtdt-tab.selected{
-  background: #ddd;
+  background:var(--color-background);
 }
 </style>
