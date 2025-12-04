@@ -1,8 +1,6 @@
 <script setup>
   import { useRoute} from "vue-router"
- 
-  import CharterPage from '@/components/CharterPage.vue'
-  
+  import CharterPage from '@/components/CharterPage.vue' 
   const route = useRoute()
   
 </script>

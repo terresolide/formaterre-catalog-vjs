@@ -12,25 +12,51 @@ const config = useConfig()
 <template>
   <div class="msg-auth">
     <template v-if="access.download === -1 && !user.email">
-      <div >L'accès à ces ressources est restreint.<br />
+      <div >
+        <template v-if="config.state.lang === 'fr'">L'accès à ces ressources est restreint.<br />
        Authentifiez-vous auprès de FormaTerre pour connaître vos droits.<br />
-         <button @click="user.sso.login()" style="vertical-align:middle;">{{$t('login')}}</button>
+         <button @click="user.sso.login()" style="vertical-align:middle;">Se connecter</button>
+        </template>
+        <template v-else>
+        Access to these resources is restricted.<br />
+        Log in to FormaTerre to learn about your rights.<br />
+        <button @click="user.sso.login()" style="vertical-align:middle;">Log in</button>
+        </template>
       </div>
     </template>
     <template v-if="client.current && client.current.sso && access.download <=0">
         <template v-if="access.download === 0">
         <div >
         <h3>Important!</h3>
-Pour visualiser ou télécharger ces ressources, vous devez autoriser le service <b>{{client.current.name}}</b> à accéder à vos données personnelles (email, nom, rôles).
-   <br />
-        <button @click="client.current.sso.login()" style="vertical-align:middle;">Autoriser</button>
+        <template v-if="config.state.lang === 'fr'">
+            Pour visualiser ou télécharger ces ressources, vous devez autoriser le service <b>{{client.current.name}}</b> 
+            <br />à accéder à vos données personnelles (email, nom, rôles).
+            <br />
+            <button @click="client.current.sso.login()" style="vertical-align:middle;">Autoriser</button>
+        </template>
+        <template v-else>
+            To view or download these resources, you must allow the <b>{{client.current.name}}</b> service 
+            <br/>to access your personal data (email, name, roles).
+            <br />
+             <button @click="client.current.sso.login()" style="vertical-align:middle;">Authorize</button>
+        </template>
         </div>
         </template>
         <template v-else>
         <div>
-        <b>Vos droits sont insuffisants!</b><br />
-        Consultez votre profile pour connaître vos droits et éventuellement demander l'accès à ces ressources!
-         <button @click="config.profile=true" style="vertical-align:middle;">Voir profile</button>
+        <template v-if="config.state.lang === 'fr'">
+            <b>Vos droits sont insuffisants!</b><br />
+            Consultez votre profile pour connaître vos droits et éventuellement demander l'accès à ces ressources!
+            <br /> 
+            <button @click="config.profile=true" style="vertical-align:middle;">Voir profile</button>
+        </template>
+        <template v-else>
+            <b>Your rights are insufficient!</b><br />
+            Check your profile to learn about your rights and potentially request access to these resources!
+            <br /> 
+            <button @click="config.profile=true" style="vertical-align:middle;">View profile</button>
+    
+        </template>
         </div>
         </template>
     </template>
