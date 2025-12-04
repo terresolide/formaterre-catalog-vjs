@@ -55,7 +55,7 @@ const {exportLinks} = defineProps({
 .mtdt-export-links div.mtdt-expand div{
    line-height:2;
    padding: 3px 0;
-   background: #eee;
+   background: var(--color-background);
    border:1px dotted grey;
    border-top:0px;
 }
@@ -64,7 +64,7 @@ const {exportLinks} = defineProps({
    text-decoration:none;
 }
 .mtdt-export-links div.mtdt-expand div:hover{
-   background: #ccc;
+   background: var(--color-background);
 }
 
 .mtdt-export-links:hover div.mtdt-expand{

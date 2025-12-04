@@ -171,7 +171,7 @@ const config = useConfig()
     margin-top: 4px;
     padding: 5px 10px;
     text-align:center;
-    background: #eee;
+    background: var(--color-background-mute);
 }
 .description {
     background:var(--color-background-mute);
@@ -230,7 +230,7 @@ div.contact-container {
      /* -webkit-box-shadow: 0 0px 3px rgba(0,0,0,0.5);
       box-shadow: 0 0px 3px rgba(0,0,0,0.5);*/
       position: relative;
-      background: #f9f9f9;
+      background: var(--color-background-mute);
 
   }
   field.contact-flex > div:first-child {

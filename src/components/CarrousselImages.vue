@@ -31,7 +31,7 @@ const data = reactive({
   display:block;
    max-width: 100%;
   /* max-height:260px;*/
-   background: #eee;
+   background: var(--color-background-soft);
    margin: auto;
 }
 .mtdt-quicklooks div.wrapper{

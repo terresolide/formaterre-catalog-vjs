@@ -54,13 +54,13 @@ const address = computed(() => {
 <style scoped>
 
 fieldset {
-  border:1px solid lightgrey;
-  background: #f9f9f9;
+  border:1px solid var(--color-border);
+  background: var(--color-background-mute);
   padding:2px 3px;
   height:100%;
 }
 legend {
-  color: #333;
+  color: var(--color-heading);
   font-weight:600;
   font-size:1rem;
   width:auto;

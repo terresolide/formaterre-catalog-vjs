@@ -30,7 +30,7 @@ function goTo (kwd) {
     border-radius: 3px;
     background: var(--color-text);
     padding: 3px 5px;
-    color: white;
+    color: var(--color-background);
     margin: 3px;
     display: inline-block;
     cursor:pointer;

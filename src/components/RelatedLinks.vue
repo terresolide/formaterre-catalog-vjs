@@ -129,7 +129,7 @@ span.notAuthenticated,
 .mtdt-links span {
   padding: 1px 3px;
   cursor: pointer;
-  color: #444;
+  color: var(--color-heading);
   display: inline-block;
   width: 100%;
 }
