@@ -252,7 +252,7 @@ div.charter.include {
     min-height:600px;
     max-height:calc(100vh - 30px);
     width:calc(100% - 80px);
-   
+    color:var(--vt-c-indigo);
     top: 5px;
     left: 50%;
     line-height:1.2;
