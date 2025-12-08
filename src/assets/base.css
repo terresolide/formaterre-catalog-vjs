@@ -1,10 +1,12 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
   --vt-c-white: #ffffff;
+  --vt-c-white-op: rgba(230,230, 230, 0.5);
   --vt-c-white-soft: #f8f8f8;
   --vt-c-white-mute: #f2f2f2;
 
   --vt-c-black: #181818;
+  --vt-c-black-op: rgba(60, 60, 60, 0.5);
   --vt-c-black-soft: #222222;
   --vt-c-black-mute: #282828;
 
@@ -32,7 +34,7 @@
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
-
+  --color-background-transparent: var(--vt-c-white-op);
   --color-border: var(--vt-c-divider-light-2);
   --color-border-hover: var(--vt-c-divider-light-1);
 
@@ -51,7 +53,7 @@
     --color-background: var(--vt-c-black);
     --color-background-soft: var(--vt-c-black-soft);
     --color-background-mute: var(--vt-c-black-mute);
-
+    --color-background-transparent: var(--vt-c-black-op);
     --color-border: var(--vt-c-divider-dark-2);
     --color-border-hover: var(--vt-c-divider-dark-1);
 

@@ -6,6 +6,7 @@
   import { useConfig } from '@/stores/config'
   import { useClient } from '@/stores/client'
   import { useUser } from '@/stores/user'
+  import { useLoaderState} from '@/stores/loaderState.js'
   import MetadataList from '@/components/MetadataList.vue'
   import FormGrid from '@/components/FormGrid.vue'
   import PageNavigation from '@/components/PageNavigation.vue'
@@ -36,6 +37,7 @@
   const config = useConfig()
   const user = useUser()
   const client = useClient()
+  const loader = useLoaderState()
   const access = computed(() => {
         console.log('===== ACCESS CHANGE =====')
         if (!data.metadata) {
@@ -173,6 +175,7 @@
       // stac.query = Object.assign(stac.query, {'product:type': ['INTERFEROGRAM', 'TIMESERIE', 'AUXILIARYDATA']})
       // stac.query = Object.assign(stac.query, {'grid:code': ['BALKANS']})
       var requester = data.stacRequester(stac.url, stac.query, config.state.size, data.metadata.cds)
+      loader.changeStateTrue()
       requester.getRecords(data.metadata, route, tokenClientCurrent.value)
       .then(json => { 
             if (json.list) {
@@ -183,6 +186,7 @@
             }
             console.log(json.aggregations)
             data.aggregations = json.aggregations
+            loader.changeStateFalse()
       })
   }
   function getMetadata(uuid) {
@@ -190,8 +194,12 @@
           data.metadata = null
           return
       }
+      loader.changeStateTrue()
       elasticsearch.getMetadata(uuid)
-      .then(meta => { convert(uuid, meta)})
+      .then(meta => { 
+          convert(uuid, meta)
+          loader.changeStateFalse()
+      })
   }
   function close () {
     console.log(data.lastGrid)
@@ -207,6 +215,7 @@
         launchStac()
         return
     }
+    loader.changeStateTrue()
     elasticsearch.getRecords(query)
     .then(json => {
         if (json.list) {
@@ -215,6 +224,7 @@
           data.pagination = Object.assign(data.pagination, json.pagination)
           data.bbox = null
         }
+        loader.changeStateFalse()
          console.log(json.aggregations)
         if (json.list.length === 0 && data.metadata && data.metadata.stac) {
             launchStac()

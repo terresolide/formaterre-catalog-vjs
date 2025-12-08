@@ -4,6 +4,7 @@ import { useRoute, RouterLink, RouterView } from 'vue-router'
 import {useConfig} from '@/stores/config'
 import {useCatalog} from '@/stores/catalog'
 import UserInfo from '@/components/UserInfo.vue'
+import {useLoaderState} from '@/stores/loaderState.js'
 // import sentinel1Test from '@/modules/sentinel1-test.js'
 const CharterPage = defineAsyncComponent(
     () => import('@/components/CharterPage.vue'),
@@ -12,8 +13,12 @@ const config = useConfig()
 config.init()
 const catalog = useCatalog()
 catalog.init()
+const isLoading = useLoaderState()
 
 const route = useRoute()
+const loading = computed(() => {
+    return isLoading.state
+})
 watch(route, () => {
     catalog.setCatalog(route.params.catalog)
 })
@@ -29,6 +34,9 @@ let currentCatalog = computed(() => {
 </script>
 
 <template>
+    <template v-if="loading">
+       <div class="loading"><font-awesome-icon icon="fa-solid fa-spinner" spin  /> </div>
+    </template>
     <template v-if="route.name !== 'login'">
         <header>
             
@@ -78,6 +86,20 @@ pour wordpress
  div[id="app"] h1::after {
      display:none;
 }
+ div.loading {
+     position: absolute;
+     top:0;
+     left:0;
+     ritht:0;
+     bottom: 0;
+     width:100%;
+     z-index:100;
+     text-align:center;
+     padding-top:20%;
+     text-align:normal;
+     font-size:3rem;
+     background:var(--color-background-transparent);
+ }
  img.icon-tile {
      max-height: 30px;
      vertical-align:middle;

@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import {useLoaderState} from '@/stores/loaderState.js'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -78,7 +79,17 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/SearchView.vue'),
     },
-  ],
+  ]
 })
-
+router.beforeEach((to, from, next) => {
+    const isLoading = useLoaderState();
+    const { changeStateTrue } = isLoading;
+    changeStateTrue()
+    next()
+ })
+ router.afterEach((to, from) => {
+    const isLoading = useLoaderState();
+    const { changeStateFalse } = isLoading;
+    changeStateFalse()
+})
 export default router
