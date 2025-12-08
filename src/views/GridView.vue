@@ -39,7 +39,6 @@
   const client = useClient()
   const loader = useLoaderState()
   const access = computed(() => {
-        console.log('===== ACCESS CHANGE =====')
         if (!data.metadata) {
             // voir le sso pour le catalogue....
             

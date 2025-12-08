@@ -73,8 +73,7 @@ function show () {
         <div class="element-description">
             <div v-if="metadata.quicklook || metadata.status" style="display:block;float:left;max-width:120px;text-align:center;">
                 <img :src="metadata.quicklook.src" :title="metadata.quicklook.title" v-if="metadata.quicklook"/>
-                 <div class="mtdt-status" v-if="metadata.status"  
-                 :style="{color: config.state.primary, borderColor: config.state.primary}">
+                 <div class="mtdt-status" v-if="metadata.status"  >
                     {{metadata.status.label || metadata.status}}
                  </div>
        
@@ -83,7 +82,7 @@ function show () {
             <div v-if="metadata.subtitle">{{metadata.subtitle}}</div>
             <div v-html="metadata.description"></div>
             <div v-for="item in metadata.thesaurus" >
-                <label :style="{color: config.state.primary}">{{ item.label }}: </label> 
+                <label>{{ item.label }}: </label> 
                 <span v-for="value in item.values">{{ value }} </span>
             </div>
             <stac-parameters :metadata="metadata" />
@@ -114,6 +113,9 @@ a.service-link {
     margin:0;
     padding:0;
     }
+label {
+    color:var(--color-text-primary);
+}
 div.mtdt-center {
     display:inline-block;
     width:90px;
@@ -142,10 +144,10 @@ div.element-metadata-flex {
   
   padding: 0px 10px 20px 10px;
   margin: 0 10px 20px;
-  -webkit-box-shadow: 0 0px 3px rgba(0,0,0,0.5);
-  box-shadow: 0 0px 3px rgba(0,0,0,0.5);
+  -webkit-box-shadow: 0 0px 3px var(--color-shadow);
+  box-shadow: 0 0px 3px var(--color-shadow);
   position: relative;
-  background: var(--color-background-soft);
+  background: var(--color-background);
   min-height:250px;
   max-height:250px;
   overflow:hidden;
@@ -206,7 +208,8 @@ div.element-metadata-flex {
  div.element-metadata-flex .mtdt-status {
      display:inline-block;
      padding:2px 5px;
-     border:1px solid black;
+     color: var(--color-primary);
+     border:1px solid var(--color-text-primary);
      border-radius:3px;
      box-sizing:border-box;
      margin-right:10px;
@@ -227,7 +230,7 @@ div.element-metadata-flex {
   min-height: 28px;
   -webkit-box-sizing: content-box;
   box-sizing: content-box;
-  background:var(--color-background-soft);
+  background:var(--color-background);
   overflow:visible;
 }
  div.element-metadata-flex .mtdt-footer > div{

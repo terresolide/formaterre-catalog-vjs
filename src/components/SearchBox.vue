@@ -1,7 +1,7 @@
 <template>
 <span class="formater-search-box" v-bind:class="{ showBody: isdeployed, 'partial-disable': disableLevel === 1, disable: disableLevel ===2 }">
 <div id="main" class="box noselect">
-<header class="box-heading" v-on:click="isdeployed = !isdeployed" :style="{background: type === 'fill' ? color: '#f5f5f5', color: type === 'fill' ? '#fff': color}">
+<header class="box-heading" v-on:click="isdeployed = !isdeployed" :style="{background: type === 'fill' ? 'var(--color-primary)': 'var(--color-background-mute)', color: type === 'fill' ? 'var(--color-white)': 'var(--color-text-primary)'}">
   <div class="box-title">
      <div class="box-heading-buttons fmt-before" v-if="type != 'fill'">
         <font-awesome-icon class="chevron" :icon="openIconClass"/>
@@ -59,7 +59,7 @@ export default {
     },
     color: {
       type: String,
-      default: '#39B062'
+      default: 'var(--color-text)'
     }
     
   },
@@ -115,8 +115,8 @@ export default {
 .formater-search-box .box {
     box-sizing: border-box;
     width: 100%;
-    color: var(--catalog-box-color, #333);
-    background-color: var(--catalog-box-background-color, #fff)
+    color: var(--color-text, #333);
+    background-color: var(--color-background, #fff)
 }
 .formater-search-box .box-title {
     display: flex;
@@ -127,7 +127,7 @@ export default {
 
 
 .formater-search-box header {
-	color:#fff;
+	color:var(--color-background);
 }
 
 .formater-search-box .box-title h4 {
@@ -152,15 +152,15 @@ export default {
     align-items: center;
     padding: 5px 10px;
     border-bottom: 1px solid #ccc;
-    border: var(--catalog-box-toolbar-border);
-    background-color: var(--catalog-box-toolbar-background-color, #fafafa)
+    border: var(--color-border);
+    background-color: var(--color-background-mute, #fafafa)
 }
 .formater-search-box .box-heading {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    background-color: var(--catalog-box-header-background-color, #f5f5f5);
+    background-color: var(--color-background-mute, #f5f5f5);
     border: var(--catalog-box-header-border, none);
     cursor: pointer;
     pointer-events: auto;

@@ -45,7 +45,7 @@ let config = useConfig()
       </div> 
     </template>
     <template v-else-if="props.links.length === 1">
-        <a :href="props.links[0].url" target="_blank" :title="props.links[0].name">
+        <a class="related-link" :href="props.links[0].url" target="_blank" :title="props.links[0].name">
             <div class="mtdt-related-type" :style="{backgroundColor: config.state.primary}">
                 <font-awesome-icon :icon="icon" /> 
             </div>

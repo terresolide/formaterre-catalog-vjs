@@ -1,7 +1,7 @@
 <script setup>
 import {computed, onMounted, reactive, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-const {lang,primary, color,defaultBox} = defineProps({
+const {lang,color,defaultBox} = defineProps({
     lang: {
         type:String,
         default: 'en'
@@ -136,6 +136,9 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.formater-search-box .box .formater-spatial-search{
+    color: var(--vt-c-text-light-1);
+}
 .formater-spatial-search.disable{
   pointer-events: none;
   opacity: 0.8;

@@ -89,12 +89,18 @@ function select() {
   vertical-align: bottom;
   border-radius: 3px;
   /*background:#8c0209;*/
-  background: #754a15;
+  background: var(--color-primary);
   padding: 3px 5px;
   color: white;
   margin-right: 3px;
   display: inline-block;
   box-sizing: content-box;
+}
+.mtdt-related-type:hover {
+    background: var(--over);
+}
+div[id="app"] a.related-link:hover {
+    background:transparent;
 }
 .mtdt-expand ul {
   list-style: none;
@@ -141,7 +147,7 @@ span.notAuthenticated,
   color: var(--color-text);
 }
 .mtdt-layers li:hover {
-  color: darkred;
+  color: var(--text-link);
 }
 .element-metadata-flex .mtdt-related-type + .mtdt-expand {
   display: none;

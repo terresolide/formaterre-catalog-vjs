@@ -49,7 +49,7 @@ function close () {
 <template>
     <div class="metadata-content" :class="{'metadata-single': inside}" v-if="metadata">
         <span class="mtdt-metadata-close fa fa-close" @click="close"><font-awesome-icon icon="fa-solid fa-close" /> </span>
-        <h1 class="mtdt-metadata-header" :style="{color:config.state.primary}">
+        <h1 class="mtdt-metadata-header" >
             <a v-if="metadata.dataCenter" :href="dataCenter.href" :title="dataCenter.title[config.lang]" target="_blank" class="mtdt-group-logo">
               <img :src="dataCenter.logo"/>
             </a>
@@ -62,7 +62,7 @@ function close () {
         </h1> 
         <hr />
         <div class="mtdt-tabs">
-            <template v-if="!inside">
+            <template v-if="!inside && metadata.hierarchyLevel === 'series'">
                 <div v-for="(tab,index) in tabs" class="mtdt-tab" :class="{'selected': data.currentTab === index}" @click="data.currentTab = index">{{$t(index)}}</div>
             </template>
             <export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
@@ -94,6 +94,7 @@ function close () {
 .metadata-content h1{
   font-size:1.5em;
   font-weight:700;
+  color:var(--color-text-primary);
 }
 .metadata-content h3,
 .metadata-content h4{

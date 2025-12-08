@@ -135,9 +135,12 @@
 }
 </style>
 <style scoped>
+.formater-search-box .box .temporal-container {
+    color: var(--vt-c-text-light-1);
+}
 label {
     display:inline-block;
-    width:30px;
+    width:45px;
     padding:2px 0 2px 3px;
     margin-right:2px;
 }

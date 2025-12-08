@@ -21,15 +21,15 @@ const config = useConfig()
         <div class="main-column">
             <div class="description" v-if="metadata.description" v-html="metadata.description" />
             <dl>
-               <dt :style="{color: config.state.primary}">{{$t('identifier')}}</dt>
+               <dt >{{$t('identifier')}}</dt>
                <dd>{{metadata.identifier}}</dd>
             </dl>
             <dl>
-               <dt :style="{color: config.state.primary}">{{$t('status')}}</dt>
+               <dt >{{$t('status')}}</dt>
                <dd>{{metadata.status}}</dd>
             </dl>
             <dl>
-                <dt :style="{color: config.state.primary}">{{$t('resource_date')}}</dt>
+                <dt >{{$t('resource_date')}}</dt>
                 <dd v-for="extent in metadata.temporalExtents" >
                   <temporal-extent :extent="extent"></temporal-extent>
                 </dd>
@@ -38,11 +38,11 @@ const config = useConfig()
                 </template>
             </dl>
             <dl v-if="metadata.fromStac">
-               <dt :style="{color: config.state.primary}">{{$t('parameters')}}</dt>
+               <dt >{{$t('parameters')}}</dt>
                <dd><stac-parameters :metadata="metadata" /> </dd>
             </dl>
             <dl>
-                <dt :style="{color: config.state.primary}">Contact(s)</dt>
+                <dt >Contact(s)</dt>
                 <template v-for="list, key in metadata.contacts.resource">
                    <dd>
                       <div class="contact-container">
@@ -54,7 +54,7 @@ const config = useConfig()
                 </template>
             </dl>
             <dl>
-                <dt :style="{color: config.state.primary}">{{$t('lineage')}}</dt>
+                <dt >{{$t('lineage')}}</dt>
                 <dd>
                 <template v-for="item in metadata.lineage">
                   <dd v-html="item"></dd>
@@ -62,7 +62,7 @@ const config = useConfig()
                 </dd>
             </dl>
             <dl>
-                <dt :style="{color: config.state.primary}">{{$t('constraints')}}</dt>
+                <dt >{{$t('constraints')}}</dt>
                 <template v-for="item in metadata.legalConstraints">
                   <dd v-html="item"></dd>
                 </template>
@@ -71,7 +71,7 @@ const config = useConfig()
                 </template>
             </dl> 
             <dl>
-                <dt :style="{color: config.state.primary}">{{$t('geographic_information')}}</dt>
+                <dt >{{$t('geographic_information')}}</dt>
                 <dd>
                   {{$t('resource_type')}}: {{metadata.representation}}
                 <br>
@@ -99,7 +99,7 @@ const config = useConfig()
                 </dd>
             </dl>
             <dl>
-                <dt :style="{color: config.state.primary}">Format(s)</dt>
+                <dt>Format(s)</dt>
                 <template v-for="item in metadata.format">
                   <dd>{{item}}</dd>
                 </template>
@@ -108,17 +108,17 @@ const config = useConfig()
              
             <div class="metadata-section">
               <hr>
-            <h2 :style="{color: config.state.primary}">{{$t('about_metadata')}}</h2>
+            <h2 >{{$t('about_metadata')}}</h2>
                 <dl>
-                    <dt :style="{color: config.state.primary}">{{$t('identifier')}}</dt>
+                    <dt>{{$t('identifier')}}</dt>
                     <dd> {{metadata.uuid}}</dd>
                 </dl>
                 <dl>
-                    <dt :style="{color: config.state.primary}">{{$t('update')}}</dt>
+                    <dt>{{$t('update')}}</dt>
                     <dd>{{moment(metadata.dateStamp).format('ll')}}</dd>
                 </dl>
                <dl>
-                <dt :style="{color: config.state.primary}">Contact(s)</dt>
+                <dt>Contact(s)</dt>
                 <template v-for="list, key in metadata.contacts.metadata">
                    <dd>
                       <div class="contact-container">
@@ -159,6 +159,9 @@ const config = useConfig()
     max-height:calc(100vh - 210px);
     overflow-x: scroll;
 }
+.metadata-container h2{
+    color: var(--color-text-primary);
+}
 .metadata-section > div {
     text-align:left;
 }
@@ -187,6 +190,7 @@ dl {
 
 dt {
   grid-column: 1;
+  color:var(--color-text-primary);
 }
 
 dd {

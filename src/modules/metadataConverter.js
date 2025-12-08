@@ -17,7 +17,14 @@ export default function (attrs) {
               pdf: config.state.geonetwork + '/srv/api/records/'+ uuid + '/formatters/xsl-view?root=div&output=pdf'
           }
         }
-        var idLang = config.locale
+        var idLang = config.state.locale
+        if (idLang === 'fre') {
+            idLang = 'FR'
+        } else {
+            idLang = 'EN'
+        }
+        // search lang code
+        
         console.log(uuid)
         metadata.uuid = uuid
 

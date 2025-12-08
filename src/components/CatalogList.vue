@@ -66,10 +66,10 @@ div.wrapper-group{
   
    padding: 20px;
   margin: 0 10px 20px;
-  -webkit-box-shadow: 0 0px 3px rgba(0,0,0,0.5);
-  box-shadow: 0 0px 3px rgba(0,0,0,0.5);
+  -webkit-box-shadow: 0 0px 3px var(--color-shadow) ;
+  box-shadow: 0 0px 3px var(--color-shadow);
   position: relative;
-  background: var(--color-background-mute);
+  background: var(--color-background);
   
   
   }

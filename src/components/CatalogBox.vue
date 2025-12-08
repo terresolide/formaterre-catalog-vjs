@@ -50,6 +50,6 @@ div.catalog-footer {
      line-height:1.1;
      width:100%;
      left:0;
-     background:#f3f3f3;
+     background:var(--color-background-soft);
 }
 </style>

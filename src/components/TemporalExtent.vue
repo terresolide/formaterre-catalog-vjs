@@ -1,11 +1,9 @@
 <script setup>
 import { computed, inject } from 'vue';
-import {useConfig} from '@/stores/config'
 const moment = inject('moment')
 const props = defineProps({
    extent: Object
 })
-let config = useConfig()
 let start = computed(() => {
     if (props.extent.start && props.extent.start.date) {
         return moment(props.extent.start.date).format('ll')
@@ -25,9 +23,11 @@ let end = computed(() => {
 </script>
 <template v-if="start && end">
 
-{{start}} <span :style="{color: config.state.primary}">&rarr;</span> {{end}} 
+{{start}} <span>&rarr;</span> {{end}} 
   
 </template>
 <style scoped>
-
+span {
+    color: var(--color-text-primary);
+}
 </style>
