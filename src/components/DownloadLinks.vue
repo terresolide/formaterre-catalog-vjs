@@ -4,6 +4,7 @@ import {useUser} from '@/stores/user.js'
 import {useConfig} from '@/stores/config.js'
 import {useSelection} from '@/stores/selection'
 import {useClient} from '@/stores/client'
+import {useLoaderState} from '@/stores/loaderState.js'
 import streamSaver  from 'streamsaver'
   
 const {links,  access, mode, ssoId} = defineProps({
@@ -24,7 +25,7 @@ const user = useUser()
 const selection = useSelection()
 const client = useClient()
 const config = useConfig()
-
+const load = useLoaderState()
 function commandLine(index) {
     if (access.download === 0) {
         emit('click')
@@ -39,7 +40,7 @@ function download (index) {
         // emit('click')
         return
     }
-
+    load.changeStateTrue()
     if (ssoId) {
         var sso = client.getSsoFromId(ssoId)
         var link = links[index]
@@ -50,6 +51,7 @@ function download (index) {
         a.setAttribute('target', '_blanck');
         document.body.append(a)
         a.click()
+        load.changeStateFalse()
     }
 }
 function getTokenInHeader (link, token) {
@@ -75,8 +77,10 @@ function getTokenInHeader (link, token) {
     const signal = ac.signal
     selection.writableStreams.push(ac)
     fetch(url, {headers: headers, signal: signal}).then(res => {
+       load.changeStateFalse()
       if (!res.ok ) {
         console.log(res.status)
+       
         switch (res.status) {
          
           case 403:
