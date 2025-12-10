@@ -389,8 +389,8 @@ export default function (attrs) {
                     var key = 'th_' + keys.slice(4, keys.length + 1).join('.')
                     
                     // var name = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:title']..['#text']")
-                    if (key.indexOf('distributor') >= 0) {
-                      isDataCenter = true
+                    if (key.indexOf('provider') >= 0) {
+                      // isDataCenter = true
                     }
                 }
             }

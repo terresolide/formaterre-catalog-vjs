@@ -300,7 +300,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                         if (query[key] && query[key].indexOf('+') === -1) {
                             // OR
                             var term = {}
-                            term[aggregations[key].terms.field] = decodeURIComponent(query[key]).split(',')
+                            term[aggregations[key].terms.field] =  decodeURIComponent(query[key]).split(',')
                             parameters.query.bool.filter.push({terms: term})
                         } else {
                             // AND
@@ -313,6 +313,16 @@ export const useElasticsearch = defineStore('elasticsearch', {
 
                         }
                     }
+                }
+            }
+            for(var key in query) {
+                if (key.substring(0,3) === 'th_') {
+                    console.log(key)
+                    var prop = key + '.link'
+                    var term = {}
+                    term[prop] = query[key].split(',')[0]
+                    parameters.query.bool.filter.push({term: term})
+                    
                 }
             }
             parameters.aggregations = aggregations
@@ -434,8 +444,8 @@ export const useElasticsearch = defineStore('elasticsearch', {
             meta.geom = source.geom
             // fournisseur (on utilise distributor pour le moment)
             meta.provider = null
-            if (source['th_formater-distributor']) {
-                meta.provider = config.getProvider(source['th_formater-distributor'][0].link)
+            if (source['th_formater-provider']) {
+                meta.provider = config.getProvider(source['th_formater-provider'][0].link)
             }
             meta.thesaurus = this.treatmentThesaurus(source)
             meta.links = this.treatmentLinks(source.link, meta.id)
