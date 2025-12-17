@@ -139,6 +139,7 @@
     
   })
   function convert (uuid, metadata) {
+      loader.changeStateTrue()
       if (!data.converter) {
           getMetaConverter()
           .then(converter => {
@@ -199,7 +200,6 @@
       elasticsearch.getMetadata(uuid)
       .then(meta => { 
           convert(uuid, meta)
-          loader.changeStateFalse()
       }, err => {loader.changeStateFalse()})
   }
   function close () {
@@ -224,9 +224,12 @@
           data.pagination = Object.assign(data.pagination, json.pagination)
           data.bbox = null
         }
+        
         loader.changeStateFalse()
-        if (json.list.length === 0 && data.metadata && data.metadata.stac) {
+        if (json.list.length === 0 && data.metadata ) {
+           if (data.metadata.stac) {
             launchStac()
+           } 
 
             return {}
         } else {

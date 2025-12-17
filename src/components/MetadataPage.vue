@@ -1,5 +1,5 @@
 <script setup>
-import {computed, reactive} from 'vue'
+import {computed, reactive, watch} from 'vue'
 import { useConfig } from "@/stores/config.js"
 // import { useSelection } from "@/stores/selection.js"
 import ExportLinks from '@/components/ExportLinks.vue'
@@ -44,6 +44,10 @@ const dataCenter = computed(() => {
 function close () {
     emit('close')
 }
+watch(() => metadata,
+      meta => {
+          data.currentTab = 'description'
+})
 </script>
 
 <template>
