@@ -222,7 +222,11 @@
         if (json.list) {
           data.list = json.list
           data.pagination = Object.assign(data.pagination, json.pagination)
-          data.bbox = null
+          if (data.metadata && data.list.length === 0) {
+              data.bbox = data.metadata.geojson
+          } else {
+              data.bbox = null
+          }
         }
         
         loader.changeStateFalse()
