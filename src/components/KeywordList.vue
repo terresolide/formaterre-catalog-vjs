@@ -7,9 +7,13 @@ const router = useRouter()
 function goTo (kwd) {
      var query = {}
      console.log(keywords.key)
-     if (keywords.key) {
+     if (keywords.key ) {
         console.log('ici')
-         query[keywords.key]= kwd.link + ',' + kwd.name
+        if (kwd.link) {
+            query[keywords.key]= kwd.link + ',' + kwd.name
+        } else {
+            query.any = kwd.name
+        }
          
      } else {
         query.any = kwd.name

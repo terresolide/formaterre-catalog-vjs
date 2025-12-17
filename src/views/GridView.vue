@@ -95,9 +95,7 @@
     for (var key in aggregations) {
       if (data.aggregations[key]) {
         data.aggregations[key] = aggregations[key]
-      } else {
-        data.aggregations[key].category = []
-      }
+      } 
     }
     console.log(data.aggregations)
     return data.aggregations
