@@ -1,6 +1,7 @@
 <script setup>
 import {inject} from 'vue'
 import {useConfig} from '@/stores/config.js'
+import {RouterLink} from 'vue-router'
 import CarrousselImages from '@/components/CarrousselImages.vue'
 import RelatedLinks from '@/components/RelatedLinks.vue'
 import TemporalExtent from '@/components/TemporalExtent.vue'
@@ -113,6 +114,12 @@ const config = useConfig()
                     <dt>{{$t('identifier')}}</dt>
                     <dd> {{metadata.uuid}}</dd>
                 </dl>
+                <template v-if="metadata.parentIdentifier">
+                    <dl>
+                       <dt>Parent</dt>
+                       <dd><router-link :to="{name:'metadata', params:{id: metadata.parentIdentifier}}">{{metadata.parentIdentifier}}</router-link></dd>
+                    </dl>
+                </template>
                 <dl>
                     <dt>{{$t('update')}}</dt>
                     <dd>{{moment(metadata.dateStamp).format('ll')}}</dd>

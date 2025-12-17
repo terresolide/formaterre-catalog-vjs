@@ -27,6 +27,7 @@
     osRequester: null,
     reset: false,
     oldroute: {name: null, params: {}, query: {}},
+    parent: null,
     aggregations: [],
     metadata: null,
     stacRequester: null,
@@ -114,16 +115,19 @@
      
      
       elasticsearch.setCatalog(newroute.name, newroute.params.catalog, newroute.params.id)
-      if (newroute.params.id && (!data.oldroute.params.id || data.oldroute.params.id !== newroute.params.id)) {
-           data.lastGrid = data.oldroute
+      if (newroute.params.id) {
+          if (!data.oldroute.params.id) {
+              data.lastGrid = data.oldroute
+              data.parent = null
+          } else if (data.oldroute.params.id !== newroute.params.id) {
+              data.parent = data.oldroute
+          }
           getMetadata(newroute.params.id)
       } else {
-         
-          if (!newroute.params.id) {
-              data.metadata = null
-              data.bbox = null
-             
-          }
+          data.metadata = null
+          data.bbox = null
+          data.parent = null
+          data.lastGrid = null
           getRecords(newroute.query)
       }
        data.oldroute = Object.assign({},newroute)
@@ -141,10 +145,16 @@
               data.converter = converter.default()
               data.metadata = data.converter.transform(uuid, metadata)
               data.bbox = data.metadata.geojson
+              if (!data.metadata.parentIdentifier) {
+                  data.parent = null
+              }
               getRecords(route.query)
           })
       } else {
             data.metadata = data.converter.transform(uuid, metadata)
+            if (!data.metadata.parentIdentifier) {
+                  data.parent = null
+            }
             data.bbox = data.metadata.geojson
             getRecords(route.query)
       }
@@ -178,7 +188,7 @@
             }
             data.aggregations = json.aggregations
             loader.changeStateFalse()
-      })
+      }, err => {loader.changeStateFalse()})
   }
   function getMetadata(uuid) {
       if (!uuid) {
@@ -190,11 +200,12 @@
       .then(meta => { 
           convert(uuid, meta)
           loader.changeStateFalse()
-      })
+      }, err => {loader.changeStateFalse()})
   }
   function close () {
-      console.log(data.lastGrid)
-    if (data.lastGrid && data.lastGrid.name) {
+    if (data.parent) {
+        router.push(data.parent)
+    } else if (data.lastGrid && data.lastGrid.name) {
         router.push(data.lastGrid)
     } else {
         router.push({name:'grid'})
@@ -221,6 +232,8 @@
         } else {
             return elasticsearch.treatmentAggregations(json.aggregations)
         }
+    }, err => {
+        loader.changeStateFalse()
     }).then(values => {
         mergeAggregations(values)
     })

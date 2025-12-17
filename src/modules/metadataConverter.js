@@ -42,6 +42,9 @@ export default function (attrs) {
         metadata.description = description.replace(/(?:\\[rn]|[\r\n])/g, '<br />')
         metadata.credit = extractFromLangs(json['gmd:credit'], idLang)
         metadata.purpose = extractFromLangs(json['gmd:purpose'], idLang)
+        if (json['gmd:parentIdentifier']) {
+            metadata.parentIdentifier = json['gmd:parentIdentifier']['gco:CharacterString']["#text"]
+        }
         if (json['gmd:hierarchyLevel']) {
             metadata.hierarchyLevel = json['gmd:hierarchyLevel']['gmd:MD_ScopeCode']['@codeListValue']
         } else {
