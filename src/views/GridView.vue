@@ -86,7 +86,6 @@
         return token
   })
   function mergeAggregations (aggregations) {
-    console.log(aggregations)
     if (Object.keys(data.aggregations).length === 0 || data.reset) {
       data.aggregations = aggregations
       data.reset = false
@@ -97,7 +96,6 @@
         data.aggregations[key] = aggregations[key]
       } 
     }
-    console.log(data.aggregations)
     return data.aggregations
 
   }
@@ -157,7 +155,6 @@
       if (!data.stacRequester) {
           getStacRequester()
           .then(x => { 
-              console.log(x)
                data.stacRequester = x.stacRequester
                getStacRecords()
           })
@@ -168,7 +165,6 @@
   function getStacRecords () {
       
       var stac = data.metadata.links.api.STAC
-      console.log(stac.query)
       // stac.query = Object.assign(stac.query, {'product:type': ['INTERFEROGRAM', 'TIMESERIE', 'AUXILIARYDATA']})
       // stac.query = Object.assign(stac.query, {'grid:code': ['BALKANS']})
       var requester = data.stacRequester(stac.url, stac.query, config.state.size, data.metadata.cds)
@@ -176,12 +172,10 @@
       requester.getRecords(data.metadata, route, tokenClientCurrent.value)
       .then(json => { 
             if (json.list) {
-              console.log(json.list)
               data.list = json.list
               data.pagination = Object.assign(data.pagination, json.pagination)
               data.bbox = null
             }
-            console.log(json.aggregations)
             data.aggregations = json.aggregations
             loader.changeStateFalse()
       })
@@ -199,15 +193,14 @@
       })
   }
   function close () {
-    console.log(data.lastGrid)
-    if (data.lastGrid) {
+      console.log(data.lastGrid)
+    if (data.lastGrid && data.lastGrid.name) {
         router.push(data.lastGrid)
     } else {
         router.push({name:'grid'})
     }
   }
   function getRecords (query) {
-    console.log(data.metadata)
     if (data.metadata && data.metadata.stac && data.stacRequester) {
         launchStac()
         return
@@ -216,23 +209,19 @@
     elasticsearch.getRecords(query)
     .then(json => {
         if (json.list) {
-          console.log(json.list)
           data.list = json.list
           data.pagination = Object.assign(data.pagination, json.pagination)
           data.bbox = null
         }
         loader.changeStateFalse()
-         console.log(json.aggregations)
         if (json.list.length === 0 && data.metadata && data.metadata.stac) {
             launchStac()
 
             return {}
         } else {
-            console.log(json.aggregations)
             return elasticsearch.treatmentAggregations(json.aggregations)
         }
     }).then(values => {
-        console.log(values)
         mergeAggregations(values)
     })
   }

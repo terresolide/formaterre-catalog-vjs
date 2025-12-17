@@ -219,7 +219,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 parameters.size = parseInt(query.to) - parameters.from
             }
             if (query.sortBy) {
-                console.log(query.sortBy)
                 // this.parameters.sort = [{changeDate: 'desc'}, {popularity: desc}]
                 if (query.sortBy === 'changeDate') {
                     parameters.sort.reverse()
@@ -317,7 +316,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
             }
             for(var key in query) {
                 if (key.substring(0,3) === 'th_') {
-                    console.log(key)
                     var prop = key + '.link'
                     var term = {}
                     term[prop] = query[key].split(',')[0]
@@ -569,7 +567,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
                      links.layers = []
                    }
                    var idLayer =  id + '_' + links.layers.length 
-                   console.log(idLayer)
                    links.layers.push({
                         id: idLayer,
                         uuid: id,
@@ -738,11 +735,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
                 self.translate(thesaurus, toTranslate)
                 .then(translated => {
-                    if (key === 'cdos') {
-                        console.log(buckets)
-                        console.log(toTranslate)
-                        console.log(translated)
-                    }
+
                     buckets.forEach(function (item, index) {
                       if (translated[item.uri]) {
                         if (translated[item.uri].label) {
@@ -759,15 +752,10 @@ export const useElasticsearch = defineStore('elasticsearch', {
                         }
                       }
                     })
-                    if (key === 'cdos') {
-                       console.log(buckets)
-                    }     
+                     
                     if (type === 'select' || type === 'dimension') {
-                        console.log(buckets)
-                        
                         var category = []
                         buckets.forEach(function(item) {
-                            console.log(item)
                             category.push({key: item.key, label: item.label, count: item.doc_count})
                         })
                     } else {

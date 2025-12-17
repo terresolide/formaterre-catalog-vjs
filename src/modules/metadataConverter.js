@@ -24,8 +24,6 @@ export default function (attrs) {
             idLang = 'EN'
         }
         // search lang code
-        
-        console.log(uuid)
         metadata.uuid = uuid
 
         metadata.title = extractFromLangs(
@@ -307,7 +305,6 @@ export default function (attrs) {
         var lists = description.split(';')
         var access = {}
         var query = {}
-        console.log(description)
         lists.forEach(function (tab) {
           var extract = tab.split('=')
           if (extract.length > 1 && ['search', 'view', 'download'].indexOf(extract[0]) >= 0) {
@@ -382,7 +379,6 @@ export default function (attrs) {
             var isDataCenter = false
             if (keynode['gmd:MD_Keywords']['gmd:thesaurusName']) {
                 var key = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:identifier']..['gmd:code']['gmx:Anchor']['#text']")[0]
-                console.log(key)
                 if (key) {
                     var keys = key.split('.')
                     type = keys[3]
@@ -421,7 +417,6 @@ export default function (attrs) {
                 keywords: kwds
             })
         })
-        console.log(metadata)
         metadata.keyword = keywords
     } 
     function extractLineage(metadata, json, idLang) {
@@ -460,7 +455,6 @@ export default function (attrs) {
                   url: url,
                   type: protocol
                 }
-               console.log(protocol)
               switch(protocol) {
                   case 'UKST':
                   case 'OpenSearch':
@@ -499,7 +493,6 @@ export default function (attrs) {
                         list.layers = []
                       }
                       var id = uuid + '_' + list.layers.length
-                      console.log(id)
                       link.id = id
                       list.layers.push(link)
                     break;
