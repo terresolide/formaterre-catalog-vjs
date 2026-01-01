@@ -117,10 +117,12 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
       var aggregations = {}
       
       for (var key in fixed) {
-          var category = fixed[key].map(x => {return {key: x, label: x, count: null}})
-          aggregations[key] = {
-              category: category,
-              meta: {label: key.replace(':', '_'), type: 'dimension'}
+          if (fixed[key].length > 1) {
+              var category = fixed[key].map(x => {return {key: x, label: x, count: null}})
+              aggregations[key] = {
+                  category: category,
+                  meta: {label: key.replace(':', '_'), type: 'dimension'}
+              }
           }
       }
       // idem pour summaries et/ou queryable

@@ -1,6 +1,8 @@
 <script setup>
 import {computed, reactive, watch} from 'vue'
+import { useRoute } from 'vue-router'
 import { useConfig } from "@/stores/config.js"
+
 // import { useSelection } from "@/stores/selection.js"
 import ExportLinks from '@/components/ExportLinks.vue'
 import MetadataContent from '@/components/MetadataContent.vue'
@@ -29,7 +31,7 @@ const {metadata,access, inside, color, ssoId} = defineProps({
 })
 const emit= defineEmits(["close"])
 const config = useConfig()
-
+const route = useRoute()
 // const selection = useSelection()
 const tabs = {
     description: 'description',
@@ -45,8 +47,10 @@ function close () {
     emit('close')
 }
 watch(() => metadata,
-      meta => {
-          data.currentTab = 'description'
+    meta => {
+        if (!route.query || Object.keys(route.query).length === 0 ) {
+              data.currentTab = 'description'
+        }
 })
 </script>
 

@@ -301,11 +301,17 @@ export default function (attrs) {
      * from api description like
      * search=free;view=MACHIN_V;download=MACHIN_VD
      **/
-    function extractAccessFromDescription (description) {
-        if (!description) {
-          return {search:'free', view: 'UNKNOWN', download: 'UNKOWN'}
+    function extractAccessFromDescription (description, url) {
+        var url = new URL(url)
+        if (url.search.length > 3) {
+            var lists = url.search.replace('?', '').split('&')
+        } else {
+            if (!description) {
+              return {search:'free', view: 'UNKNOWN', download: 'UNKOWN'}
+            }
+            var lists = description.split(';')
+            
         }
-        var lists = description.split(';')
         var access = {}
         var query = {}
         lists.forEach(function (tab) {
@@ -316,7 +322,6 @@ export default function (attrs) {
               query[extract[0]] = extract[1].split(',')
           }
         })
-       
         return {access: access, query: query}
     }
     function extractHref (json) {
@@ -465,7 +470,7 @@ export default function (attrs) {
                   case 'opensearch':
                   case 'SensorThings':
                   case 'STAC':
-                    var obj =  extractAccessFromDescription(description)
+                    var obj =  extractAccessFromDescription(description, url)
                     if (!list.api) {
                         list.api = {}
                     }
