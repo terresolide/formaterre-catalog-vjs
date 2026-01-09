@@ -1,7 +1,11 @@
 <script setup>
 import {useRouter} from 'vue-router'
-const {keywords} = defineProps({
-    keywords: Object
+const {keywords, parent} = defineProps({
+    keywords: Object,
+    parent: {
+        type:Boolean,
+        default: false
+    }
 })
 const router = useRouter()
 function goTo (kwd) {
@@ -23,7 +27,10 @@ function goTo (kwd) {
 </script>
 <template>
  <div>
- <span v-for="kwd in keywords.keywords" class="keyword-link" @click="goTo(kwd)">{{kwd.name}}</span> 
+
+ <span :class="{parent: parent}" v-for="kwd in keywords.keywords" class="keyword-link" @click="goTo(kwd)">{{kwd.name}}
+    <template v-if="parent">*</template>
+ </span> 
  </div> 
 </template>
 <style scoped>
@@ -40,6 +47,10 @@ function goTo (kwd) {
     cursor:pointer;
     box-sizing: content-box;
     opacity:0.9;
+}
+.keyword-link.parent {
+    font-style:italic;
+    opacity:0.8;
 }
 .keyword-link:hover {
     opacity:1;

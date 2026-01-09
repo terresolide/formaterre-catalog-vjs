@@ -93,7 +93,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         list.push(metadata)
        
       })
-      
+      console.log(list)
       var pagination = {
           count: list.length
       }
@@ -227,20 +227,49 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         if (lk) {
           properties.exportLinks.json = lk.href
         }
-        properties.crs = parent.crs
-        properties.contacts = parent.contacts
-        properties.legalConstraints = parent.legalConstraints
-        properties.lineage = parent.lineage
-        properties.representation = parent.representation
-        properties.status = parent.status
-        properties.dataCenter = parent.dataCenter
+        // properties.crs = parent.crs
+        // properties.contacts = parent.contacts
+        // properties.legalConstraints = parent.legalConstraints
+        // properties.lineage = parent.lineage
+        // roperties.representation = parent.representation
+        // properties.status = parent.status
+        // properties.dataCenter = parent.dataCenter
         properties.keyword = []
-        parent.keyword.forEach(function (list) {
+        /* parent.keyword.forEach(function (list) {
             if (list.key !== 'th_regions') {
                 properties.keyword.push(list)
             }
+        }) */
+        properties.parent = {}
+        if (!properties.crs) {
+            properties.parent.crs = parent.crs
+        }
+        if (!properties.contacts) {
+            properties.parent.contacts = parent.contacts
+        }
+        if (!properties.legalConstraints) {
+            properties.parent.legalConstraints = parent.legalConstraints
+        }
+        if (!properties.lineage) {
+            properties.parent.lineage = parent.lineage
+        }
+        if (!properties.representation) {
+            properties.parent.representation = parent.representation
+        }
+        if (!properties.status) {
+            properties.parent.status = parent.status
+        }
+        if (!properties.dataCenter) {
+            properties.parent.dataCenter = parent.dataCenter
+        }
+       
+        properties.parent.keyword = []
+        parent.keyword.forEach(function (list) {
+            if (list.key !== 'th_regions') {
+                properties.parent.keyword.push(list)
+            }
         })
-      
+        
         
         return properties
     }

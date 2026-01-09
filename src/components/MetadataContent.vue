@@ -42,8 +42,9 @@ const config = useConfig()
                <dt >{{$t('parameters')}}</dt>
                <dd><stac-parameters :metadata="metadata" /> </dd>
             </dl>
-            <dl>
-                <dt >Contact(s)</dt>
+            <dl :class="{parent:!metadata.contacts && metadata.parent && metadata.parent.contacts}">
+              <template v-if="metadata.contacts">
+                <dt >Contact(s) </dt>
                 <template v-for="list, key in metadata.contacts.resource">
                    <dd>
                       <div class="contact-container">
@@ -53,22 +54,60 @@ const config = useConfig()
                       </div>
                     </dd>
                 </template>
+              </template>
+              <template v-else-if="metadata.parent && metadata.parent.contacts.resource">
+                 <dt >Contact(s) *</dt>
+                 <template v-for="list, key in metadata.parent.contacts.resource">
+                   <dd>
+                      <div class="contact-container">
+                        <template v-for="item in list">
+                           <contact-box :contact="item" />
+                        </template>
+                      </div>
+                    </dd>
+                </template>
+              </template>
             </dl>
-            <dl>
-                <dt >{{$t('lineage')}}</dt>
+            <dl :class="{parent: !metadata.lineage && metadata.parent && metadata.parent.lineage}">
+                <dt >{{$t('lineage')}}
+                  <template v-if="!metadata.lineage && metadata.parent && metadata.parent.lineage">*</template>
+                </dt>
                 <dd>
-                <template v-for="item in metadata.lineage">
-                  <dd v-html="item"></dd>
+                <template v-if="metadata.lineage">
+                    <template v-for="item in metadata.lineage">
+                      <dd v-html="item"></dd>
+                    </template>
+                </template>
+                <template v-else-if="metadata.parent && metadata.parent.lineage">
+                  <template v-for="item in metadata.parent.lineage">
+                      <dd v-html="item"></dd>
+                    </template>
                 </template>
                 </dd>
             </dl>
-            <dl>
-                <dt >{{$t('constraints')}}</dt>
-                <template v-for="item in metadata.legalConstraints">
-                  <dd v-html="item"></dd>
+            <dl :class="{parent: !metadata.legalConstraints && metadata.parent && metadata.parent.legalConstraints}">
+                <dt >{{$t('constraints')}}
+                   <template v-if="!metadata.legalConstraints && metadata.parent && metadata.parent.legalConstraints">*</template>
+                </dt>
+                <template v-if="metadata.legalConstraints">
+                    <template v-for="item in metadata.legalConstraints">
+                      <dd v-html="item"></dd>
+                    </template>
                 </template>
-                <template v-for="item in metadata.constraints">
-                  <dd v-html="item"></dd>
+                <template v-else-if="metadata.parent && metadata.parent.legalConstraints">
+                    <template v-for="item in metadata.parent.legalConstraints">
+                      <dd v-html="item"></dd>
+                    </template>
+                </template>
+                <template v-if="metadata.constraints">
+                    <template v-for="item in metadata.constraints">
+                      <dd v-html="item"></dd>
+                    </template>
+                </template>
+                <template v-else-if="metadata.parent && metadata.parent.constraints">
+                    <template v-for="item in metadata.parent.constraints">
+                      <dd v-html="item"></dd>
+                    </template>
                 </template>
             </dl> 
             <dl>
@@ -88,14 +127,29 @@ const config = useConfig()
                         </template>
                 </template>
                 <br>
+                   
+                   <template v-if="metadata.crs">
                    {{$t('ref_system')}}: 
-                   <template v-if="metadata.crs.length === 1">
-                   {{metadata.crs[0]}}
-                   </template>
-                   <template v-else-if="metadata.crs.length > 0">
-                       <ul>
-                         <li v-for="item in metadata.crs">{{item}}</li>
-                       </ul>
+                       <template v-if="metadata.crs.length === 1">
+                       {{metadata.crs[0]}}
+                       </template>
+                       <template v-else-if="metadata.crs.length > 0">
+                           <ul>
+                             <li v-for="item in metadata.crs">{{item}}</li>
+                           </ul>
+                        </template>
+                    </template>
+                    <template v-else-if="metadata.parent && metadata.parent.crs">
+                        <span class="parent">{{$t('ref_system')}} *:
+                            <template v-if="metadata.parent.crs.length === 1">
+                               {{metadata.parent.crs[0]}}
+                            </template>
+                            <template v-else-if="metadata.parent.crs.length > 0">
+                                <ul>
+                                    <li v-for="item in metadata.parent.crs">{{item}}</li>
+                                </ul>
+                            </template>
+                        </span>
                     </template>
                 </dd>
             </dl>
@@ -106,7 +160,14 @@ const config = useConfig()
                 </template>
              
             </dl>
-             
+            <template v-if="metadata.parent">
+                <dl>
+                    <dt></dt>
+                    <dd>
+                    <em>* parent information</em>
+                    </dd>
+                </dl>
+            </template>
             <div class="metadata-section">
               <hr>
             <h2 >{{$t('about_metadata')}}</h2>
@@ -125,15 +186,31 @@ const config = useConfig()
                     <dd>{{moment(metadata.dateStamp).format('ll')}}</dd>
                 </dl>
                <dl>
-                <dt>Contact(s)</dt>
-                <template v-for="list, key in metadata.contacts.metadata">
-                   <dd>
-                      <div class="contact-container">
-                        <template v-for="item in list">
-                           <contact-box :contact="item" />
-                        </template>
-                      </div>
-                    </dd>
+                <template v-if="metadata.contacts">
+                    <dt>Contact(s)</dt>
+                    
+                    <template v-for="list, key in metadata.contacts.metadata">
+                       <dd>
+                          <div class="contact-container">
+                            <template v-for="item in list">
+                               <contact-box :contact="item" />
+                            </template>
+                          </div>
+                        </dd>
+                    </template>
+                </template>
+                <template v-else-if="metadata.parent && metadata.parent.contacts">
+                    <dt class="parent">Contact(s) *</dt>
+                    
+                    <template v-for="list, key in metadata.parent.contacts.metadata">
+                       <dd class="parent">
+                          <div class="contact-container">
+                            <template v-for="item in list">
+                               <contact-box :contact="item" />
+                            </template>
+                          </div>
+                        </dd>
+                    </template>
                 </template>
             </dl>
             </div>
@@ -152,8 +229,15 @@ const config = useConfig()
                     <font-awesome-icon icon="fa-solid fa-key" />
                 </div>
                 <div class="mtdt-expand">
-                <template v-for="list in metadata.keyword">
-                    <keyword-list :keywords="list" />
+                <template v-if="metadata.keyword && metadata.keyword.length > 0">
+                    <template v-for="list in metadata.keyword">
+                        <keyword-list :keywords="list" />
+                    </template>
+                </template>
+                <template v-else-if="metadata.parent && metadata.parent.keyword">
+                    <template v-for="list in metadata.parent.keyword">
+                        <keyword-list :keywords="list" :parent="true"/>
+                    </template>
                 </template>
                 </div>
             </div>
@@ -165,6 +249,10 @@ const config = useConfig()
 .metadata-container {
     max-height:calc(100vh - 210px);
     overflow-x: scroll;
+}
+.metadata-container .parent {
+    font-style:italic;
+    opacity:0.8;
 }
 .metadata-container h2{
     color: var(--color-text-primary);

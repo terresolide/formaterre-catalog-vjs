@@ -302,9 +302,11 @@ export default function (attrs) {
      * search=free;view=MACHIN_V;download=MACHIN_VD
      **/
     function extractAccessFromDescription (description, url) {
-        var url = new URL(url)
+        url = new URL(url)
         if (url.search.length > 3) {
             var lists = url.search.replace('?', '').split('&')
+            url = url.protocol + '//' + url.hostname + url.pathname
+            console.log(url)
         } else {
             if (!description) {
               return {search:'free', view: 'UNKNOWN', download: 'UNKOWN'}
@@ -322,7 +324,7 @@ export default function (attrs) {
               query[extract[0]] = extract[1].split(',')
           }
         })
-        return {access: access, query: query}
+        return {access: access, query: query, url: url}
     }
     function extractHref (json) {
         if (json === undefined) {
@@ -471,11 +473,12 @@ export default function (attrs) {
                   case 'SensorThings':
                   case 'STAC':
                     var obj =  extractAccessFromDescription(description, url)
+                    console.log(url)
                     if (!list.api) {
                         list.api = {}
                     }
                     list.api[protocol] = {
-                      url: url,
+                      url: obj.url,
                       name: name,
                       protocol: protocol,
                       access: obj.access,

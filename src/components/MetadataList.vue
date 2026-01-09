@@ -32,6 +32,7 @@ function close () {
 }
 </script>
 <template>
+
     <template v-if="data.metadata">
     {{props.ssoId}}
        <metadata-page :metadata="data.metadata" :access="props.access" :sso-id="props.ssoId" :inside="true" @close="close"/>
