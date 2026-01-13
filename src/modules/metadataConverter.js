@@ -3,8 +3,11 @@
 **/
 import {JSONPath} from 'jsonpath'
 import {useConfig} from '@/stores/config.js'
+import {useCatalog} from '@/stores/catalog.js'
 export default function (attrs) {
     let config = useConfig()
+    let catalog = useCatalog()
+    console.log(catalog.organismThesaurus)
     let JSONPATH = new JSONPath()
     function transform (uuid, json) {
         var metadata = {}

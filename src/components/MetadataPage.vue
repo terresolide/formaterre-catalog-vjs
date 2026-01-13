@@ -58,9 +58,11 @@ watch(() => metadata,
     <div class="metadata-content" :class="{'metadata-single': inside}" v-if="metadata">
         <span class="mtdt-metadata-close fa fa-close" @click="close"><font-awesome-icon icon="fa-solid fa-close" /> </span>
         <h1 class="mtdt-metadata-header" >
-            <a v-if="metadata.dataCenter" :href="dataCenter.href" :title="dataCenter.title[config.lang]" target="_blank" class="mtdt-group-logo">
-              <img :src="dataCenter.logo"/>
+            <template v-if="metadata.dataCenter">
+            <a v-for="item in metadata.dataCenter" :href="item.website" :title="item.description" target="_blank" class="mtdt-group-logo">
+              <img :src="item.logo"/>
             </a>
+            </template>
             <font-awesome-icon :icon="metadata && metadata.hierarchyLevel === 'series' ? 'fa-solid fa-folder-open': 'fa-solid fa-file'" /> 
             <div>
                <span v-if="metadata.initiativeType">{{$t(metadata.initiativeType)}}: </span>
