@@ -95,14 +95,15 @@ function show () {
                     <img :src="config.state.geonetwork + '/images/harvesting/' + metadata.catalog.logo"   height="31" />
                   </router-link>
                 </template>
-                <template v-else-if="metadata.provider">
-                   <a :href="metadata.provider.href" :title="metadata.provider.title[config.state.lang]" target="_blank">
-                    <img :src="metadata.provider.logo"  />
-                   </a>
+                <template v-else-if="metadata.dataCenter">
+                    <a v-for="item in metadata.dataCenter" :href="item.website" :title="item.description" target="_blank" class="mtdt-group-logo">
+                        <img :src="item.logo"/>
+                    </a>
                 </template>
             </div>
-            <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:4px;width:calc(100% - 100px);">
-              <related-links :uuid="metadata.id" :links="metadata.links" :sso-id="ssoId" :access="access"></related-links></div>
+            <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:0px;width:49%;">
+              <related-links :uuid="metadata.id" :links="metadata.links" :sso-id="ssoId" :access="access"></related-links>
+            </div>
         </div>
       
     </div>
@@ -118,8 +119,8 @@ label {
 }
 div.mtdt-center {
     display:inline-block;
-    width:90px;
-    max-width:90px;
+    width:50%;
+    margin-left:2px;
     text-align:left;
 }
 div.mtdt-center img {

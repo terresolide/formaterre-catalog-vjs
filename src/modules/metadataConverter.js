@@ -7,7 +7,7 @@ import {useCatalog} from '@/stores/catalog.js'
 export default function (attrs) {
     let config = useConfig()
     let catalog = useCatalog()
-    console.log(catalog.organismThesaurus)
+    
     let JSONPATH = new JSONPath()
     function transform (uuid, json) {
         var metadata = {}
@@ -392,21 +392,28 @@ export default function (attrs) {
             var isDataCenter = false
             if (keynode['gmd:MD_Keywords']['gmd:thesaurusName']) {
                 var key = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:identifier']..['gmd:code']['gmx:Anchor']['#text']")[0]
+                console.log(key)
                 if (key) {
                     var keys = key.split('.')
                     type = keys[3]
                     var key = 'th_' + keys.slice(4, keys.length + 1).join('.')
                     
-                    // var name = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:title']..['#text']")
-                    if (key.indexOf('provider') >= 0) {
-                      // isDataCenter = true
+                    var name = JSONPATH.query(keynode['gmd:MD_Keywords']['gmd:thesaurusName'], "$..['gmd:title']..['#text']")
+                    
+                    if (catalog.organismThesaurus && key.indexOf(catalog.organismThesaurus.th_name) >= 0) {
+                        console.log('est dataCenter ', key)
+                        isDataCenter = true
                     }
                 }
             }
             if (!list.forEach) {
               list = [list]
             }
+            
             var kwds = []
+            if (isDataCenter) {
+                metadata.dataCenter = []
+            }
             list.forEach (function (node) {
               var keywd = extractFromLangs(node, idLang)
               var link = JSONPATH.query(node, "$..['gmx:Anchor']['@xlink:href']")
@@ -419,8 +426,8 @@ export default function (attrs) {
                     link: link
                 })
                 if (isDataCenter) {
-                    metadata.dataCenter = link
-                    metadata.cds = link.substring(link.lastIndexOf('#') + 1)
+                    metadata.dataCenter.push(catalog.organisms[link])
+                    // metadata.cds = link.substring(link.lastIndexOf('#') + 1)
                 }
               }
             })

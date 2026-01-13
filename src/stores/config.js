@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import data from '@/assets/dataCenter.json'
+
 
 export const useConfig = defineStore('config', () => {
   let state = {
@@ -15,7 +15,7 @@ export const useConfig = defineStore('config', () => {
       sortBy: 'popularity',
       profile: false
   }
-  let dataCenters = data
+
   function init(conf) {
     state = Object.assign(state, conf)
     state.locale = state.lang === 'fr' ? 'fre' : 'eng'
@@ -26,12 +26,7 @@ export const useConfig = defineStore('config', () => {
     // return "red";
     return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
   }
-  function getProvider (url) {
-      if (dataCenters[url]) {
-          return dataCenters[url]
-      }
-      return null
-  }
+  
   function tr (obj) {
     if (!obj) {
         return ''
@@ -41,5 +36,5 @@ export const useConfig = defineStore('config', () => {
     }
     return obj.default
   }
-  return {state, init, tr, getProvider}
+  return {state, init, tr}
 })

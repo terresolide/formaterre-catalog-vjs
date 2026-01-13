@@ -149,8 +149,9 @@ export const useElasticsearch = defineStore('elasticsearch', {
           }
         }
       },
+      // @todo à configurer sur le back office
       includes: ["uuid", "id", "groupOwner", "cl_status", "cl_hierarchyLevel", "geom", "contactForResource", "organisationName",
-        "resourceTitle*", "resourceTemporalExtentDetails", "resourceAbstract*",  "th_formater-distributor.*",
+        "resourceTitle*", "resourceTemporalExtentDetails", "resourceAbstract*",  "th_formaterre_provider.*",
         "th_formater-platform-gn", "th_formaterre-product-gn", "th_ron.default", "th_polarisation.default", "overview","link"]
     }),
     actions: {
@@ -392,6 +393,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
             }
             var self = this
+            console.log('traitement meta')
             list.forEach(function (result, index) {
                 list[index] = self.treatmentMeta(result)
                 
@@ -440,11 +442,15 @@ export const useElasticsearch = defineStore('elasticsearch', {
             var catalogs = this.getCatalogs()
             meta.catalog = this.catalogs.getCatalogById(source.groupOwner)
             meta.geom = source.geom
-            // fournisseur (on utilise distributor pour le moment)
-            meta.provider = null
-            if (source['th_formater-provider']) {
-                meta.provider = config.getProvider(source['th_formater-provider'][0].link)
+            if ( catalogs.organismThesaurus && source['th_' + catalogs.organismThesaurus.th_name] ) {
+                meta.dataCenter = []
+                var name = 'th_' + catalogs.organismThesaurus.th_name
+                for (var i in source[name]) {
+                    meta.dataCenter.push(catalogs.organisms[source[name][i].link])
+                }
+               
             }
+            console.log(meta.dataCenter)
             meta.thesaurus = this.treatmentThesaurus(source)
             meta.links = this.treatmentLinks(source.link, meta.id)
             return meta
