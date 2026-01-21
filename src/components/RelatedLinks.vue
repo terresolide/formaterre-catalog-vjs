@@ -6,6 +6,7 @@ import { useSelection } from '@/stores/selection'
 import SimpleLinks from '@/components/SimpleLinks.vue'
 import DownloadLinks from '@/components/DownloadLinks.vue'
 import LayerLinks from '@/components/LayerLinks.vue'
+import OrderLinks from '@/components/OrderLinks.vue'
 const props = defineProps({
     uuid: String,
     links: Object,
@@ -69,11 +70,7 @@ function select() {
 
   <!-- commander les données -->
    <template v-if="props.links.order && props.links.order.length > 0">
-      <div class="mtdt-related-type">
-       <a :href="props.links.order[0].url" target="_blank" :title="props.links.order[0].name">
-        <font-awesome-icon icon="fa-solid fa-pen-to-square" />
-       </a>
-      </div>
+       <order-links :links="props.links.order"  :mode="props.mode" ></order-links>
   </template>
   <template v-if="props.links.links && props.links.links.length > 0">
     <simple-links :links="props.links.links" type="information" :mode="props.mode"></simple-links>

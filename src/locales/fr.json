@@ -42,6 +42,7 @@
     "new_roles":"De nouveaux roles vous ont été attribués: {newroles}<br>Déconnectez-vous/reconnectez-vous pour qu'ils soient pris en compte!",
     "no_record": "Aucune fiche ne correspond à la recherche",
     "or": "Ou",
+    "order": "Commander",
     "organization": "Organisation",
     "originator": "À l'origine de",
     "owner": "Propriétaire",
