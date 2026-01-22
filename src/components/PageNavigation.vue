@@ -110,17 +110,16 @@ div.order-by {
   width:180px;
 }
 .paging span.mini-button {
-  font-size: 1.2em;
-  cursor: pointer;
-  margin: 0 1px;
-  padding: 5px;
+ margin: 0 1px;
   cursor: pointer;
   border-radius: 3px;
   background: #cc852a;
   padding: 2px 5px;
-  color: white;
-  vertical-align: middle;
-  opacity: 0.9;
+  color: #fff;
+  opacity: .9;
+  padding-bottom: 2px;
+  font-size: 18px;
+  padding-bottom: 5px;
 }
 .paging span:hover {
     opacity:1;

@@ -342,7 +342,7 @@ div.contact-container {
 @media (min-width: 1200px) {
     .metadata-container {
         display:grid;
-        grid-template-columns: 3fr 1fr;
+        grid-template-columns: 70% 30%;
         grid-gap:10px;
     }
     .main-column {

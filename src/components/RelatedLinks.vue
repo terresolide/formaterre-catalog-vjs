@@ -260,7 +260,8 @@ ul.mtdt-layers li div {
   padding: 0;
   width: calc(100% - 35px);
   overflow: hidden;
-  word-break: break-word;
+  word-break: break-all;
+  line-break:anywhere;
   vertical-align: top;
   line-height: 1;
   max-height: 32px;
