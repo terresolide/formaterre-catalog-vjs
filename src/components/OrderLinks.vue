@@ -12,6 +12,10 @@ const props = defineProps({
   }
 })
 let config = useConfig()
+const emit = defineEmits(['download'])
+function order (index) {
+    emit('download', {link: props.links[index].url, type: 'order' })
+}
 
 </script>
 <template>
@@ -20,7 +24,7 @@ let config = useConfig()
     :title="props.links.length === 1 ? props.links[0].name : ''"
   >
     <template v-if="props.links.length === 1">
-        <a class="icon-link" :href="props.links[0].url" target="_blank" :title="$t('order') + ': ' + props.links[0].name">
+        <a class="icon-link" :href="props.links[0].url" target="_blank" :title="$t('order') + ': ' + props.links[0].name" @click="order(0)">
             <font-awesome-icon icon="fa-solid fa-pencil" />
         </a>
     </template>
@@ -38,7 +42,7 @@ let config = useConfig()
     <ul>
       <template v-for="(link, index) in props.links">
         <li >
-          <a :href="link.url" target="_blank" :title="link.description">{{ link.name }}</a>
+          <a :href="link.url" target="_blank" :title="link.description" @click="order(index)">{{ link.name }}</a>
         </li>
       </template>
     </ul>

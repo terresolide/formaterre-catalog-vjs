@@ -8,6 +8,7 @@ import DownloadLinks from '@/components/DownloadLinks.vue'
 import LayerLinks from '@/components/LayerLinks.vue'
 import OrderLinks from '@/components/OrderLinks.vue'
 const props = defineProps({
+    cds: String, // groupe geonetwork?
     uuid: String,
     links: Object,
     access: {
@@ -40,6 +41,10 @@ function displayLogin () {
 function select() {
     selection.toggle(props.uuid)
 }
+function download (ev) {
+    console.log(ev)
+}
+
 </script>
 <template>
 
@@ -65,12 +70,12 @@ function select() {
       </div>
   -->
   <template v-if="props.links.download && props.links.download.length > 0">
-    <download-links :links="props.links.download" :access="props.access" :sso-id="props.ssoId" :mode="props.mode" @click="displayLogin"></download-links>
+    <download-links :links="props.links.download" :access="props.access" :sso-id="props.ssoId" :mode="props.mode" @click="displayLogin" @download="download"></download-links>
   </template>
 
   <!-- commander les données -->
    <template v-if="props.links.order && props.links.order.length > 0">
-       <order-links :links="props.links.order"  :mode="props.mode" ></order-links>
+       <order-links :links="props.links.order"  :mode="props.mode" @download="download"></order-links>
   </template>
   <template v-if="props.links.links && props.links.links.length > 0">
     <simple-links :links="props.links.links" type="information" :mode="props.mode"></simple-links>

@@ -20,7 +20,7 @@ const {links,  access, mode, ssoId} = defineProps({
     }
 })
 
-const emit = defineEmits(['click'])
+const emit = defineEmits(['click', 'download'])
 const user = useUser()
 const selection = useSelection()
 const client = useClient()
@@ -31,7 +31,7 @@ function commandLine(index) {
         emit('click')
         return
     }
-
+    
     selection.setDownload(links[index], ssoId)
 }
 
@@ -40,6 +40,7 @@ function download (index) {
         // emit('click')
         return
     }
+    emit('download', {link: links[index].url, type: 'download'})
     load.changeStateTrue()
     if (ssoId) {
         var sso = client.getSsoFromId(ssoId)
