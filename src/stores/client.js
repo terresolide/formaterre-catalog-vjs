@@ -59,8 +59,13 @@ export const useClient = defineStore('client', {
         },
         initSSO () {
             var self = this
+            var config = useConfig()
+            
             this.list.forEach(function (client, index) {
                 if (client.type !== 'internal' && client.type !== 'hidden') {
+                    if (client.redirectUri.endsWith('/fr') && config.state.lang === 'en') {
+                        client.redirectUri = client.redirectUri.replace('/fr', '/en')
+                    }
                     self.list[index].sso = new AuthService(client.clientId, {
                         clientId: client.clientId,
                         method: client.method,
