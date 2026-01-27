@@ -1,14 +1,17 @@
 <script setup>
+import {useRoute} from 'vue-router'
 import { computed, reactive } from 'vue'
 import { useConfig } from '@/stores/config'
+import { useUser} from '@/stores/user'
 import { useSelection } from '@/stores/selection'
 // const SimpleLinks = () => import('@/components/SimpleLinks.vue')
 import SimpleLinks from '@/components/SimpleLinks.vue'
 import DownloadLinks from '@/components/DownloadLinks.vue'
 import LayerLinks from '@/components/LayerLinks.vue'
 import OrderLinks from '@/components/OrderLinks.vue'
+import {recordDownload} from '@/modules/recordDownload'
 const props = defineProps({
-    cds: String, // groupe geonetwork?
+    group: String, // groupe geonetwork?
     uuid: String,
     links: Object,
     access: {
@@ -26,10 +29,12 @@ const props = defineProps({
 })
 let config = useConfig()
 let selection = useSelection()
-
-let computedAccess = computed(() => {
-    return { view: 'free', download: 'free' }
-})
+let route = useRoute()
+let user = useUser()
+console.log(route)
+// let computedAccess = computed(() => {
+//     return { view: 'free', download: 'free' }
+// })
 let selectedUuid = computed(() => selection.uuid)
 
 let data = reactive({
@@ -41,22 +46,33 @@ function displayLogin () {
 function select() {
     selection.toggle(props.uuid)
 }
-function download (ev) {
+async function download (ev) {
     console.log(ev)
+    console.log(route)
+    console.log(props.group)
+    ev.cds = props.group
+    var post = Object.assign(ev, {
+        email: user.email || '',
+        domain: window.location.host,
+        app: config.state.app,
+        orgtype: user.organization ? user.organization.type : null,
+        uuid: props.uuid,
+        fullpath: route.fullPath,
+        path: route.path
+    })
+    console.log(post)
+    var x = await recordDownload(ev)
+    console.log(x)
 }
 
 </script>
 <template>
-
-
-
   <div v-if="props.mode === 'box'"
     class="mtdt-related-type"
     :style="{ backgroundColor: uuid === selectedUuid ? config.state.over : config.state.primary }"
     :title="$t('localize')"
     @click="select"
   >
-
     <font-awesome-icon icon="fa-solid fa-circle-dot" />
   </div>
   <!-- afficher la couche sur la carte -->

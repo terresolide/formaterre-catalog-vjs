@@ -60,7 +60,6 @@ function getTokenInHeader (link, token) {
             config.state.streamSaver = streamSaver
     }
      var url = link.url 
-     console.log(url)
      var name = link.name
 
     // UTILISATION D'UN STREAM WRITER
@@ -114,7 +113,6 @@ function getTokenInHeader (link, token) {
       if (size) {
         options.size = size
       }
-      console.log(res.headers)
       const fileStream = config.state.streamSaver.createWriteStream(filename, options)
       const readableStream = res.body
       

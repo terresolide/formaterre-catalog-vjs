@@ -7,6 +7,7 @@ export const useCatalog = defineStore('catalog', {
     thesaurus: null,
     tilename: '',
     catalogs: null,
+    currentGrp: null,
     groups: null,
     organismThesaurus: null,
     organisms: null,
@@ -71,6 +72,9 @@ export const useCatalog = defineStore('catalog', {
         }
         return this.list.find(c => c.name.toLowerCase() === name.toLowerCase())
     },
+    setCurrentGrp (name) {
+        this.currentGrp = name
+    },
     getGroupByName (name) {
         for(var key in this.groups) {
             if (this.groups[key].name === name) {
@@ -79,14 +83,17 @@ export const useCatalog = defineStore('catalog', {
         }
         return null
     },
-    getCatalogById (id) {
-        if (!id) {
-           return null
+    getGroupById (id) {
+        if (this.groups[id]) {
+            return this.groups[id]
         }
-        return this.list.find(c => parseInt(c.id) === parseInt(id))
+        return null
     },
     getCurrent () {
       return this.current
+    },
+    getCurrentGrp () {
+        return this.currentGrp
     },
     getGroups () {
          const config = useConfig()

@@ -43,11 +43,15 @@ const linkMetadata = computed(() => {
         }
         
     })
+    
     link.query = query
     return link
     
 })
-
+function setCurrentGroup () {
+    console.log(metadata.group)
+    catalogs.setCurrentGrp(metadata.group)
+}
 function show () {
     emit('show')
 }
@@ -63,7 +67,7 @@ function show () {
             </a>
         </template>
         <template v-else>
-            <router-link class="service-link" :to="linkMetadata" >
+            <router-link class="service-link" :to="linkMetadata"  @click="setCurrentGroup">
                 <h3 :style="{background: config.state.emphasis}">
                     <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
                     <div >{{metadata.title}}</div>
@@ -102,7 +106,7 @@ function show () {
                 </template>
             </div>
             <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:0px;width:49%;">
-              <related-links :uuid="metadata.id" :links="metadata.links" :sso-id="ssoId" :access="access"></related-links>
+              <related-links :uuid="metadata.id" :group="metadata.group" :links="metadata.links" :sso-id="ssoId" :access="access"></related-links>
             </div>
         </div>
       

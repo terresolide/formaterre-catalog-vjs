@@ -6,6 +6,7 @@
   import { useConfig } from '@/stores/config'
   import { useClient } from '@/stores/client'
   import { useUser } from '@/stores/user'
+  import { useCatalog} from '@/stores/catalog'
   import { useLoaderState} from '@/stores/loaderState.js'
   import MetadataList from '@/components/MetadataList.vue'
   import FormGrid from '@/components/FormGrid.vue'
@@ -38,6 +39,7 @@
   const config = useConfig()
   const user = useUser()
   const client = useClient()
+  const catalogs = useCatalog()
   const loader = useLoaderState()
   const access = computed(() => {
         if (!data.metadata) {
@@ -200,6 +202,8 @@
       elasticsearch.getMetadata(uuid)
       .then(meta => { 
           convert(uuid, meta)
+          // var group = catalogs.getCurrentGroup()
+          meta.group = catalogs.getCurrentGrp()
       }, err => {loader.changeStateFalse()})
   }
   function close () {

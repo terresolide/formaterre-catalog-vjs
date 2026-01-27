@@ -393,7 +393,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
             }
             var self = this
-            console.log('traitement meta')
             list.forEach(function (result, index) {
                 list[index] = self.treatmentMeta(result)
                 
@@ -440,7 +439,8 @@ export const useElasticsearch = defineStore('elasticsearch', {
             }
             // catalog
             var catalogs = this.getCatalogs()
-            meta.catalog = this.catalogs.getCatalogById(source.groupOwner)
+            var group = catalogs.getGroupById(source.groupOwner)
+            meta.group = group ? group.name : null
             meta.geom = source.geom
             if ( catalogs.organismThesaurus && source['th_' + catalogs.organismThesaurus.th_name] ) {
                 meta.dataCenter = []
@@ -450,7 +450,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
                
             }
-            console.log(meta.dataCenter)
             meta.thesaurus = this.treatmentThesaurus(source)
             meta.links = this.treatmentLinks(source.link, meta.id)
             return meta

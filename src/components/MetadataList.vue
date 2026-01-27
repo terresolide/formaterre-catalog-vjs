@@ -34,7 +34,6 @@ function close () {
 <template>
 
     <template v-if="data.metadata">
-    {{props.ssoId}}
        <metadata-page :metadata="data.metadata" :access="props.access" :sso-id="props.ssoId" :inside="true" @close="close"/>
     </template>
      <div class="wrapper-group-2" :class="{inside: props.inside}">
