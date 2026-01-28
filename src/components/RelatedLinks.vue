@@ -1,15 +1,12 @@
 <script setup>
-import {useRoute} from 'vue-router'
 import { computed, reactive } from 'vue'
 import { useConfig } from '@/stores/config'
-import { useUser} from '@/stores/user'
 import { useSelection } from '@/stores/selection'
-// const SimpleLinks = () => import('@/components/SimpleLinks.vue')
 import SimpleLinks from '@/components/SimpleLinks.vue'
 import DownloadLinks from '@/components/DownloadLinks.vue'
 import LayerLinks from '@/components/LayerLinks.vue'
 import OrderLinks from '@/components/OrderLinks.vue'
-import {recordDownload} from '@/modules/recordDownload'
+
 const props = defineProps({
     group: String, // groupe geonetwork?
     uuid: String,
@@ -29,12 +26,7 @@ const props = defineProps({
 })
 let config = useConfig()
 let selection = useSelection()
-let route = useRoute()
-let user = useUser()
-console.log(route)
-// let computedAccess = computed(() => {
-//     return { view: 'free', download: 'free' }
-// })
+
 let selectedUuid = computed(() => selection.uuid)
 
 let data = reactive({
@@ -46,24 +38,7 @@ function displayLogin () {
 function select() {
     selection.toggle(props.uuid)
 }
-async function download (ev) {
-    console.log(ev)
-    console.log(route)
-    console.log(props.group)
-    ev.cds = props.group
-    var post = Object.assign(ev, {
-        email: user.email || '',
-        domain: window.location.host,
-        app: config.state.app,
-        orgtype: user.organization ? user.organization.type : null,
-        uuid: props.uuid,
-        fullpath: route.fullPath,
-        path: route.path
-    })
-    console.log(post)
-    var x = await recordDownload(ev)
-    console.log(x)
-}
+
 
 </script>
 <template>
@@ -86,12 +61,12 @@ async function download (ev) {
       </div>
   -->
   <template v-if="props.links.download && props.links.download.length > 0">
-    <download-links :links="props.links.download" :access="props.access" :sso-id="props.ssoId" :mode="props.mode" @click="displayLogin" @download="download"></download-links>
+    <download-links :links="props.links.download" :uuid="props.uuid" :group="props.group" :access="props.access" :sso-id="props.ssoId" :mode="props.mode" @click="displayLogin" ></download-links>
   </template>
 
   <!-- commander les données -->
    <template v-if="props.links.order && props.links.order.length > 0">
-       <order-links :links="props.links.order"  :mode="props.mode" @download="download"></order-links>
+       <order-links :links="props.links.order" :uuid="props.uuid" :group="props.group" :mode="props.mode" ></order-links>
   </template>
   <template v-if="props.links.links && props.links.links.length > 0">
     <simple-links :links="props.links.links" type="information" :mode="props.mode"></simple-links>

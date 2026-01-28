@@ -328,7 +328,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             return parameters
         },
         getMetadata (uuid) {
-            
+            // voir si pas plus simple de faire une recherche avec elasticsearch???
             var headers =  {
               'accept': 'application/json',
             }
@@ -366,6 +366,46 @@ export const useElasticsearch = defineStore('elasticsearch', {
                     var result = self.treatmentJson(json)
                     if (successCallback) {
                         successCallback(result)
+                    }
+                }).catch(err => {
+                    if (failureCallback) {
+                        failureCallback(err)
+                    }
+                })
+            })
+        },
+        getGroup (uuid) {
+            const config = this.getConfig()
+            let api = config.state.geonetwork +  '/srv/api/search/records/_search?bucket=metadata'
+            let parameters =  {
+                from: 0,
+                size: 5,
+                _source: {
+                  includes:  ["uuid", "id", "groupOwner"]
+                },
+                query: {
+                  bool: {
+                      filter: [{
+                          term: {uuid: uuid}
+                      }]
+            }}} 
+            var self = this
+            return new Promise( (successCallback, failureCallback) => {
+                fetch(api,
+                {
+                    headers: {'Accept': 'application/json', 'Content-type': 'application/json'},
+                    method: 'POST',
+                    body: JSON.stringify(parameters)
+                }).then(resp => resp.json())
+                .then(json => {
+                    var groupId = null
+                    if (json.hits && json.hits.hits.length > 0) {
+                        groupId = json.hits.hits[0]._source.groupOwner
+                    }
+                    if (successCallback && groupId) {
+                        successCallback(groupId)
+                    } else if (failureCallback) {
+                       // failureCallback('NO RECORD')
                     }
                 }).catch(err => {
                     if (failureCallback) {

@@ -84,16 +84,12 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         }
     }
     function treatmentGeojson (parent, data) {
-      console.log(parent.keyword)
       var metadatas = {}
       var list = []
       data.features.forEach( function (feature) {
-
         var metadata =  mapToGeonetwork(parent, feature)
         list.push(metadata)
-       
       })
-      console.log(list)
       var pagination = {
           count: list.length
       }
@@ -131,7 +127,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
     function mapToGeonetwork(parent, feature) {
         var properties = {}
         properties.fromStac = true
-        properties.cds = cds
+        properties.group = parent.group
         properties.hierachyLevel = {
               icon:'file',
               name: 'dataset'

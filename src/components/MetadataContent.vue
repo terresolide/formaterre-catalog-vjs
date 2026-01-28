@@ -221,7 +221,7 @@ const config = useConfig()
             </div>
         
             <div>
-                <related-links :links="metadata.links" :uuid="metadata.uuid" :sso-id="ssoId" :access="access" mode="page"/> 
+                <related-links :links="metadata.links" :uuid="metadata.uuid" :group="metadata.group" :sso-id="ssoId" :access="access" mode="page"/> 
             
             </div>
             <div>

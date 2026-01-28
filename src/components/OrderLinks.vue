@@ -1,20 +1,30 @@
 <script setup>
 // import { computed } from 'vue'
 import { useConfig } from '@/stores/config'
+import {recordDownload} from '@/modules/recordDownload'
 const props = defineProps({
-  links: {
-    type: Array,
-    default: () => [],
-  },
-  mode: {
-      type: String,
-      default: 'box'
-  }
+    links: {
+      type: Array,
+      default: () => [],
+    },
+    mode: {
+        type: String,
+        default: 'box'
+    },
+    group: {
+        type: String,
+        default: null
+    },
+    uuid: {
+        type: String,
+        default: ''
+    }
 })
 let config = useConfig()
 const emit = defineEmits(['download'])
 function order (index) {
-    emit('download', {link: props.links[index].url, type: 'order' })
+    
+   recordDownload({link: props.links[index].url, type: 'order', uuid: props.uuid, cds: props.group })
 }
 
 </script>

@@ -146,22 +146,33 @@
           getMetaConverter()
           .then(converter => {
               data.converter = converter.default()
-              data.metadata = data.converter.transform(uuid, metadata)
-              data.bbox = data.metadata.geojson
-              if (!data.metadata.parentIdentifier) {
-                  data.parent = null
-              }
-              getRecords(route.query)
+              
+              transform(uuid, metadata)
+              
           })
       } else {
-            data.metadata = data.converter.transform(uuid, metadata)
-            if (!data.metadata.parentIdentifier) {
-                  data.parent = null
-            }
-            data.bbox = data.metadata.geojson
-            getRecords(route.query)
+           transform(uuid, metadata)
       }
       // calcule l'accès pour les enfants??? ou dans computed???
+  }
+  function transform (uuid, metadata) {
+      var meta = data.converter.transform(uuid, metadata)
+      data.bbox = meta.geojson
+      if (!meta.parentIdentifier) {
+          data.parent = null
+      }
+      if (!meta.group) {
+          elasticsearch.getGroup(meta.uuid)
+          .then(grpId => {
+              var group = catalogs.getGroupById(grpId)
+              meta.group = group ? group.name : null
+              data.metadata = meta
+          }, err => {data.metadata = meta})
+          
+      } else {
+          data.metadata = meta
+      }
+      // getRecords(route.query)
   }
   function launchStac () {
      
@@ -201,9 +212,8 @@
       loader.changeStateTrue()
       elasticsearch.getMetadata(uuid)
       .then(meta => { 
-          convert(uuid, meta)
-          // var group = catalogs.getCurrentGroup()
           meta.group = catalogs.getCurrentGrp()
+          convert(uuid, meta)
       }, err => {loader.changeStateFalse()})
   }
   function close () {

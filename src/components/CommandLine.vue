@@ -2,6 +2,7 @@
 import {computed, ref} from 'vue'
 import { useSelection } from '@/stores/selection'
 import { useClient} from '@/stores/client'
+import {recordDownload} from '@/modules/recordDownload'
 
 const selection = useSelection()
 const client = useClient()
@@ -37,7 +38,7 @@ function close () {
     selection.setDownload(null)
 }
 function copy2clipboard (e) {
-
+      recordDownload({link: selection.download.url, uuid: selection.download.uuid, type: 'commandLine', cds: selection.download.group})
       var target = e.target
       if (currentClient && currentClient.value && currentClient.value.sso.getToken()) {
         var text = 'curl -k -L -H "Authorization: Bearer ' + currentClient.value.sso.getToken() + '" ' + selection.download.url  + ' -o ' + selection.download.name

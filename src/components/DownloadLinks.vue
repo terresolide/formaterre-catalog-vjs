@@ -6,9 +6,13 @@ import {useSelection} from '@/stores/selection'
 import {useClient} from '@/stores/client'
 import {useLoaderState} from '@/stores/loaderState.js'
 import streamSaver  from 'streamsaver'
-  
-const {links,  access, mode, ssoId} = defineProps({
+import {recordDownload} from '@/modules/recordDownload'
+const {links, uuid, access, mode, ssoId, group} = defineProps({
     links: Array,
+    uuid: {
+        type: String,
+        default: ''
+    },
     access: Object,
     mode: {
         type: String,
@@ -17,6 +21,10 @@ const {links,  access, mode, ssoId} = defineProps({
     ssoId: {
         type: String,
         default:null
+    },
+    group: {
+        type: String,
+        default: null
     }
 })
 
@@ -32,7 +40,7 @@ function commandLine(index) {
         return
     }
     
-    selection.setDownload(links[index], ssoId)
+    selection.setDownload(links[index],uuid, ssoId, group)
 }
 
 function download (index) {
@@ -40,7 +48,8 @@ function download (index) {
         // emit('click')
         return
     }
-    emit('download', {link: links[index].url, type: 'download'})
+    recordDownload({link: links[index].url, uuid: uuid, type: 'download', cds: group})
+   // emit('download', )
     load.changeStateTrue()
     if (ssoId) {
         var sso = client.getSsoFromId(ssoId)

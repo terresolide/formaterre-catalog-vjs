@@ -20,6 +20,7 @@ export default function (attrs) {
               pdf: config.state.geonetwork + '/srv/api/records/'+ uuid + '/formatters/xsl-view?root=div&output=pdf'
           }
         }
+        metadata.group = json.group
         var idLang = config.state.locale
         if (idLang === 'fre') {
             idLang = 'FR'

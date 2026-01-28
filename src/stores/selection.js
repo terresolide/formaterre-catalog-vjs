@@ -42,11 +42,13 @@ export const useSelection = defineStore('selection', {
         return true
       }
     },
-    setDownload(obj, ssoId) {
+    setDownload(obj, uuid, ssoId, group) {
         if (!obj) {
             this.download = null
         } else {
             obj.ssoId = ssoId
+            obj.uuid = uuid
+            obj.group = group
             this.download = obj
         }
     }
