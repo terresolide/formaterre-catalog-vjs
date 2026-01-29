@@ -148,10 +148,12 @@
               data.converter = converter.default()
               
               transform(uuid, metadata)
+               loader.changeStateFalse()
               
           })
       } else {
            transform(uuid, metadata)
+           loader.changeStateFalse()
       }
       // calcule l'accès pour les enfants??? ou dans computed???
   }
