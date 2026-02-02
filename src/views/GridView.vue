@@ -214,8 +214,10 @@
       loader.changeStateTrue()
       elasticsearch.getMetadata(uuid)
       .then(meta => { 
-          meta.group = catalogs.getCurrentGrp()
-          convert(uuid, meta)
+          console.log(meta)
+          data.metadata = meta
+         // meta.group = catalogs.getCurrentGrp()
+         // convert(uuid, meta)
       }, err => {loader.changeStateFalse()})
   }
   function close () {

@@ -328,6 +328,46 @@ export const useElasticsearch = defineStore('elasticsearch', {
             return parameters
         },
         getMetadata (uuid) {
+            console.log(uuid)
+            let config = useConfig()
+            let api = config.state.geonetwork +  '/srv/api/search/records/_search?bucket=metadata'
+            let parameters =  {
+                from: 0,
+                size: 5,
+                _source: {
+                  includes:  this.includes
+                },
+                query: {
+                  bool: {
+                      filter: [{
+                          term: {uuid: uuid}
+                      }]
+            }}} 
+            var self = this
+            return new Promise( (successCallback, failureCallback) => {
+                fetch(api,
+                {
+                    headers: {'Accept': 'application/json', 'Content-type': 'application/json'},
+                    method: 'POST',
+                    body: JSON.stringify(parameters)
+                }).then(resp => resp.json())
+                .then(json => {
+                    console.log(json.hits)
+                    if (json.hits && json.hits.hits.length > 0) {
+                        var metadata = self.treatmentMetaXXL(json.hits.hits[0])
+                        successCallback(metadata)
+                    } else {
+                        console.log('FAILED')
+                        failureCallback('NOT FOUND')
+                    }
+                }).catch(err => {
+                    if (failureCallback) {
+                        failureCallback(err)
+                    }
+                })
+            })
+        },
+        getMetadataXML (uuid) {
             // voir si pas plus simple de faire une recherche avec elasticsearch???
             var headers =  {
               'accept': 'application/json',
@@ -439,7 +479,27 @@ export const useElasticsearch = defineStore('elasticsearch', {
             })
             return {list: list, pagination: pagination, aggregations: json.aggregations}
         },
+        treatmentMetaXXL (result) {
+            let source = result._source
+            let config = useConfig()
+            let uuid = source.uuid
+            let meta = {
+            }
+            meta.exportLinks = {
+                xml: config.state.geonetwork + '/srv/api/records/'+ uuid + '/formatters/xml?attachment=true',
+                pdf: config.state.geonetwork + '/srv/api/records/'+ uuid + '/formatters/xsl-view?root=div&output=pdf'
+    
+            }
+            var catalogs = this.getCatalogs()
+            var group = catalogs.getGroupById(source.groupOwner)
+            meta.group = group ? group.name : null
+            meta.description = config.tr(source.resourceAbstractObject).replace('\n', '<br>')
+            meta.title =  config.tr(source.resourceTitleObject)
+            meta.geom = source.geom
+            return meta
+        },
         treatmentMeta (result) {
+           
             let source = result._source
             let config = this.getConfig()
             let meta = {
