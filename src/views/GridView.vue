@@ -204,7 +204,10 @@
             }
             data.aggregations = json.aggregations
             loader.changeStateFalse()
-      }, err => {loader.changeStateFalse()})
+      }, err => {
+          data.list = []
+          loader.changeStateFalse()
+      })
   }
   function getMetadata(uuid) {
       if (!uuid) {
@@ -218,6 +221,7 @@
           data.metadata = meta
          // meta.group = catalogs.getCurrentGrp()
          // convert(uuid, meta)
+         loader.changeStateFalse()
       }, err => {loader.changeStateFalse()})
   }
   function close () {
@@ -230,6 +234,7 @@
     }
   }
   function getRecords (query) {
+      console.log('===== GET RECORDS ======')
     if (data.metadata && data.metadata.stac && data.stacRequester) {
         launchStac()
         return

@@ -59,7 +59,12 @@ watch(() => metadata,
               <img :src="item.logo"/>
             </a>
             </template>
-            <font-awesome-icon :icon="metadata && metadata.hierarchyLevel === 'series' ? 'fa-solid fa-folder-open': 'fa-solid fa-file'" /> 
+            <template v-if="metadata.hierarchyLevel && metadata.hierarchyLevel.icon">
+                <font-awesome-icon :icon="'fa-solid fa-' + metadata.hierarchyLevel.icon" :title="metadata.hierarchyLevel.name"/> 
+            </template>
+            <template v-else>
+                <font-awesome-icon icon="fa-solid fa-file"/> 
+            </template>
             <div>
                <span v-if="metadata.initiativeType">{{$t(metadata.initiativeType)}}: </span>
               {{metadata.title ? metadata.title: metadata.defaultTitle}}

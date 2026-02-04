@@ -14,39 +14,34 @@
  <script setup>
 import {computed} from 'vue'
 const {contact} = defineProps({
-    contact: Array
+    contact: Object
 })
-const address = computed(() => {
-    if (!contact[7]) {
-        return []
-    }
-    return contact[7].split('|')
-})
+
 </script>
 <template>
     <fieldset v-if="contact"  class="contact-flex">
       <div id="line"></div>
-      <legend>{{$t(contact[0])}}</legend>
+      <legend>{{$t(contact.role)}}</legend>
       <div class="contact-info" style="font-size:0.9rem;">
-       <div v-if="contact[2]">
+       <div v-if="contact.organisation">
              <div >
-                <span v-if="contact[8]">
-                  <a :href="contact[8]" target="_blank">{{ contact[2]}}</a>
+                <span v-if="contact.ror">
+                  <a :href="contact.ror" target="_blank">{{ contact.organisation}}</a>
                 </span>
-                <span v-else>{{ contact[2]}}</span>
+                <span v-else>{{ contact.organisation}}</span>
              </div> 
-          <div v-for="item in address">
+          <div v-for="item in contact.address">
             {{item}}
           </div>
       </div>
-        <div  v-if="contact[3] || contact[4]">
-              <div v-if="contact[3]" >
-                <span v-if="contact[9]">
-                  <a :href="contact[9].substring(0,4) === 'http' ? contact[9] : 'https://orcid.org/' + contact[9]" target="_blank">{{contact[3]}}</a>
+        <div  v-if="contact.individual || contact.email">
+              <div v-if="contact.individual" >
+                <span v-if="contact.orcid">
+                  <a :href="contact.orcid.substring(0,4) === 'http' ? contact.orcid : 'https://orcid.org/' + contact.orcid" target="_blank">{{contact.individual}}</a>
                 </span>
-                <span v-else>{{contact[3]}}</span>
+                <span v-else>{{contact.individual}}</span>
               </div>
-              <div v-if="contact[4]">{{contact[4]}}</div>
+              <div v-if="contact.email">{{contact.email}}</div>
               </div>
         </div>
    </fieldset>

@@ -61,7 +61,7 @@ function show () {
         <template v-if="isExterior">
            <a class="service-link" @click="show" >
                 <h3 :style="{background: config.state.emphasis}">
-                    <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
+                    <font-awesome-icon :icon="['fas', metadata.hierarchyLevel.icon]" />
                     <div >{{metadata.title}}</div>
                 </h3>
             </a>
@@ -69,7 +69,7 @@ function show () {
         <template v-else>
             <router-link class="service-link" :to="linkMetadata"  @click="setCurrentGroup">
                 <h3 :style="{background: config.state.emphasis}">
-                    <font-awesome-icon :icon="['fas', metadata.hierachyLevel.icon]" />
+                    <font-awesome-icon :icon="['fas', metadata.hierarchyLevel.icon]" />
                     <div >{{metadata.title}}</div>
                 </h3>
             </router-link>

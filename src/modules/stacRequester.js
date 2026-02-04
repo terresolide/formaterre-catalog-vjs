@@ -38,11 +38,14 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
                     body: JSON.stringify(parameters)
             }).then(rep => rep.json())
             .then(json => {
+                console.log(json)
                 var resp = treatmentGeojson(parent, json)
+                console.log(resp)
                 if (successCallback) {
                     successCallback(resp)
                 }
-            }).catch(err => {
+            })
+            .catch(err => {
                 if (failureCallback) {
                     failureCallback(err)
                 }
@@ -84,12 +87,14 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         }
     }
     function treatmentGeojson (parent, data) {
-      var metadatas = {}
+      console.log(parent)
+      // var metadatas = {}
       var list = []
       data.features.forEach( function (feature) {
         var metadata =  mapToGeonetwork(parent, feature)
         list.push(metadata)
       })
+      console.log(list)
       var pagination = {
           count: list.length
       }
@@ -128,7 +133,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         var properties = {}
         properties.fromStac = true
         properties.group = parent.group
-        properties.hierachyLevel = {
+        properties.hierarchyLevel = {
               icon:'file',
               name: 'dataset'
         }
@@ -260,11 +265,13 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         }
        
         properties.parent.keyword = []
-        parent.keyword.forEach(function (list) {
-            if (list.key !== 'th_regions') {
-                properties.parent.keyword.push(list)
-            }
-        })
+        if (parent.keyword) {
+            parent.keyword.forEach(function (list) {
+                if (list.key !== 'th_regions') {
+                    properties.parent.keyword.push(list)
+                }
+            })
+        }
         
         
         return properties

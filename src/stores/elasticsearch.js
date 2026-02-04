@@ -2,6 +2,31 @@ import { defineStore } from 'pinia'
 import {useConfig} from './config'
 import {useCatalog} from './catalog'
 
+function extractAccessFromDescription (description, url) {
+    url = new URL(url)
+    if (url.search.length > 3) {
+        var lists = url.search.replace('?', '').split('&')
+        url = url.protocol + '//' + url.hostname + url.pathname
+        console.log(url)
+    } else {
+        if (!description) {
+          return {search:'free', view: 'UNKNOWN', download: 'UNKOWN'}
+        }
+        var lists = description.split(';')
+        
+    }
+    var access = {}
+    var query = {}
+    lists.forEach(function (tab) {
+      var extract = tab.split('=')
+      if (extract.length > 1 && ['search', 'view', 'download'].indexOf(extract[0]) >= 0) {
+         access[extract[0]] = extract[1]
+      } else {
+          query[extract[0]] = extract[1].split(',')
+      }
+    })
+    return {access: access, query: query, url: url}
+}
 export const useElasticsearch = defineStore('elasticsearch', {
     state: () => ({
       catalogId: null,
@@ -152,7 +177,9 @@ export const useElasticsearch = defineStore('elasticsearch', {
       // @todo à configurer sur le back office
       includes: ["uuid", "id", "groupOwner", "cl_status", "cl_hierarchyLevel", "geom", "contactForResource", "organisationName",
         "resourceTitle*", "resourceTemporalExtentDetails", "resourceAbstract*",  "th_formaterre_provider.*",
-        "th_formater-platform-gn", "th_formaterre-product-gn", "th_ron.default", "th_polarisation.default", "overview","link"]
+        "th_formater-platform-gn", "th_formaterre-product-gn", "th_ron.default", "th_polarisation.default", "overview","link"],
+      includesXXL: ["dateStamp", "publicationDateForResource", "revisionDateForResource", "contact", "cl_topic", "format", "resourceIdentifier", "resourceCredit*", "purposeObject", 
+                    "coordinateSystem", "crsDetails.name", "allKeywords", "lineageObject.*", "parentUuid", "MD_LegalConstraints*", "sourceCatalogue"]
     }),
     actions: {
         setCatalog ( routeName, catalogName, metadataId) {
@@ -331,11 +358,12 @@ export const useElasticsearch = defineStore('elasticsearch', {
             console.log(uuid)
             let config = useConfig()
             let api = config.state.geonetwork +  '/srv/api/search/records/_search?bucket=metadata'
+            var includes = this.includesXXL.concat(this.includes)
             let parameters =  {
                 from: 0,
                 size: 5,
                 _source: {
-                  includes:  this.includes
+                  includes: includes
                 },
                 query: {
                   bool: {
@@ -354,6 +382,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 .then(json => {
                     console.log(json.hits)
                     if (json.hits && json.hits.hits.length > 0) {
+                        console.log(json.hits.hits[0])
                         var metadata = self.treatmentMetaXXL(json.hits.hits[0])
                         successCallback(metadata)
                     } else {
@@ -490,12 +519,123 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 pdf: config.state.geonetwork + '/srv/api/records/'+ uuid + '/formatters/xsl-view?root=div&output=pdf'
     
             }
+            if (source.cl_hierarchyLevel && source.cl_hierarchyLevel.length > 0) {
+                meta.hierarchyLevel = {
+                    icon: source.cl_hierarchyLevel[0].key === 'dataset' ? 'file' : 'folder-open',
+                    name: config.tr(source.cl_hierarchyLevel[0])
+                }
+            } else {
+                meta.hierarchyLevel = { icon: 'file', name: null}
+            }
             var catalogs = this.getCatalogs()
             var group = catalogs.getGroupById(source.groupOwner)
             meta.group = group ? group.name : null
             meta.description = config.tr(source.resourceAbstractObject).replace('\n', '<br>')
             meta.title =  config.tr(source.resourceTitleObject)
-            meta.geom = source.geom
+            meta.dateStamp = source.dateStamp
+            if (source.purposeObject) {
+                meta.purpose = config.tr(source.purposeObject)
+            }
+            if (source.cl_topic.length > 0) {
+                meta.topicCat = source.cl_topic[0].key
+            }
+            if (source.MD_LegalConstraintsOtherConstraintsObject) {
+                if (!meta.legalConstraints) {
+                    meta.legalConstraints = []
+                }
+                for(var k in source.MD_LegalConstraintsOtherConstraintsObject) {
+                    meta.legalConstraints.push(config.tr(source.MD_LegalConstraintsOtherConstraintsObject[k]))
+                }
+            }
+            if (source.MD_LegalConstraintsUseLimitationObject) {
+                if (!meta.legalConstraints) {
+                    meta.legalConstraints = []
+                }
+                for(var k in source.MD_LegalConstraintsUseLimitationObject) {
+                    meta.legalConstraints.push(config.tr(source.MD_LegalConstraintsUseLimitationObject[k]))
+                }
+            }
+             if (source.MD_ConstraintsUseLimitationObject) {
+                if (!meta.constraints) {
+                    meta.constraints = []
+                }
+                for(var k in source.MD_ConstraintsUseLimitationObject) {
+                    meta.constraints.push(config.tr(source.MD_ConstraintsUseLimitationObject[k]))
+                }
+            }
+            if (source.lineageObject) {
+                meta.lineage = [config.tr(source.lineageObject)]
+            }
+            meta.contacts = {
+                metadata: [],
+                resource: {}
+            }
+            if (source.contact && source.contact.length > 0) {
+                source.contact.forEach(ct => {
+                    meta.contacts.metadata.push({
+                        role: ct.role,
+                        email: ct.email,
+                        individual: ct.individual,
+                        organisation: ct.organisationObject ? config.tr(ct.organisationObject) : '',
+                        ror: ct.organisationObject && ct.organisationObject.link ? ct.organisationObject.link : null,
+                        phone: ct.phone,
+                        address: ct.address,
+                        orcid: null
+                    })
+                })
+            }
+            if (source.contactForResource && source.contactForResource.length > 0) {
+                source.contactForResource.forEach(ct => {
+                    if (!meta.contacts.resource[ct.role]) {
+                        meta.contacts.resource[ct.role] = []
+                    }
+                    meta.contacts.resource[ct.role].push({
+                        role: ct.role,
+                        email: ct.email,
+                        individual: ct.individual,
+                        organisation: ct.organisationObject ? config.tr(ct.organisationObject) : '',
+                        ror: ct.organisationObject && ct.organisationObject.link ? ct.organisationObject.link : null,
+                        phone: ct.phone,
+                        address: ct.address,
+                        orcid: null
+                    })
+                })
+            }
+            if (source.crsDetails && source.crsDetails.length > 0) {
+                meta.crs = []
+                source.crsDetails.forEach(function(crs) {
+                    meta.crs.push(crs.name)
+                })
+            }
+            if (source.revisionDateForResource && source.revisionDateForResource.length > 0) {
+                source.revisionDateForResource.sort().reverse()
+                meta.revisionDate = source.revisionDateForResource[0]
+            }
+            if (source.publicationDateForResource && source.publicationDateForResource.length > 0) {
+                source.publicationDateForResource.sort().reverse()
+                meta.publicationDate = source.publicationDateForResource[0]
+            }
+            meta.geojson = source.geom
+            meta.links = this.treatmentLinks(source.link, meta.id, meta)
+            if (source.resourceIdentifier && source.resourceIdentifier.length > 0) {
+                meta.identifier = source.resourceIdentifier[0].code
+            }
+            meta.status = null
+            if (source.cl_status && source.cl_status.length > 0) {
+                meta.status = source.cl_status[0].key
+            }
+            meta.quicklook = null
+            if (source.overview && source.overview.length > 0) {
+                meta.quicklook = {
+                  src: source.overview[0].url,
+                  title: source.overview[0].nameObject ? config.tr(source.overview[0].nameObject) : ''
+                }
+                meta.images = []
+                source.overview.forEach(function(img) {
+                    meta.images.push(['overview', img.url, img.nameObject ? config.tr(img.nameObject) : ''])
+                })
+            }
+            meta.temporalExtents = source.resourceTemporalExtentDetails
             return meta
         },
         treatmentMeta (result) {
@@ -510,12 +650,12 @@ export const useElasticsearch = defineStore('elasticsearch', {
             }
             
             if (source.cl_hierarchyLevel && source.cl_hierarchyLevel.length > 0) {
-                meta.hierachyLevel = {
+                meta.hierarchyLevel = {
                     icon: source.cl_hierarchyLevel[0].key === 'dataset' ? 'file' : 'folder-open',
                     name: config.tr(source.cl_hierarchyLevel[0])
                 }
             } else {
-                meta.hierachyLevel = { icon: 'file', name: null}
+                meta.hierarchyLevel = { icon: 'file', name: null}
             }
             meta.status = null
             if (source.cl_status && source.cl_status.length > 0) {
@@ -641,7 +781,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             }
             return thesaurus
         },
-        treatmentLinks (list, id) {
+        treatmentLinks (list, id, meta) {
             let config = this.getConfig()
             var links = {}
             if (!list) {
@@ -652,10 +792,23 @@ export const useElasticsearch = defineStore('elasticsearch', {
                case 'OpenSearch':
                case 'SensorThings':
                case 'Sensorthings':
-                 links.api = {}
-                 links.api.http = lk.urlObject.default
-                 links.api.name = config.tr(lk.nameObject)
-                 break;
+               case 'STAC':
+               case 'UKST':
+                var obj = extractAccessFromDescription(config.tr(lk.descriptionObject), config.tr(lk.urlObject))
+                if (!links.api) {
+                    links.api = {}
+                }
+                links.api[lk.protocol] = {
+                  url: obj.url,
+                  name: config.tr(lk.nameObject),
+                  protocol: lk.protocol,
+                  access: obj.access,
+                  query: obj.query
+                }
+                if (meta) {
+                   meta[lk.protocol.toLowerCase()] = obj.url
+                }
+                break;
                case 'GetMap':
                case 'WTS':
                case 'OGC:WMS':

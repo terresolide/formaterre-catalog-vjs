@@ -49,7 +49,7 @@ const config = useConfig()
                    <dd>
                       <div class="contact-container">
                         <template v-for="item in list">
-                           <contact-box :contact="item" />
+                            <contact-box :contact="item" />
                         </template>
                       </div>
                     </dd>
@@ -193,7 +193,8 @@ const config = useConfig()
                        <dd>
                           <div class="contact-container">
                             <template v-for="item in list">
-                               <contact-box :contact="item" />
+                            {{item}}
+                             <!--  <contact-box :contact="item" /> -->
                             </template>
                           </div>
                         </dd>
