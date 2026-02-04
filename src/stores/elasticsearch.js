@@ -571,8 +571,12 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 resource: {}
             }
             if (source.contact && source.contact.length > 0) {
+                
                 source.contact.forEach(ct => {
-                    meta.contacts.metadata.push({
+                    if (!meta.contacts.metadata[ct.role]) {
+                        meta.contacts.metadata[ct.role] = []
+                    }
+                    meta.contacts.metadata[ct.role].push({
                         role: ct.role,
                         email: ct.email,
                         individual: ct.individual,
