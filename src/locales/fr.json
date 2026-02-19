@@ -32,7 +32,7 @@
     "identifier": "Identifiant",
     "inconsistent_date": "La date finale doit être strictement supérieure à la date initiale!",
     "keywords": "Mots-clés",
-    "lineage": "Généalogie",
+    "lineage": "Information sur la provenance",
     "localize": "Localiser sur la carte",
     "login": "Se connecter",
     "logout": "Se déconnecter",

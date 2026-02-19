@@ -214,6 +214,7 @@
       loader.changeStateTrue()
       elasticsearch.getMetadata(uuid)
       .then(meta => { 
+          data.list = []
           meta.group = catalogs.getCurrentGrp()
           convert(uuid, meta)
       }, err => {loader.changeStateFalse()})

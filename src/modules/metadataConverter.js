@@ -445,7 +445,8 @@ export default function (attrs) {
         var statements = JSONPATH.query(json, "$..['gmd:statement']")
         var sentences = []
         statements.forEach(function (statement) {
-          sentences.push(extractFromLangs(statement, idLang))
+          var sentence = extractFromLangs(statement, idLang)
+          sentences.push(sentence.replace(/(?:\\[rn]|[\r\n])/g, '<br />'))
         })
         metadata.lineage = sentences
     }
