@@ -446,7 +446,9 @@ export default function (attrs) {
         var sentences = []
         statements.forEach(function (statement) {
           var sentence = extractFromLangs(statement, idLang)
-          sentences.push(sentence.replace(/(?:\\[rn]|[\r\n])/g, '<br />'))
+          if (sentence) {
+            sentences.push(sentence.replace(/(?:\\[rn]|[\r\n])/g, '<br />'))
+          }
         })
         metadata.lineage = sentences
     }
