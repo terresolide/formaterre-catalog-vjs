@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted,watch } from 'vue'
 import { useRoute, RouterLink, RouterView } from 'vue-router'
-import {useConfig} from '@/stores/config'
 import {useCatalog} from '@/stores/catalog'
 import UserInfo from '@/components/UserInfo.vue'
 import {useLoaderState} from '@/stores/loaderState.js'
@@ -9,8 +8,6 @@ import {useLoaderState} from '@/stores/loaderState.js'
 const CharterPage = defineAsyncComponent(
     () => import('@/components/CharterPage.vue'),
 )
-const config = useConfig()
-// config.init()
 const catalog = useCatalog()
 catalog.init()
 const isLoading = useLoaderState()
