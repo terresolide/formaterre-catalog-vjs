@@ -10,7 +10,7 @@ const CharterPage = defineAsyncComponent(
     () => import('@/components/CharterPage.vue'),
 )
 const config = useConfig()
-config.init()
+// config.init()
 const catalog = useCatalog()
 catalog.init()
 const isLoading = useLoaderState()

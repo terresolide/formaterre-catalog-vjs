@@ -31,6 +31,7 @@
     parent: null,
     aggregations: [],
     metadata: null,
+    hasChild: true,
     stacRequester: null,
     lastGrid: null
   })
@@ -216,7 +217,10 @@
       .then(meta => { 
           data.list = []
           meta.group = catalogs.getCurrentGrp()
+          data.hasChild = true
           convert(uuid, meta)
+          
+          getRecords(route.query)
       }, err => {loader.changeStateFalse()})
   }
   function close () {
@@ -241,6 +245,10 @@
           data.pagination = Object.assign(data.pagination, json.pagination)
           if (data.metadata && data.list.length === 0) {
               data.bbox = data.metadata.geojson
+              console.log('ici')
+              if (Object.keys(query).length === 0) {
+                data.hasChild = false
+              }
           } else {
               data.bbox = null
           }
@@ -249,6 +257,7 @@
         loader.changeStateFalse()
         if (json.list.length === 0 && data.metadata ) {
            if (data.metadata.stac) {
+            data.hasChild = true
             launchStac()
            } 
 
@@ -286,7 +295,7 @@
         <command-line :download="selection.download"></command-line>
     </template>
     <template v-if="route.params.id">
-       <metadata-page :metadata="data.metadata" :access="access" @close="close">
+       <metadata-page :metadata="data.metadata" :has-child="data.hasChild" :access="access" @close="close">
             <div>
               <div style="text-align:center;margin:15px 0;">
                 <PageNavigation :tot="data.pagination" :inside="true"></PageNavigation>

@@ -17,7 +17,11 @@ export const useConfig = defineStore('config', () => {
   }
 
   function init(conf) {
+    
+    console.log(conf)
+    console.log('-- initialize --')
     state = Object.assign(state, conf)
+    state.initialize = true
     state.locale = state.lang === 'fr' ? 'fre' : 'eng'
     state.lightcolor = shadeColor(state.emphasis, 0.8)
   }

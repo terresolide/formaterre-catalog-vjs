@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router'
 import ExportLinks from '@/components/ExportLinks.vue'
 import MetadataContent from '@/components/MetadataContent.vue'
 import MessageAccess from '@/components/MessageAccess.vue'
-const {metadata,access, inside, color, ssoId} = defineProps({
+const {metadata,access, hasChild, inside, color, ssoId} = defineProps({
     metadata: {
         type: Object,
         default: null
@@ -13,6 +13,10 @@ const {metadata,access, inside, color, ssoId} = defineProps({
     access: {
         type: Object,
         default: null
+    },
+    hasChild: {
+        type: Boolean,
+        default: true
     },
     inside: {
         type:Boolean,
@@ -68,7 +72,7 @@ watch(() => metadata,
         </h1> 
         <hr />
         <div class="mtdt-tabs">
-            <template v-if="!inside && metadata.hierarchyLevel === 'series'">
+            <template v-if="!inside && hasChild">
                 <div v-for="(tab,index) in tabs" class="mtdt-tab" :class="{'selected': data.currentTab === index}" @click="data.currentTab = index">{{$t(index)}}</div>
             </template>
             <export-links v-if="metadata.exportLinks" :export-links="metadata.exportLinks"></export-links> 
