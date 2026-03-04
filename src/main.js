@@ -45,7 +45,30 @@ import {faAsterisk,faBasketShopping, faCalendar,faCaretDown,faCaretLeft,faCaretR
         faFile, faFileLines, faFolderOpen,  faGaugeSimpleHigh, 
         faGraduationCap,faGrip, faKey, faLink, faLocationDot, faMagnifyingGlass,faMap,faObjectGroup, faPencil,
         faPenToSquare,faPrint,faRightFromBracket,faRightToBracket,faRocket,faSatelliteDish, faSearch, faSpinner,faTerminal, 
-        faTriangleExclamation, faUser, faUserGroup, faUsers} from '@fortawesome/free-solid-svg-icons'
+        faTriangleExclamation, faUser, faUserGroup, faUsers,
+faAdjust, faArchive, faArchway, faAtlas, faAtom, faBacteria, faBacterium, faBahai,
+faBalanceScaleLeft, faBalanceScaleRight, faBarsProgress, faBatteryHalf, faBatteryQuarter, faBicycle,
+faBiking, faBinoculars, faBoltLightning, faBomb, faBookmark, faBoxOpen, faBoxesAlt, faBridge,
+faBridgeWater, faBugs, faBullseye, faBurn, faCab, faCalendarDays, faCamera, faCameraRetro,
+faCapsules, faCertificate, faChartBar, faChartDiagram, faCircleRadiation, faCity, faClipboardList,
+faCloudMoonRain, faCloudShowersHeavy, faCloudShowersWater, faCloudSun, faCloudSunRain, faCode,
+faCompactDisc, faCompass, faCookie, faCube, faCubes, faCubesStacked, faDiagramProject,
+faDraftingCompass, faDungeon, faEarthAfrica, faEarthAsia, faEarthEurope, faEarthOceania,
+faExplosion, faEyeDropper, faFan, faFaucetDrip, faFeatherAlt, faFlask, faFolder, faGauge,
+faGaugeHigh, faGaugeSimple, faHardDrive, faHeadphones, faHeadphonesSimple, faHeadset, faHelicopter,
+faHillRockslide, faHome, faHomeLg, faHotel, faHourglassEnd, faHouse, faHouseTsunami, faHurricane,
+faIcicles, faImage, faIndustry, faLandMineOn, faLandmark, faLandmarkFlag, faLayerGroup, faLeaf,
+faLegal, faLineChart, faLocation, faLocationArrow, faMagnet, faMapMarked, faMapMarker, faMicrophone,
+faMicroscope, faMotorcycle, faMountain, faMountainSun, faMouse, faNavicon, faPaperPlane,
+faPaperclip, faPenAlt, faPenRuler, faPeopleGroup, faPeopleLine, faPeopleRoof, faPerson, faPhoneAlt,
+faPhotoFilm, faPieChart, faPlane, faPlaneUp, faPlug, faPodcast, faRadiation, faRadio, faRainbow,
+faRibbon, faRoad, faRoute, faRulerHorizontal, faRunning, faSatellite, faScaleBalanced, faSchool,
+faServer, faShapes, faShareNodes, faShop, faSignsPost, faSitemap, faSliders, faSmog, faSnowflake,
+faSpaceShuttle, faSplotch, faStar, faStopwatch, faStroopwafel, faSubway, faSunPlantWilt, faTable,
+faTachometerFast, faTag, faTape, faTemperatureQuarter, faThermometerHalf, faThumbtack,
+faTicketSimple, faTools, faTornado, faTowerBroadcast, faTowerCell, faTram, faTrashCan, faTruckFront,
+faTv, faUmbrella, faUniversity, faUserTag, faVial, faVideo, faVirus, faViruses, faVolcano,
+faVolumeOff, faWeight, faWifi, faWind, faWrench} from '@fortawesome/free-solid-svg-icons'
 import { setupI18n, loadLocaleMessages } from './i18n'
 import moment from 'moment'
 import fr from "moment/dist/locale/fr"
@@ -58,7 +81,30 @@ library.add(faAsterisk,faBasketShopping, faCalendar,faCaretDown,faCaretLeft,faCa
             faFile, faFileLines, faFolderOpen, faGaugeSimpleHigh, 
             faGraduationCap, faGrip, faKey, faLink,faLocationDot, faMagnifyingGlass,faMap,faObjectGroup,faPencil,
             faPenToSquare,faPrint,faRightFromBracket, faRightToBracket,faRocket, faSatelliteDish, faSearch, faSpinner, faSquare, faSquareCheck, 
-            faTerminal, faTriangleExclamation, faUser, faUserGroup,faUsers)
+            faTerminal, faTriangleExclamation, faUser, faUserGroup,faUsers,
+          faAdjust, faArchive, faArchway, faAtlas, faAtom, faBacteria, faBacterium, faBahai,
+faBalanceScaleLeft, faBalanceScaleRight, faBarsProgress, faBatteryHalf, faBatteryQuarter, faBicycle,
+faBiking, faBinoculars, faBoltLightning, faBomb, faBookmark, faBoxOpen, faBoxesAlt, faBridge,
+faBridgeWater, faBugs, faBullseye, faBurn, faCab, faCalendarDays, faCamera, faCameraRetro,
+faCapsules, faCertificate, faChartBar, faChartDiagram, faCircleRadiation, faCity, faClipboardList,
+faCloudMoonRain, faCloudShowersHeavy, faCloudShowersWater, faCloudSun, faCloudSunRain, faCode,
+faCompactDisc, faCompass, faCookie, faCube, faCubes, faCubesStacked, faDiagramProject,
+faDraftingCompass, faDungeon, faEarthAfrica, faEarthAsia, faEarthEurope, faEarthOceania,
+faExplosion, faEyeDropper, faFan, faFaucetDrip, faFeatherAlt, faFlask, faFolder, faGauge,
+faGaugeHigh, faGaugeSimple, faHardDrive, faHeadphones, faHeadphonesSimple, faHeadset, faHelicopter,
+faHillRockslide, faHome, faHomeLg, faHotel, faHourglassEnd, faHouse, faHouseTsunami, faHurricane,
+faIcicles, faImage, faIndustry, faLandMineOn, faLandmark, faLandmarkFlag, faLayerGroup, faLeaf,
+faLegal, faLineChart, faLocation, faLocationArrow, faMagnet, faMapMarked, faMapMarker, faMicrophone,
+faMicroscope, faMotorcycle, faMountain, faMountainSun, faMouse, faNavicon, faPaperPlane,
+faPaperclip, faPenAlt, faPenRuler, faPeopleGroup, faPeopleLine, faPeopleRoof, faPerson, faPhoneAlt,
+faPhotoFilm, faPieChart, faPlane, faPlaneUp, faPlug, faPodcast, faRadiation, faRadio, faRainbow,
+faRibbon, faRoad, faRoute, faRulerHorizontal, faRunning, faSatellite, faScaleBalanced, faSchool,
+faServer, faShapes, faShareNodes, faShop, faSignsPost, faSitemap, faSliders, faSmog, faSnowflake,
+faSpaceShuttle, faSplotch, faStar, faStopwatch, faStroopwafel, faSubway, faSunPlantWilt, faTable,
+faTachometerFast, faTag, faTape, faTemperatureQuarter, faThermometerHalf, faThumbtack,
+faTicketSimple, faTools, faTornado, faTowerBroadcast, faTowerCell, faTram, faTrashCan, faTruckFront,
+faTv, faUmbrella, faUniversity, faUserTag, faVial, faVideo, faVirus, faViruses, faVolcano,
+faVolumeOff, faWeight, faWifi, faWind, faWrench)
 
 let cfg = {}
 
