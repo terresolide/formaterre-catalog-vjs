@@ -1,5 +1,5 @@
 <script setup>
-import {computed, reactive, watch} from 'vue'
+import { reactive, onMounted,watch} from 'vue'
 import { useRoute } from 'vue-router'
 // import { useSelection } from "@/stores/selection.js"
 import ExportLinks from '@/components/ExportLinks.vue'
@@ -46,10 +46,24 @@ const data = reactive({
 function close () {
     emit('close')
 }
-watch(() => metadata,
-    meta => {
-        if (!route.query || Object.keys(route.query).length === 0 ) {
-              data.currentTab = 'description'
+
+watch(() => hasChild,
+    hasChild => {
+        console.log(hasChild)
+        if (hasChild) {
+            data.currentTab = 'search'
+        } else {
+            data.currentTab = 'description'
+        }
+        // if (!route.query || Object.keys(route.query).length === 0 ) {
+        //       data.currentTab = 'description'
+        // }
+})
+onMounted(() => {
+     if (hasChild) {
+            data.currentTab = 'search'
+        } else {
+            data.currentTab = 'description'
         }
 })
 </script>

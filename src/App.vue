@@ -4,12 +4,17 @@ import { useRoute, RouterLink, RouterView } from 'vue-router'
 import {useCatalog} from '@/stores/catalog'
 import UserInfo from '@/components/UserInfo.vue'
 import {useLoaderState} from '@/stores/loaderState.js'
+import { useElasticsearch } from './stores/elasticsearch'
 // import sentinel1Test from '@/modules/sentinel1-test.js'
 const CharterPage = defineAsyncComponent(
     () => import('@/components/CharterPage.vue'),
 )
 const catalog = useCatalog()
 catalog.init()
+
+const elasticsearch = useElasticsearch()
+elasticsearch.getAggregations()
+
 const isLoading = useLoaderState()
 
 const route = useRoute()
@@ -21,6 +26,7 @@ watch(route, () => {
 })
 onMounted(() => {
     catalog.setCatalog(route.params.catalog)
+
     // sentinel1Test.search()
 })
 let currentCatalog = computed(() => { 

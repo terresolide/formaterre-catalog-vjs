@@ -117,7 +117,8 @@ export const useElasticsearch = defineStore('elasticsearch', {
                size: 10
              },
              meta: {
-               type: 'select',
+               type: 'facet',
+               icon: 'fa-solid fa-photo-film',
                thesaurus: 'formaterre-product-gn',
                label: {fr: 'Type de produit', en: 'Product type'},
                sort: 0
@@ -130,7 +131,8 @@ export const useElasticsearch = defineStore('elasticsearch', {
               size: 4
             },
             meta: {
-              type: 'select',
+              type: 'dimension',
+              icon: 'fa-solid fa-sun',
               label: 'Polarisation',
               sort: 1
             }
@@ -142,7 +144,8 @@ export const useElasticsearch = defineStore('elasticsearch', {
               size: 4
             },
             meta: {
-              type: 'select',
+              type: 'dimension',
+              icon: 'fa-solid fa-satellite',
               label: {fr: 'Orbite relative', en: 'Relative Orbit'},
               sort: 2
             }
@@ -170,6 +173,21 @@ export const useElasticsearch = defineStore('elasticsearch', {
                     id: catalog.id
                 }
             }
+        },
+        getAggregations () {
+            let config = useConfig()
+            let api = config.state.tools + '/api/aggregations/' + config.state.app
+            
+            var self = this
+            fetch(api)
+            .then(rep => rep.json())
+            .then(json => {
+                if (json.aggregations) {
+                  self.aggregations = json.aggregations
+                }
+            }).catch(err => {
+               
+            })
         },
         getCatalogs () {
             if (!this.catalogs) {
@@ -208,11 +226,17 @@ export const useElasticsearch = defineStore('elasticsearch', {
         },
         getParameters (query) {
             let parameters = this.getDefaultParameters()
-            let aggregations = Object.assign({},this.aggregations.step1)
+            let aggregations = {}
             if (this.uuid) {
+                this.step = 'step2'
+                aggregations = Object.assign({},this.aggregations.step2)
                 parameters.query.bool.filter.push({term: {parentUuid: this.uuid}})
                 delete parameters.query.bool.must_not
+            } else {
+                this.step = 'step1'
+                aggregations = Object.assign({},this.aggregations.step1)
             }
+            console.log(aggregations)
             if (query.from) {
                 parameters.from = parseInt(query.from) - 1
             }
