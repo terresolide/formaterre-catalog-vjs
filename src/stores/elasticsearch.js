@@ -296,7 +296,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 parameters.query.bool.must.push(term)
             }
             var catalogs = this.getCatalogs()
-            if (this.catalog) {
+            if (this.catalog && !this.uuid) {
                 var terms = {}
                 terms['th_' + catalogs.thesaurus.th_name + '_tree.key'] = [this.catalog.id]
                 parameters.query.bool.filter.push({terms: terms})

@@ -26,6 +26,7 @@ const props = defineProps({
 
 const data = reactive({
   map: null,
+  popup: null,
   controlLayer: null,
   controlLegend: null,
   controlDraw: null,
@@ -324,19 +325,29 @@ watch(
             type: 'Feature',
             id: mtdt.id,
             geometry: mtdt.geom[0],
+            properties: {
+              title: mtdt.title
+            }
           })
         } else {
           var geometry = { type: 'MultiPolygon', coordinates: [] }
           mtdt.geom.forEach(function (geom) {
             geometry.coordinates.push(geom.coordinates)
           })
-          geojson.features.push({ type: 'Feature', id: mtdt.id, geometry: geometry })
+          geojson.features.push({ type: 'Feature', id: mtdt.id, geometry: geometry, properties: {title: mtdt.title} })
         }
       }
     })
     if (geojson.features.length > 0) {
-        data.bbox.addLayer(L.geoJSON(geojson, { style: currentOptions }))
+        data.bbox.addLayer(L.geoJSON(geojson, { style: currentOptions, onEachFeature: function (ft, layer) {
+            layer.on({click: function(event) {
+              selection.toggle(ft.id)
+              // select
+
+            }})
+        } }))
         data.bbox.addTo(data.map)
+
         var bounds = data.bbox.getBounds()
         if (bounds) {
             data.map.fitBounds(bounds)
@@ -354,10 +365,19 @@ watch(
     if (!uuid) {
       data.selectedBbox = null
       
+     
       var bounds = data.bbox.getBounds()
-        if (bounds.isValid()) {
-            data.map.fitBounds(bounds)
-        }
+      if (data.popup.isOpen()) {
+        data.popup.close()
+      }
+      if (bounds.isValid()) {
+          // data.map.on('zoomend', function (evt) {
+          //   data.map.closePopup()
+          //   data.map.off('zoomend')
+          // })
+          data.map.fitBounds(bounds)
+          
+      } 
 
       return
     }
@@ -368,8 +388,14 @@ watch(
     layers = layers[0].getLayers()
 
     data.selectedBbox = layers.find((ly) => ly.feature.id === uuid)
+    
     if (data.selectedBbox) {
         data.selectedBbox.setStyle(selectedOptions)
+        data.popup.setLatLng(data.selectedBbox.getCenter())
+        data.popup.setContent(data.selectedBbox.feature.properties.title)
+        data.popup.openOn(data.map)
+        // data.selectedBbox.bindPopup(data.selectedBbox.feature.properties.title, {maxWidth:180})
+        // data.selectedBbox.openPopup()
         data.map.fitBounds(data.selectedBbox.getBounds())
         // if layer add legend
         addLegend()
@@ -450,6 +476,7 @@ function initialize() {
   data.controlLayer = new L.Control.MyLayers(null, null, { position: 'topright' })
   data.controlLayer.tiles.arcgisTopo.layer.addTo(data.map)
   data.controlLayer.addTo(data.map)
+  data.popup = L.popup( {maxWidth:180})
   data.bbox = L.featureGroup()
   data.controlLayer.addOverlay(data.bbox, 'Les bbox')
   var fullscreen = new L.Control.Fullscreen('fmtLargeMap', {lang: config.state.lang, mouseWheel: true})
