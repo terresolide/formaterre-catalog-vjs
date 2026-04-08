@@ -236,7 +236,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 this.step = 'step1'
                 aggregations = Object.assign({},this.aggregations.step1)
             }
-            console.log(aggregations)
             if (query.from) {
                 parameters.from = parseInt(query.from) - 1
             }
@@ -560,17 +559,57 @@ export const useElasticsearch = defineStore('elasticsearch', {
         translate(thesaurus, uris) {
             var self = this
             let config = this.getConfig()
-
+            var lang = config.state.lang === 'fr' ? 'fre' : 'eng'
+            var url = config.state.geonetwork + '/srv/api/registries/vocabularies/keyword?thesaurus=' + thesaurus + '&lang=' + lang + '&id='
+            var uritxt = [[]];
+            var max = 750 - url.length
+            var i = 0
+            var len = 0
+            uris.forEach(function (uri) {
+                if (uritxt[i].lenth === 0) {
+                    len = encodeURIComponent(uri).length
+                } else {
+                    len += encodeURIComponent(',' + uri).length
+                }
+                if (len >= max) {
+                    i = i + 1
+                    uritxt[i] = []
+                    len = encodeURIComponent(uri).length
+                }
+                uritxt[i].push(uri)
+            })
+            var promises = []
+            uritxt.forEach(function (uritab) {
+                var promise = new Promise(function (resolve, reject) {
+                    var id = uritab.join(',')
+                    fetch(url + encodeURIComponent(id), {headers: {'accept': 'application/json'}})
+                    .then(resp => resp.json())
+                    .then(json => {
+                        resolve(json)
+                    })
+                })
+                promises.push(promise)
+            })
             return new Promise(function (resolve, reject) {
-                var id = uris.join(',')
-                var lang = config.state.lang === 'fr' ? 'fre' : 'eng'
-                var url = config.state.geonetwork + '/srv/api/registries/vocabularies/keyword?id=' + encodeURIComponent(id) + '&thesaurus=' + thesaurus + '&lang=' + lang
-                fetch(url, {headers: {'accept': 'application/json'}})
-                .then(resp => resp.json())
-                .then(json => {
-                    resolve(json)
+                Promise.all(promises)
+                .then((values) => { 
+                    let items = {}
+                    values.forEach((value) => {
+                        items = Object.assign(items, value)
+                    })
+                    resolve(items)
                 })
             })
+            // return new Promise(function (resolve, reject) {
+            //     var id = uris.join(',')
+            //     var lang = config.state.lang === 'fr' ? 'fre' : 'eng'
+            //     var url = config.state.geonetwork + '/srv/api/registries/vocabularies/keyword?id=' + encodeURIComponent(id) + '&thesaurus=' + thesaurus + '&lang=' + lang
+            //     fetch(url, {headers: {'accept': 'application/json'}})
+            //     .then(resp => resp.json())
+            //     .then(json => {
+            //         resolve(json)
+            //     })
+            // })
 
         },
         treatmentThesaurus (source) {
@@ -804,7 +843,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 }
                 self.translate(thesaurus, toTranslate)
                 .then(translated => {
-
                     buckets.forEach(function (item, index) {
                       if (translated[item.uri]) {
                         if (translated[item.uri].label) {
