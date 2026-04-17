@@ -30,9 +30,15 @@ export const useClient = defineStore('client', {
             var fdata = new URLSearchParams(post)
      
             const response = await fetch(config.state.tools + '/api/user?app=' + config.state.app, {
+                method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ' + user.sso.getToken()
-                }
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    // "Content-Type": "multipart/form-data",
+                },
+                body: 'bearer=' + user.sso.getToken()
+                // headers: {
+                //     'Authorization': 'Bearer ' + user.sso.getToken()
+                // }
             })
             const json =  await response.json()
             this.list = json.clients
