@@ -1,7 +1,5 @@
 <script setup>
-import {reactive} from 'vue'
 import {useConfig} from '@/stores/config.js'
-
 import AuthenticationBox from '@/components/AuthenticationBox.vue'
 import UserProfile from '@/components/UserProfile.vue'
 

@@ -132,7 +132,7 @@ div.client-box:after {
     content: "|";
     padding-left:10px;
 }
-span.user {
+span.user, a.user {
     cursor: pointer;
 }
 span.user:hover + div.user-menu,

@@ -37,6 +37,10 @@ function  getOrganizationTypes ( ) {
     })
 }
 function update () {
+    if (!data.value.organizationType) {
+        alert('Type is required')
+        return
+    }
     let post = {
         email: user.email,
         uid: user.id,
@@ -58,6 +62,9 @@ function update () {
     .then(json => {
         if (json.success) {
             user.setOrganization(json)
+            data.value.organization = user.organization.name 
+            data.value.organizationType = user.organization.type
+            data.value.organizationId = user.organization.id
         }
     })
 }
@@ -117,15 +124,15 @@ function organizationUpdated (event) {
     }     
     
 }
-watch(() => user,
-      (user) => {
-          console.log(user.organization)
-          if (user.organization) {
-              data.value.organization = user.organization.name 
-              data.value.organizationType = user.organization.type 
-              data.value.organizationId = user.organization.id
-          }
-}, {immediate: true, deep: true})
+// watch(() => user,
+//       (user) => {
+//           console.log(user.organization)
+//           if (user.organization) {
+//               data.value.organization = user.organization.name 
+//               data.value.organizationType = user.organization.type 
+//               data.value.organizationId = user.organization.id
+//           }
+// }, {immediate: true, deep: true})
 onMounted(() => {
     getOrganizationTypes()
     reset()
@@ -155,7 +162,7 @@ onMounted(() => {
                <template v-for="item in data.organizationTypes">
                   <option :value="item.t_id"> {{item.t_name}}</option>
                 </template>
-            </select>
+            </select> *
         </div>
         <div style="text-align:right;margin-top:10px;"> 
             <button :style="{backgroundColor:config.state.primary}" @click="reset" :disabled="!updated">{{$t('reset')}}</button>
