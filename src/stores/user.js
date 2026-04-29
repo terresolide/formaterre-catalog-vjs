@@ -35,7 +35,7 @@ export const useUser = defineStore('user', {
         set (user) {
             this.id = user.sub
             this.name = user.name
-            this.roles = user.client_roles
+            this.roles = user.client_roles ? user.client_roles : {}
             this.email = user.email
             if (user.fmt_organization) {
                 this.organization = {

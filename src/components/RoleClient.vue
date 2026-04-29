@@ -70,11 +70,7 @@ function login (evt, client) {
     evt.stopPropagation()
     client.sso.login()
 }
-onMounted(() => {
-    console.log(name)
-    console.log(user.roles[name])
-    console.log(client.roles)
-})
+
 </script>
 <template>
  <!-- entête client -->
@@ -153,7 +149,7 @@ onMounted(() => {
             <tooltip-box :description="description(role)" />
             </div>
             <div v-for="key in ['view', 'download']" class="fmt-center">
-                <span v-if="user.roles[name] && user.roles[name].roles && user.roles[name].roles.indexOf(role.name) >= 0" style="color:green;" >
+                <span v-if="user.roles && user.roles[name] && user.roles[name].roles && user.roles[name].roles.indexOf(role.name) >= 0" style="color:green;" >
                       <font-awesome-icon icon="fa-solid fa-check" /> 
                 </span>
               
