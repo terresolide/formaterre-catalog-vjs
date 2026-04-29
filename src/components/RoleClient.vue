@@ -159,7 +159,7 @@ onMounted(() => {
               
                 <span v-else-if="role.status">
                     <span v-if="role.status === 'ACCEPTED'" >
-                      <font-awesome-icon icon="fa-solid fa-check" style="color:green;" /> 
+                      ?
                     </span>
                     <span v-else-if="role.status === 'WAITING'" :title="$t('WAITING')">
                       <font-awesome-icon icon="fa-solid fa-clock" /> 
