@@ -17,6 +17,8 @@ const config = useConfig()
 const user = useUser()
 const client = useClient()
 const catalog = useCatalog()
+const env = import.meta.env
+const urlAccount =  env.SSO_URL + '/realms/' + env.SSO_REALM + '/account'
 
 let logo = computed(() => {
     if (!client.current || !client.current.sso) {
@@ -40,7 +42,7 @@ function getSSOInformation() {
     return fetch(config.state.tools + '/api/client/' + config.state.app)
 }
 function initSSO (clientId) {
-    var env = import.meta.env
+    
     AuthService.setSize(1050, 800)
     user.sso = new AuthService(env.SSO_NAME, {
        clientId: clientId,
@@ -111,8 +113,17 @@ onMounted(() => {
         </div>
     </template>
     <template v-else>
-        <a class="user" @click="login"><font-awesome-icon icon="fa-solid fa-user" /> {{ $t('login') }}</a>
+        <a class="user" @click="login" >
+            <font-awesome-icon icon="fa-solid fa-user" /> {{ $t('login') }}
+        </a>
+        
     </template>
+    |
+    <a class="user" :href="urlAccount" target="_blank" style="font-size:0.8rem;">
+           <img src="@/assets/img/earth-data-90.png" style="max-height:25px;vertical-align:middle;" /> 
+            <div style="display:inline-block;vertical-align:middle;margin-left:2px;line-height:1;text-align:left;"> {{$t('your_account')}} <br>
+          DataTerra</div>
+        </a>
 </template>
 <style scoped>
 span.button {
@@ -163,5 +174,11 @@ div.user-menu div:hover {
 div.user-menu div.actived {
     background: #f3f3F3;
 }
-
+a.user {
+    margin-left: 3px;
+    border-radius:3px;
+    line-height:30px;
+    padding:3px;display:inline-block;
+    vertical-align:middle;
+}
 </style>

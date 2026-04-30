@@ -85,5 +85,6 @@
     "WAITING": "En cours de traitement",
     "warning": "Attention",
     "warning_user_client": "Vous êtes connecté(e) sur {sso} en tant que <em>{email}</em>, utilisateur différent de <em>{user}</em>.",
+    "your_account": "Votre compte",
     "your_profile": "Votre profile"
 }
