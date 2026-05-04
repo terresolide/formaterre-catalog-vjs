@@ -11,14 +11,16 @@ import TooltipBox from '@/components/TooltipBox.vue'
 
 const profile = defineModel()
 const data = reactive({
-    sso: null
+    sso: null,
+    urlAccount: null,
+    ssoName: null
 })
 const config = useConfig()
 const user = useUser()
 const client = useClient()
 const catalog = useCatalog()
-const env = import.meta.env
-const urlAccount =  env.SSO_URL + '/realms/' + env.SSO_REALM + '/account'
+// const env = import.meta.env
+// const urlAccount =  config.state.provider + '/realms/' + config.state.realm + '/account'
 
 let logo = computed(() => {
     if (!client.current || !client.current.sso) {
@@ -41,13 +43,15 @@ function logout () {
 function getSSOInformation() {
     return fetch(config.state.tools + '/api/client/' + config.state.app)
 }
-function initSSO (clientId) {
-    
+function initSSO (info) {
+    console.log(info)
+    data.urlAccount = info.provider + '/realms/' + info.realm + '/account'
+    data.ssoName = info.name
     AuthService.setSize(1050, 800)
-    user.sso = new AuthService(env.SSO_NAME, {
-       clientId: clientId,
+    user.sso = new AuthService(info.name, {
+       clientId: info.client.clientId,
        method: 'public_verifier',
-       keycloakUrl: env.SSO_URL + '/realms/' + env.SSO_REALM,
+       keycloakUrl: info.provider + '/realms/' + info.realm,
        redirectUri: config.state.ssoLogin
     })
     user.sso.add()
@@ -67,18 +71,18 @@ function initSSO (clientId) {
 }
 
 onMounted(() => {
-    if (config.state.clientId) {
-        initSSO(config.state.clientId)
-        return
-    } else {
+    // if (config.state.clientId) {
+    //     initSSO(config.state.clientId)
+    //     return
+    // } else {
         getSSOInformation()
         .then(resp => resp.json())
         .then(json => {
             if (json && json.client) {
-                initSSO(json.client.clientId)
+                initSSO(json)
             }
         })
-    }
+    // }
 })
 </script>
 <template> 
@@ -103,14 +107,16 @@ onMounted(() => {
                 </template>
             </div>
         </template>
-        <span class="user" >{{user.email}} <font-awesome-icon icon="fa-solid fa-caret-down"/></span>
-        <div class="user user-menu" >
-           <div @click="profile = !profile" :class="{actived: profile}">
-                <font-awesome-icon icon="fa-solid fa-user" /> 
-                {{$t('your_profile')}}
+        <span style="position:relative;">
+            <span class="user" >{{user.email}} <font-awesome-icon icon="fa-solid fa-caret-down"/></span>
+            <div class="user user-menu" >
+            <div @click="profile = !profile" :class="{actived: profile}">
+                    <font-awesome-icon icon="fa-solid fa-user" /> 
+                    {{$t('your_profile')}}
+                </div>
+            <div @click="logout()"><font-awesome-icon icon="fa-solid fa-right-from-bracket" /> {{$t('logout')}}</div>
             </div>
-           <div @click="logout()"><font-awesome-icon icon="fa-solid fa-right-from-bracket" /> {{$t('logout')}}</div>
-        </div>
+        </span>
     </template>
     <template v-else>
         <a class="user" @click="login" >
@@ -119,10 +125,10 @@ onMounted(() => {
         
     </template>
     |
-    <a class="user" :href="urlAccount" target="_blank" style="font-size:0.8rem;">
+    <a class="user" :href="data.urlAccount" target="_blank" style="font-size:0.8rem;">
            <img src="@/assets/img/earth-data-90.png" style="max-height:25px;vertical-align:middle;" /> 
             <div style="display:inline-block;vertical-align:middle;margin-left:2px;line-height:1;text-align:left;"> {{$t('your_account')}} <br>
-          DataTerra</div>
+           SSO {{data.ssoName}}</div>
         </a>
 </template>
 <style scoped>
@@ -153,10 +159,11 @@ div.user-menu:hover {
 div.user-menu {
     position:absolute;
     display:none;
-    right:0;
+    left:0;
     top:18px;
     text-align:left;
-    z-index:115;
+    z-index:114;
+    min-width: 160px;
 }
 
 div.user-menu div{
