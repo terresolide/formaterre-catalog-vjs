@@ -27,7 +27,6 @@ function accessRequest() {
         email: user.email,
         app: config.state.app,
         domain: location.href,
-        realm: import.meta.env.SSO_REALM,
         message: data.message ? data.message : '',
         role: checkedRoles,
         lang: config.state.lang,
