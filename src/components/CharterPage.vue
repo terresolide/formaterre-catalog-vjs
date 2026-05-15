@@ -116,6 +116,9 @@ function sign () {
                 if (role.status === 'ACCEPTED') {
                     data.newRoles.push(role.name)
                     client.setRoleStatus(role.client + '.'  + role.name, role.status)
+                } else {
+                    data.newRoles.push(role.name)
+                    client.setRoleStatus(role.client + '.' + role.name, role.status)
                 }
             })
         }
