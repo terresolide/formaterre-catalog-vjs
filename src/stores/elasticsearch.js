@@ -215,7 +215,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                       filter: [{
                           term: {isTemplate: 'n'}
                       },  {
-                          terms: {resourceType: ['dataset', 'series']}
+                          terms: {resourceType: ['dataset', 'series', 'Repository', 'feature']}
                       }],
                       must_not: {
                           exists: {field: 'parentUuid'}

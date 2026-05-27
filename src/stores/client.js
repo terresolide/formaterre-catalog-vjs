@@ -49,7 +49,9 @@ export const useClient = defineStore('client', {
                     this.roles[name].client = this.list.find(cl => cl.clientId === this.roles[name].externalClient)
                 }
             }
+           
             this.charters = json.charters
+       
             this.loaded = true
             if (json.organization) {
                 user.setOrganization(json.organization)
