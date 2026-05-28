@@ -33,7 +33,6 @@ export default function (attrs) {
         metadata.title = extractFromLangs(
              JSONPATH.query(json, "$..['gmd:citation']['gmd:CI_Citation']['gmd:title']"),
              idLang)
-      
         var description = extractFromLangs(
             JSONPATH.query(json, "$..['gmd:abstract']"),
             idLang)
@@ -46,6 +45,7 @@ export default function (attrs) {
         metadata.description = description.replace(/(?:\\[rn]|[\r\n])/g, '<br />')
         metadata.credit = extractFromLangs(json['gmd:credit'], idLang)
         metadata.purpose = extractFromLangs(json['gmd:purpose'], idLang)
+        
         if (json['gmd:parentIdentifier']) {
             metadata.parentIdentifier = json['gmd:parentIdentifier']['gco:CharacterString']["#text"]
         }
@@ -58,6 +58,7 @@ export default function (attrs) {
           metadata.purpose = metadata.purpose.replace(/(?:\\[rn]|[\r\n])/g, '<br />')
         }
         var dataInfo = json['gmd:identificationInfo']['gmd:MD_DataIdentification']
+        
         metadata.status = JSONPATH.query(json,"$..['gmd:status']['gmd:MD_ProgressCode']['@codeListValue']")[0]
         metadata.identifier = JSONPATH.query(dataInfo, "$..['gmd:identifier']..['gco:CharacterString']['#text']")[0]
       
@@ -66,6 +67,7 @@ export default function (attrs) {
         metadata.topicCat = dataInfo['gmd:topicCategory']['gmd:MD_TopicCategoryCode']
         }
         extractKeywords(metadata, dataInfo['gmd:descriptiveKeywords'], idLang)
+      
         metadata.images = extractImages(dataInfo['gmd:graphicOverview'], idLang)
         var constraints = extractConstraints(
             JSONPATH.query(dataInfo, "$..['gmd:resourceConstraints']..['gmd:MD_LegalConstraints']"),
@@ -85,7 +87,7 @@ export default function (attrs) {
             JSONPATH.query(dataInfo['gmd:pointOfContact'], "$..['gmd:CI_ResponsibleParty']"), idLang)
 
         metadata.contacts = {resource: contacts}
-        var contacts = extractContacts(
+         var contacts = extractContacts(
             JSONPATH.query(json['gmd:contact'], "$..['gmd:CI_ResponsibleParty']"), idLang)
 
         metadata.contacts.metadata = contacts
@@ -107,6 +109,9 @@ export default function (attrs) {
         }
         var address = []
         for (var key in json) {
+          if (!json[key]) {
+            continue
+          }
           if (key !== 'gmd:electronicMailAddress' && json[key]['gco:CharacterString'] &&
               json[key]['gco:CharacterString']['#text']) {
             address.push(json[key]['gco:CharacterString']['#text'])
@@ -342,8 +347,13 @@ export default function (attrs) {
     }
     function extractFromLangs(json, idLang) {
         var value = null
-        if (json === undefined) {
+        if (!json || json === undefined) {
           return null
+        }
+
+        if (typeof json === 'string') {
+        
+          return json
         }
         if (idLang) {
           var values = JSONPATH.query(json, "$..['gmd:LocalisedCharacterString']")
@@ -381,8 +391,10 @@ export default function (attrs) {
     function extractKeywords (metadata, json, idLang) {
     
         var keywords = []
+
         if (json) 
         json.forEach(function (keynode) {
+
             var list = keynode['gmd:MD_Keywords']['gmd:keyword']
             var type = JSONPATH.query(keynode, "$..['gmd:MD_KeywordTypeCode']['@codeListValue']")
             if (type) {
@@ -416,6 +428,9 @@ export default function (attrs) {
                 metadata.dataCenter = []
             }
             list.forEach (function (node) {
+              if (!node) {
+                return
+              }
               var keywd = extractFromLangs(node, idLang)
               var link = JSONPATH.query(node, "$..['gmx:Anchor']['@xlink:href']")
               if (link) {
@@ -463,10 +478,13 @@ export default function (attrs) {
           links = aux
         }
         links.forEach(function (online, index) {
+             if(!online['gmd:linkage']) {
+              return false
+             }
              var protocol = 'WWW:LINK-1.0-http--link'
-             if (online['gmd:protocol']['gmx:Anchor']) {
+             if (online['gmd:protocol'] && online['gmd:protocol']['gmx:Anchor']) {
                var protocol = online['gmd:protocol']['gmx:Anchor']['#text']
-             } else if (online['gmd:protocol']['gco:CharacterString'] ) {
+             } else if (online['gmd:protocol'] && online['gmd:protocol']['gco:CharacterString'] ) {
               var protocol = online['gmd:protocol']['gco:CharacterString']['#text'] 
              }
               var url = online['gmd:linkage']['gmd:URL']
