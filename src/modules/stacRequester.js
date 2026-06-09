@@ -35,6 +35,7 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
             fetch(searchUrl,  {
                     headers: headers ,
                     method: 'POST',
+                    targetAddressSpace: 'public',
                     body: JSON.stringify(parameters)
             }).then(rep => rep.json())
             .then(json => {

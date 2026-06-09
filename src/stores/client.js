@@ -35,6 +35,7 @@ export const useClient = defineStore('client', {
                     "Content-Type": "application/x-www-form-urlencoded",
                     // "Content-Type": "multipart/form-data",
                 },
+                targetAddressSpace: 'public',
                 body: 'bearer=' + user.sso.getToken()
                 // headers: {
                 //     'Authorization': 'Bearer ' + user.sso.getToken()

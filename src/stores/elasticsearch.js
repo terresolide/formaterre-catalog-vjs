@@ -179,7 +179,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             let api = config.state.tools + '/api/aggregations/' + config.state.app
             
             var self = this
-            fetch(api)
+            fetch(api, {targetAddressSpace: 'public'})
             .then(rep => rep.json())
             .then(json => {
                 if (json.aggregations) {
@@ -358,7 +358,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
             const config = this.getConfig()
             let url = config.state.geonetwork +  '/srv/api/records/' + this.uuid
             return new Promise((successCallback, failureCallback) => {
-                fetch(url, {headers:headers})
+                fetch(url, {headers:headers, targetAddressSpace: 'public'})
                 .then(resp => resp.json())
                 .then(json => {
                     if (successCallback) {
@@ -382,6 +382,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 {
                     headers: {'Accept': 'application/json', 'Content-type': 'application/json'},
                     method: 'POST',
+                    targetAddressSpace: 'public',
                     body: JSON.stringify(parameters)
                 }
                 ).then(rep => rep.json())
@@ -418,6 +419,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 {
                     headers: {'Accept': 'application/json', 'Content-type': 'application/json'},
                     method: 'POST',
+                    targetAddressSpace: 'public',
                     body: JSON.stringify(parameters)
                 }).then(resp => resp.json())
                 .then(json => {
@@ -582,7 +584,10 @@ export const useElasticsearch = defineStore('elasticsearch', {
             uritxt.forEach(function (uritab) {
                 var promise = new Promise(function (resolve, reject) {
                     var id = uritab.join(',')
-                    fetch(url + encodeURIComponent(id), {headers: {'accept': 'application/json'}})
+                    fetch(url + encodeURIComponent(id), {
+                        headers: {'accept': 'application/json'},
+                        targetAddressSpace: 'public'
+                    })
                     .then(resp => resp.json())
                     .then(json => {
                         resolve(json)

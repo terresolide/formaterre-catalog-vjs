@@ -19,6 +19,7 @@ export function recordDownload (ev, route) {
         {
             headers: {'Accept': 'application/json', 'Content-type': 'application/json'},
             method: 'POST',
+            targetAddressSpace: 'public',
             body: JSON.stringify(post)
         }
     )

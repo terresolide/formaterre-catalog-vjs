@@ -20,7 +20,7 @@ export default {
       if (this.regex.test(url) && this.proxy) {
         search = this.proxy + '?url=' + encodeURIComponent(url)
       }
-      fetch(search)
+      fetch(search, {targetAddressSpace: 'public'})
       .then((resp) => resp.text())
       .then( txt => {this.extract(txt, layer, options, metaId, callback)})
       // $http.get(search)
