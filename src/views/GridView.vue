@@ -18,6 +18,7 @@
   const selection = useSelection()
   const elasticsearch = useElasticsearch()
   let data = reactive({
+    initialize: false,
     list: [],
     bbox: null,
     pagination: {
@@ -107,7 +108,7 @@
   watch(() => route,
    (newroute) => {
       console.log('--- WATCH ROUTE DANS GRID VIEW ---')
-
+      data.initialize = true
       if (data.oldroute) {
         if (data.oldroute.name !== newroute.name || (newroute.params.catalog && newroute.params.catalog !== data.oldroute.params.catalog)) {
           console.log('--- RESET ---')
@@ -137,8 +138,11 @@
   }, {immediate: true, deep: true})
   onMounted(() => {
     console.log('--- ON MOUNTED  DANS GRID VIEW ---')
-    // elasticsearch.setCatalog(route.name, route.params.catalog)
-    // getRecords(route.query)
+    if (data.initialize) {
+        return
+    }
+    elasticsearch.setCatalog(route.name, route.params.catalog)
+    getRecords(route.query)
     
   })
   function convert (uuid, metadata) {
