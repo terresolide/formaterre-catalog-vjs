@@ -85,7 +85,7 @@ function getTokenInHeader (link, token) {
     const ac = new AbortController()
     const signal = ac.signal
     selection.writableStreams.push(ac)
-    fetch(url, {headers: headers, signal: signal, targetAddressSpace: 'public'}).then(res => {
+    fetch(url, {headers: headers, signal: signal}).then(res => {
        load.changeStateFalse()
       if (!res.ok ) {
         console.log(res.status)

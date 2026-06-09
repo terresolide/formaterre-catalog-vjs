@@ -36,7 +36,6 @@ function accessRequest() {
     var url = config.state.tools + '/requests/ask'
     fetch(url,{
         method: 'POST',
-        targetAddressSpace: 'public',
         body: fdata.toString(),
         headers: {
             'Accept': 'application/json',

@@ -102,7 +102,6 @@ function sign () {
     fetch(url,{
         method: 'POST',
         body: fdata.toString(),
-        targetAddressSpace: 'public',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded'

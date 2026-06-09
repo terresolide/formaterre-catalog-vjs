@@ -26,7 +26,7 @@ export const useCatalog = defineStore('catalog', {
                     url = config.state.tools + '/api/groups'
                 }
             }
-            fetch(url, {headers: {'accept':'application/json', 'accept-language': config.state.lang}, targetAddressSpace: 'public'})
+            fetch(url, {headers: {'accept':'application/json', 'accept-language': config.state.lang}})
             .then(resp => resp.json())
             .then(json => {
                 this.initialized = true
@@ -98,7 +98,7 @@ export const useCatalog = defineStore('catalog', {
     getGroups () {
          const config = useConfig()
         var url = config.state.geonetwork + '/srv/api/groups?withReservedGroup=false'
-        fetch(url, {headers: {'accept':'application/json'}, targetAddressSpace: 'public'})
+        fetch(url, {headers: {'accept':'application/json'}})
         .then(resp => resp.json())
         .then(json => {
             console.log(json)

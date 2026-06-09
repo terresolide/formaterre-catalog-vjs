@@ -41,7 +41,7 @@ function logout () {
     user.sso.logout(true)
 }
 function getSSOInformation() {
-    return fetch(config.state.tools + '/api/client/' + config.state.app, {targetAddressSpace: 'public' })
+    return fetch(config.state.tools + '/api/client/' + config.state.app)
 }
 function initSSO (info) {
     console.log(info)

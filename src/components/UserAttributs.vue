@@ -28,7 +28,7 @@ function reset () {
 }
 function  getOrganizationTypes ( ) {
    
-    fetch(config.state.tools + '/api/types?lang=' + config.state.lang, {targetAddressSpace: 'public'})
+    fetch(config.state.tools + '/api/types?lang=' + config.state.lang)
     .then(resp => resp.json())
     .then(json => {
         if (json.types) {
@@ -56,7 +56,6 @@ function update () {
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        targetAddressSpace: 'public',
         method: 'POST',
         body: fdata.toString()
     }).then(resp => resp.json())
