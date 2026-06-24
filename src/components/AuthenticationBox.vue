@@ -13,7 +13,8 @@ const profile = defineModel()
 const data = reactive({
     sso: null,
     urlAccount: null,
-    ssoName: null
+    ssoName: null,
+    showNote: false
 })
 const config = useConfig()
 const user = useUser()
@@ -86,6 +87,16 @@ onMounted(() => {
 })
 </script>
 <template> 
+    <template v-if="config.state.note">
+        <div class="client-box" style="position:relative;">
+            <a class="button" style="line-height:30px;vertical-align:middle;" @click="data.showNote = !data.showNote">
+                 <font-awesome-icon icon="fa-solid fa-triangle-exclamation" />
+            </a>
+            <template v-if="data.showNote">
+            <div class="show-note" v-html="config.state.note" @click="data.showNote = false"></div>
+            </template>
+        </div>
+    </template>
     <template v-if="user.email">
         <template v-if="client.current">
             <div class="client-box">
@@ -165,7 +176,20 @@ div.user-menu {
     z-index:114;
     min-width: 160px;
 }
+div.show-note {
+    position: absolute;
+    right: 0px;
+    max-width:500px;
+    color:var( --vdp-selected-bg-color);
+    min-width:300px;
+    text-align:left;
+    padding:5px;
+    z-index:110;
+    background: var(--color-background-mute);
+    box-shadow: 0 1px 5px rgba(0,0,0,.65);
+    cursor: pointer;
 
+}
 div.user-menu div{
    line-height:2;
    padding: 3px 9px;

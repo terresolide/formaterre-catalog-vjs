@@ -108,7 +108,6 @@
   watch(() => route,
    (newroute) => {
       console.log('--- WATCH ROUTE DANS GRID VIEW ---')
-      data.initialize = true
       if (data.oldroute) {
         if (data.oldroute.name !== newroute.name || (newroute.params.catalog && newroute.params.catalog !== data.oldroute.params.catalog)) {
           console.log('--- RESET ---')
@@ -116,7 +115,7 @@
 
         }
       }
-     
+      data.initialize = true
      
       elasticsearch.setCatalog(newroute.name, newroute.params.catalog, newroute.params.id)
       if (newroute.params.id) {

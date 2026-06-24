@@ -5,6 +5,7 @@ import {useCatalog} from '@/stores/catalog'
 import UserInfo from '@/components/UserInfo.vue'
 import {useLoaderState} from '@/stores/loaderState.js'
 import { useElasticsearch } from './stores/elasticsearch'
+import { useConfig } from './stores/config'
 // import sentinel1Test from '@/modules/sentinel1-test.js'
 const CharterPage = defineAsyncComponent(
     () => import('@/components/CharterPage.vue'),
@@ -17,6 +18,7 @@ elasticsearch.getAggregations()
 
 const isLoading = useLoaderState()
 
+const config = useConfig()
 const route = useRoute()
 const loading = computed(() => {
     return isLoading.state
@@ -44,6 +46,7 @@ let currentCatalog = computed(() => {
         <header>
             
             <div class="wrapper">
+              
               <user-info />
               <charter-page  />
               <nav>
