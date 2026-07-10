@@ -152,8 +152,10 @@
               data.converter = converter.default()
               
               transform(uuid, metadata)
-              getRecords(route.query)
-               loader.changeStateFalse()
+              .then(grp => {
+                getRecords(route.query)
+              }) 
+              loader.changeStateFalse()
               
               
           })
@@ -165,6 +167,7 @@
       // calcule l'accès pour les enfants??? ou dans computed???
   }
   function transform (uuid, metadata) {
+    return new Promise ((successClb, rejectClb) => {
       var meta = data.converter.transform(uuid, metadata)
       data.bbox = meta.geojson
       if (!meta.parentIdentifier) {
@@ -176,11 +179,23 @@
               var group = catalogs.getGroupById(grpId)
               meta.group = group ? group.name : null
               data.metadata = meta
-          }, err => {data.metadata = meta})
+              if (successClb) {
+                successClb(group)
+              }
+          }, err => {
+            data.metadata = meta
+            if (rejectClb) {
+                rejectClb(err)
+            }
+        })
           
       } else {
           data.metadata = meta
+          if (successClb) {
+            successClb(group)
+          }
       }
+    })
       // getRecords(route.query)
   }
   function launchStac () {
