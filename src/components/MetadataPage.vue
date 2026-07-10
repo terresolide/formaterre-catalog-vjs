@@ -42,13 +42,20 @@ const tabs = {
 const data = reactive({
     currentTab: 'description'
 })
-
+// const currentTab = computed(() => {
+//     if (hasChild) {
+//         return 'search'
+//     } else {
+//         return 'description'
+//     }
+// })
 function close () {
     emit('close')
 }
 
 watch(() => hasChild,
     hasChild => {
+        console.log('hasChild change')
         console.log(hasChild)
         if (hasChild) {
             data.currentTab = 'search'
@@ -60,11 +67,11 @@ watch(() => hasChild,
         // }
 })
 onMounted(() => {
-     if (hasChild) {
-            data.currentTab = 'search'
-        } else {
-            data.currentTab = 'description'
-        }
+    if (hasChild) {
+        data.currentTab = 'search'
+    } else {
+        data.currentTab = 'description'
+    }
 })
 </script>
 

@@ -144,7 +144,7 @@
     getRecords(route.query)
     
   })
-  function convert (uuid, metadata) {
+  function convert (uuid, metadata, query) {
       loader.changeStateTrue()
       if (!data.converter) {
           getMetaConverter()
@@ -152,11 +152,14 @@
               data.converter = converter.default()
               
               transform(uuid, metadata)
+              getRecords(route.query)
                loader.changeStateFalse()
+              
               
           })
       } else {
            transform(uuid, metadata)
+           getRecords(route.query)
            loader.changeStateFalse()
       }
       // calcule l'accès pour les enfants??? ou dans computed???
@@ -221,9 +224,10 @@
           data.list = []
           meta.group = catalogs.getCurrentGrp()
           data.hasChild = true
+          
           convert(uuid, meta)
           
-          getRecords(route.query)
+         
       }, err => {loader.changeStateFalse()})
   }
   function close () {
@@ -245,10 +249,10 @@
     .then(json => {
         if (json.list) {
           data.list = json.list
+          console.log(json.list)
           data.pagination = Object.assign(data.pagination, json.pagination)
           if (data.metadata && data.list.length === 0) {
               data.bbox = data.metadata.geojson
-              console.log('ici')
               if (Object.keys(query).length === 0) {
                 data.hasChild = false
               }
