@@ -161,7 +161,8 @@
           })
       } else {
            transform(uuid, metadata)
-           getRecords(route.query)
+           .then(grp => {getRecords(route.query)})
+           
            loader.changeStateFalse()
       }
       // calcule l'accès pour les enfants??? ou dans computed???
@@ -192,7 +193,7 @@
       } else {
           data.metadata = meta
           if (successClb) {
-            successClb(group)
+            successClb(meta.group)
           }
       }
     })
