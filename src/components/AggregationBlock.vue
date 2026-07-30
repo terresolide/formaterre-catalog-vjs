@@ -189,7 +189,7 @@ onMounted(() => {
         <span><input type="radio" v-model="data.isOr" :value="false" @change="changeComparator" /> {{$t('and')}}</span>
       </div>
     </template>
-
+{{ data}}
     <div v-if="data.category" v-for="dim in data.category" v-show="data.show" :key="dim.key" >
         <span @click="select(dim.key)">
             <span class="icon">

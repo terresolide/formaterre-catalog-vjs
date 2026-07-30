@@ -123,39 +123,13 @@ export const useElasticsearch = defineStore('elasticsearch', {
                label: {fr: 'Type de produit', en: 'Product type'},
                sort: 0
              }
-          },
-          polarisation: {
-            terms: {
-              field: 'th_polarisation.default',
-              order: {_key: 'asc'},
-              size: 4
-            },
-            meta: {
-              type: 'dimension',
-              icon: 'fa-solid fa-sun',
-              label: 'Polarisation',
-              sort: 1
-            }
-          },
-          ron: {
-            terms: {
-              field: 'th_ron.default',
-              order: {_key: 'asc'},
-              size: 4
-            },
-            meta: {
-              type: 'dimension',
-              icon: 'fa-solid fa-satellite',
-              label: {fr: 'Orbite relative', en: 'Relative Orbit'},
-              sort: 2
-            }
           }
         }
       },
       // @todo à configurer sur le back office
       includes: ["uuid", "id", "groupOwner", "cl_status", "cl_hierarchyLevel", "geom", "contactForResource", "organisationName",
         "resourceTitle*", "resourceTemporalExtentDetails", "resourceAbstract*",  "th_formaterre_provider.*",
-        "th_formater-platform-gn", "th_formaterre-product-gn", "th_ron.default", "th_polarisation.default", "overview","link"]
+        "th_formater-platform-gn", "th_formaterre-product-gn", "overview","link"]
     }),
     actions: {
         setCatalog ( routeName, catalogName, metadataId) {

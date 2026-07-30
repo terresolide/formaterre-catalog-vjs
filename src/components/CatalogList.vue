@@ -14,7 +14,9 @@ onMounted(() => {
 </script>
 <template>
     <div class="wrapper-group">
+    
         <div class="container-flex">
+          
             <template v-for="item in list" >
                 <catalog-box :catalog="item"></catalog-box>
             </template>
