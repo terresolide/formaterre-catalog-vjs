@@ -297,7 +297,8 @@ export const useElasticsearch = defineStore('elasticsearch', {
             var catalogs = this.getCatalogs()
             if (this.catalog && !this.uuid) {
                 var terms = {}
-                terms['th_' + catalogs.thesaurus.th_name + '_tree.key'] = [this.catalog.id]
+                var catalog = catalogs.getCurrent()
+                terms['th_' + catalogs.thesaurus.th_name + '_tree.key'] = catalog.uri
                 parameters.query.bool.filter.push({terms: terms})
                 delete aggregations[catalogs.thesaurus.th_slug]
             }
@@ -784,9 +785,9 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 if (key === catalog.organismThesaurus.th_slug) {
                     isKey = false
                 }
-                if (key === catalog.thesaurus.th_slug) {
-                    isKey = false
-                }
+                // if (key === catalog.thesaurus.th_slug) {
+                //     isKey = true
+                // }
                 if (key === 'groupOwner') {
                      isKey = false
                 }
