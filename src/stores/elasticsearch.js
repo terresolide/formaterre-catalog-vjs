@@ -300,7 +300,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 var catalog = catalogs.getCurrent()
                 terms['th_' + catalogs.thesaurus.th_name + '_tree.key'] = catalog.uri
                 parameters.query.bool.filter.push({terms: terms})
-                delete aggregations[catalogs.thesaurus.th_slug]
+                // delete aggregations[catalogs.thesaurus.th_slug]
             }
 
             for(var key in aggregations) {
