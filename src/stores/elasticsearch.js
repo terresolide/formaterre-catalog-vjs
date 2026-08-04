@@ -13,19 +13,6 @@ export const useElasticsearch = defineStore('elasticsearch', {
       config: null,
       aggregations: {
         step1: {
-          theme: { 
-            terms: {
-              field: 'th_formaterre_themes_tree.key',
-              size: 50
-            },
-            meta: {
-              type: 'dimension',
-              thesaurus: 'formaterre_themes',
-              icon: 'fa-solid fa-object-group',
-              label: {fr: 'Thématique', en: 'Theme'},
-              sort: 0
-            }
-          },
           groupOwner: {
             terms: {
               field: 'groupOwner',
@@ -123,38 +110,12 @@ export const useElasticsearch = defineStore('elasticsearch', {
                label: {fr: 'Type de produit', en: 'Product type'},
                sort: 0
              }
-          },
-          polarisation: {
-            terms: {
-              field: 'th_polarisation.default',
-              order: {_key: 'asc'},
-              size: 4
-            },
-            meta: {
-              type: 'dimension',
-              icon: 'fa-solid fa-sun',
-              label: 'Polarisation',
-              sort: 1
-            }
-          },
-          ron: {
-            terms: {
-              field: 'th_ron.default',
-              order: {_key: 'asc'},
-              size: 4
-            },
-            meta: {
-              type: 'dimension',
-              icon: 'fa-solid fa-satellite',
-              label: {fr: 'Orbite relative', en: 'Relative Orbit'},
-              sort: 2
-            }
           }
         }
       },
       // @todo à configurer sur le back office
       includes: ["uuid", "id", "groupOwner", "cl_status", "cl_hierarchyLevel", "geom", "contactForResource", "organisationName",
-        "resourceTitle*", "resourceTemporalExtentDetails", "resourceAbstract*",  "th_formaterre_provider.*",
+        "resourceTitle*", "resourceTemporalExtentDetails", "resourceAbstract*",  "th_formaterre_provider.*", "resourceProviderOrgForResourceObject.*",
         "th_formater-platform-gn", "th_formaterre-product-gn", "th_ron.default", "th_polarisation.default", "overview","link"]
     }),
     actions: {
@@ -236,6 +197,19 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 this.step = 'step1'
                 aggregations = Object.assign({},this.aggregations.step1)
             }
+            // aggregations['provider'] = {
+            //     terms: {
+            //         field: 'resourceProviderOrgForResourceObject.link',
+            //         //  order: {_default: 'asc'},
+            //         size: 50
+            //     },
+            //     meta: {
+            //         type: 'dimension',
+            //         icon: 'fa-solid fa-database',
+            //         label: {fr: 'Fournisseur', en: 'Provider'},
+            //         sort: 1
+            //     }
+            // }
             if (query.from) {
                 parameters.from = parseInt(query.from) - 1
             }
@@ -506,13 +480,20 @@ export const useElasticsearch = defineStore('elasticsearch', {
             var group = catalogs.getGroupById(source.groupOwner)
             meta.group = group ? group.name : null
             meta.geom = source.geom
-            if ( catalogs.organismThesaurus && source['th_' + catalogs.organismThesaurus.th_name] ) {
+            if (catalogs.organismThesaurus && source['th_' + catalogs.organismThesaurus.th_name] ) {
                 meta.dataCenter = []
                 var name = 'th_' + catalogs.organismThesaurus.th_name
                 for (var i in source[name]) {
                     meta.dataCenter.push(catalogs.organisms[source[name][i].link])
                 }
                
+            } else if (catalogs.organismThesaurus && catalogs.organismThesaurus.th_name.endsWith('OrgForResourceObject')) {
+                meta.dataCenter = []
+                var role = catalogs.organismThesaurus.th_name.replace('OrgForResourceObject', '')
+                var contacts = source.contactForResource.filter(x => x.role === role && x.organisationObject && x.organisationObject.link)
+                contacts.forEach(function (ct) {
+                    meta.dataCenter.push(catalogs.organisms[ct.organisationObject.link])
+                })
             }
             meta.thesaurus = this.treatmentThesaurus(source)
             meta.links = this.treatmentLinks(source.link, meta.id)
@@ -791,20 +772,17 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 if (key === 'groupOwner') {
                      isKey = false
                 }
-               
                 let groups = catalog.groups
-                
                 var toTranslate = []
-                var thesaurus = agg.meta.thesaurus || null
-
-
+                var thesaurus = agg.meta.thesaurus || null          
                 buckets.forEach(function (item, index) {
-
                     if (type === 'dimension') {
-                        
                         if (key === 'groupOwner') {
-
                             var label = groups[parseInt(item.key)].name
+                        } else if (thesaurus.endsWith('OrgForResourceObject')) {
+                            if (catalog.organisms[item.key]) {
+                                var label = catalog.organisms[item.key].label
+                            }
                         } else if (key === catalog.organismThesaurus.th_slug) {
                             
                             var label = catalog.organisms[item.key].label
