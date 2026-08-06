@@ -91,12 +91,14 @@ export default function (attrs) {
         if (catalog.organismThesaurus && catalog.organismThesaurus.th_name.endsWith('OrgForResourceObject')) {
                 metadata.dataCenter = []
                 var role = catalog.organismThesaurus.th_name.replace('OrgForResourceObject', '')
+                if (contacts[role]) {
                 var cts = contacts[role].filter(x => x[8])
-                cts.forEach(function (ct) {
-                    if (catalog.organisms[ct[8]]) {
-                      metadata.dataCenter.push(catalog.organisms[ct[8]])
-                    }
-                })
+                  cts.forEach(function (ct) {
+                      if (catalog.organisms[ct[8]]) {
+                        metadata.dataCenter.push(catalog.organisms[ct[8]])
+                      }
+                  })
+                }
             }
          var contacts = extractContacts(
             JSONPATH.query(json['gmd:contact'], "$..['gmd:CI_ResponsibleParty']"), idLang)
