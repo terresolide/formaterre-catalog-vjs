@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, ref, watch} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import {useConfig} from '@/stores/config.js'
 import {useUser} from '@/stores/user.js'
 const config = useConfig()

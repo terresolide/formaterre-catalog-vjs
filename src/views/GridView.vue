@@ -64,6 +64,18 @@
             var acc = {view: user.hasRole(stacAccess.view), download: user.hasRole(stacAccess.download)}
             var url = new URL(stac.url)
             var cl = client.getSSO(url.hostname)
+            
+            var found = stacAccess.view.matchAll(/charter(?<charter>[0-9]+)/gm)
+            console.log(found)
+            for(var x in found) {
+              console.log(x)
+            }
+
+            if (stacAccess.view.indexOf('charter') >= 0) {
+              var charters = stacAccess.view.split(',')
+              
+            }
+            
             if ( !cl ) {
                 return acc
             }
