@@ -65,29 +65,39 @@
             var url = new URL(stac.url)
             var cl = client.getSSO(url.hostname)
             
-            var found = stacAccess.view.matchAll(/charter(?<charter>[0-9]+)/gm)
-            console.log(found)
-            for(var x in found) {
-              console.log(x)
+            var found = /(?:charter)([0-9]+)/.exec(stacAccess.view)
+            var charterId = null
+            if (found && found.length >  1) {
+              charterId = parseInt(found[1])
+            }
+            found = /(?:charter)([0-9]+)/.exec(stacAccess.download)
+            if (found && found.length >  1) {
+              charterId = parseInt(found[1])
+            }
+            var roles = stacAccess.download.split(',')
+            var charterObj = {}
+            if (charterId) {
+              var charterObj = {
+                charter: {
+                  id: charterId,
+                  signed: client.charters.signed.indexOf(charterId) >= 0,
+                  only: roles.length === 1 // uniquement le "rôle" charter
+                }
+              }
             }
 
-            if (stacAccess.view.indexOf('charter') >= 0) {
-              var charters = stacAccess.view.split(',')
-              
-            }
-            
             if ( !cl ) {
-                return acc
+                return Object.assign(acc,charterObj)
             }
             data.metadata.ssoId = cl.sso.getId()
             client.setCurrent(cl)
             // fusionne les droits d'accès et l'authentification
             if (cl.sso.getEmail()) {
                 getRecords(route)
-                return acc
+                return Object.assign(acc, charterObj)
             } else {
                 getRecords(route)
-                return {view: acc.view > 0 ? 0 : -1, download: acc.download > 0 ? 0 : -1 }
+                return Object.assign({view: acc.view > 0 ? 0 : -1, download: acc.download > 0 ? 0 : -1 },charterObj)
             } 
             
         }

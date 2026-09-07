@@ -149,13 +149,13 @@ function getTokenInHeader (link, token) {
 </script>
 <template>   
      <template v-if="links.length === 1 && mode === 'box'">
-        <div class="mtdt-related-type" :title="links[0].name" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}"
+        <div class="mtdt-related-type" :title="links[0].name" :class="{disabled: access.download < 0 && (!access.charter || !access.charter.signed), notAuthenticated: access.download === 0}"
         @click="download(0)">
             <font-awesome-icon icon="fa-solid fa-download" />
         </div>
      </template>
      <template v-else>
-         <div class="mtdt-related-type" :title="$t('download_link')" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}">
+         <div class="mtdt-related-type" :title="$t('download_link')" :class="{disabled: access.download < 0 && (!access.charter || !access.charter.signed), notAuthenticated: access.download === 0}">
             <font-awesome-icon icon="fa-solid fa-download"  />
             <font-awesome-icon v-if="mode === 'box'"
               style="margin-left: 2px"
@@ -167,7 +167,7 @@ function getTokenInHeader (link, token) {
   <div v-if="links.length > 1 || mode === 'page'" class="mtdt-expand mtdt-links">
     <ul>
       <template v-for="(link, index) in links">
-        <li @click="download(index)" style="cursor:pointer;" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}">
+        <li @click="download(index)" style="cursor:pointer;" :class="{disabled: access.download < 0 && (!access.charter || !access.charter.signed), notAuthenticated: access.download === 0}">
           <span  :title="link.description">{{ link.name }}</span>
         </li>
       </template>
@@ -175,18 +175,18 @@ function getTokenInHeader (link, token) {
   </div>
   <!-- téléchargement en ligne de commande si un seul lien-->
   <template v-if="links.length === 1 && mode === 'box'" >
-      <div class="mtdt-related-type" :title="$t('command_line')" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}" @click="commandLine(0)">
+      <div class="mtdt-related-type" :title="$t('command_line')" :class="{disabled: access.download < 0 && (!access.charter || !access.charter.signed), notAuthenticated: access.download === 0}" @click="commandLine(0)">
         <font-awesome-icon icon="fa-solid fa-terminal" />
       </div>
   </template>
   <template v-else>
-       <div class="mtdt-related-type" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}" :title="$t('command_line')" >
+       <div class="mtdt-related-type" :class="{disabled: access.download < 0 && (!access.charter || !access.charter.signed), notAuthenticated: access.download === 0}" :title="$t('command_line')" >
         <font-awesome-icon icon="fa-solid fa-terminal" />
       </div>
        <div v-if="links.length > 1 || mode === 'page'" class="mtdt-expand mtdt-links">
     <ul>
       <template v-for="(link, index) in links">
-        <li @click="commandLine(index)" style="cursor:pointer;" :class="{disabled: access.download < 0, notAuthenticated: access.download === 0}">
+        <li @click="commandLine(index)" style="cursor:pointer;" :class="{disabled: access.download < 0 && (!access.charter || !access.charter.signed), notAuthenticated: access.download === 0}">
           <span  :title="link.description">{{ link.name }}</span>
         </li>
       </template>

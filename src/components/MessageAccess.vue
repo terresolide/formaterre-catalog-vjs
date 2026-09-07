@@ -1,13 +1,19 @@
 <script setup>
+
 import { useClient } from '@/stores/client.js'
 import {useUser} from '@/stores/user.js'
 import {useConfig} from '@/stores/config.js'
+import { useSelection } from '@/stores/selection';
 const {access} = defineProps({
     access: Object
 })
 const client = useClient()
 const user = useUser()
 const config = useConfig()
+const selection = useSelection()
+function selectCharter (id) {
+    selection.setCharter(id)
+}
 </script>
 <template>
   <div class="msg-auth">
@@ -24,8 +30,10 @@ const config = useConfig()
         </template>
       </div>
     </template>
+
     <template v-if="client.current && client.current.sso && access.download <=0">
         <template v-if="access.download === 0">
+        <!-- utilisateur a les droits mais n'est pas connecté-->
         <div >
         <h3>Important!</h3>
         <template v-if="config.state.lang === 'fr'">
@@ -43,21 +51,72 @@ const config = useConfig()
         </div>
         </template>
         <template v-else>
-        <div>
-        <template v-if="config.state.lang === 'fr'">
-            <b>Vos droits sont insuffisants!</b><br />
-            Consultez votre profile pour connaître vos droits et éventuellement demander l'accès à ces ressources!
-            <br /> 
-            <button @click="config.profile=true" style="vertical-align:middle;">Voir profile</button>
-        </template>
-        <template v-else>
-            <b>Your rights are insufficient!</b><br />
-            Check your profile to learn about your rights and potentially request access to these resources!
-            <br /> 
-            <button @click="config.profile=true" style="vertical-align:middle;">View profile</button>
-    
-        </template>
-        </div>
+            <template v-if="!access.charter">
+                <div>
+                <template v-if="config.state.lang === 'fr'">
+                    <b>Vos droits sont insuffisants!</b><br />
+                    Consultez votre profile pour connaître vos droits et éventuellement demander l'accès à ces ressources!
+                    <br /> 
+                    <button @click="config.profile=true" style="vertical-align:middle;">Voir profile</button>
+                </template>
+                <template v-else>
+                    <b>Your rights are insufficient!</b><br />
+                    Check your profile to learn about your rights and potentially request access to these resources!
+                    <br /> 
+                    <button @click="config.profile=true" style="vertical-align:middle;">View profile</button>
+            
+                </template>
+                </div>
+            </template>
+            <template v-else>
+                <div>
+                <template v-if="!access.charter.signed">
+                    <template v-if="config.state.lang === 'fr'">
+                        Pour télécharger les données vous devez signer <b>la charte d'utilisation</b>.<br />
+                        
+                        <br /> 
+                        <button @click="selectCharter(access.charter.id)" style="vertical-align:middle;">Signer</button>
+                    </template>
+                    <template v-else>
+                       To download the data, you must sign the <b>Terms of Use</b><br />
+                        <br /> 
+                        <button @click="selectCharter(access.charter.id)" style="vertical-align:middle;">Sign</button>
+                    </template>
+                </template>
+                <template v-else-if="!access.charter.only && client.current.sso && client.current.sso.getEmail()">
+                    <div>
+                    <template v-if="config.state.lang === 'fr'">
+                        <b>Vos droits d'accès sont limités aux données publiques!</b><br />
+                        Consultez votre profile pour connaître vos droits d'accès à ces ressources!
+                        <br /> 
+                        <button @click="config.profile=true" style="vertical-align:middle;">Voir profile</button>
+                    </template>
+                    <template v-else>
+                        <b>Your access rights are limited to public data!</b><br />
+                        Check your profile to learn about your access rights to these resources!
+                        <br /> 
+                        <button @click="config.profile=true" style="vertical-align:middle;">View profile</button>
+                    </template>
+                    </div>
+                </template>
+                <template v-if="client.current.sso && !client.current.sso.getEmail()">
+                    <div>
+                    <template v-if="config.state.lang === 'fr'">
+                        Pour télécharger ces ressources, vous devez autoriser le service <b>{{client.current.name}}</b> 
+                        <br />à accéder à vos données personnelles (email, nom, rôles).
+                        <br />
+                        <button @click="client.current.sso.login()" style="vertical-align:middle;">Autoriser</button>
+                    </template>
+                    <template v-else>
+                        To download these resources, you must allow the <b>{{client.current.name}}</b> service 
+                        <br/>to access your personal data (email, name, roles).
+                        <br />
+                        <button @click="client.current.sso.login()" style="vertical-align:middle;">Authorize</button>
+                    </template>
+                    </div>
+                </template>
+                </div>
+            </template>
         </template>
     </template>
  </div>
