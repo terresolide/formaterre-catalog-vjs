@@ -23,7 +23,12 @@ const config = useConfig()
             <div class="description" v-if="metadata.description" v-html="metadata.description" />
             <dl>
                <dt >{{$t('identifier')}}</dt>
-               <dd>{{metadata.identifier}}</dd>
+               <dd><template v-if="metadata.identifier.authority && metadata.identifier.authority.toLowerCase().indexOf('doi') >= 0">DOI:</template>
+                <template v-if="metadata.identifier.href">
+                    <a :href="metadata.identifier.href" target="_blank">{{ metadata.identifier.value }}</a>
+                </template>
+                <template v-else>{{metadata.identifier.value}}</template>
+                </dd>
             </dl>
             <dl>
                <dt >{{$t('status')}}</dt>

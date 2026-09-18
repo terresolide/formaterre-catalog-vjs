@@ -100,9 +100,14 @@ function show () {
                   </router-link>
                 </template>
                 <template v-else-if="metadata.dataCenter">
-                    <a v-for="item in metadata.dataCenter" :href="item.website" :title="item.description" target="_blank" class="mtdt-group-logo">
-                        <img :src="item.logo"/>
-                    </a>
+                    <template v-for="item in metadata.dataCenter">
+                        <template v-if="item">
+                            <a  :href="item.website || item.id" :title="item.description" target="_blank" class="mtdt-group-logo">
+                                <img :src="item.logo"/>
+                            </a>
+                        </template>
+                        
+                    </template>
                 </template>
             </div>
             <div style="display:inline-block;text-align:right;vertical-align:middle;margin-right:0px;width:49%;">

@@ -60,8 +60,18 @@ export default function (attrs) {
         var dataInfo = json['gmd:identificationInfo']['gmd:MD_DataIdentification']
         
         metadata.status = JSONPATH.query(json,"$..['gmd:status']['gmd:MD_ProgressCode']['@codeListValue']")[0]
-        metadata.identifier = JSONPATH.query(dataInfo, "$..['gmd:identifier']..['gco:CharacterString']['#text']")[0]
-      
+        var code = JSONPATH.query(dataInfo, "$..['gmd:identifier']..['gmd:code']")[0]
+        metadata.identifier = {
+            authority: JSONPATH.query(dataInfo, "$..['gmd:identifier']..['gmd:authority']..['gmd:title']['gco:CharacterString']['#text']")[0],
+        }
+        
+        if (code['gco:CharacterString']) {
+          metadata.identifier.value = code['gco:CharacterString']['#text']
+        } else {
+          metadata.identifier.href =  code['gmx:Anchor']['@xlink:href']
+          metadata.identifier.value = code['gmx:Anchor']['#text']
+        }
+        console.log(metadata.identifier)
         // metadata.dataCenter =
         if (dataInfo['gmd:topicCategory']) {
         metadata.topicCat = dataInfo['gmd:topicCategory']['gmd:MD_TopicCategoryCode']
@@ -87,7 +97,7 @@ export default function (attrs) {
             JSONPATH.query(dataInfo['gmd:pointOfContact'], "$..['gmd:CI_ResponsibleParty']"), idLang)
 
         metadata.contacts = {resource: contacts}
-        console.log(contacts)
+        
         if (catalog.organismThesaurus && catalog.organismThesaurus.th_name.endsWith('OrgForResourceObject')) {
                 metadata.dataCenter = []
                 var role = catalog.organismThesaurus.th_name.replace('OrgForResourceObject', '')

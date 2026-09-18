@@ -108,7 +108,7 @@ function selectCharter (id) {
                         <button @click="client.current.sso.login()" style="vertical-align:middle;">Autoriser</button>
                     </template>
                     <template v-else>
-                        To download these resources, you must allow the <b>{{client.current.name}}</b> service 
+                        Tos download these resources, you must allow the <b>{{client.current.name}}</b> service 
                         <br/>to access your personal data (email, name, roles).
                         <br />
                         <button @click="client.current.sso.login()" style="vertical-align:middle;">Authorize</button>
