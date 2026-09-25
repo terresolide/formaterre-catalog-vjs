@@ -42,6 +42,7 @@ let currentCatalog = computed(() => {
     <template v-if="loading">
        <div class="loading"><font-awesome-icon icon="fa-solid fa-spinner" spin  /> </div>
     </template>
+   
     <template v-if="route.name !== 'login'">
         <header>
             
@@ -75,6 +76,9 @@ let currentCatalog = computed(() => {
             </div>
         </header>
   </template>
+   <template v-if="!loading && !catalog.thesaurus">
+        <div style="color:darkred;font-size:50px;text-align:center;margin-top:50px;"> UNDER MAINTENANCE </div>
+    </template>
   <RouterView />
 </template>
 <style>

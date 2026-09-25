@@ -4,7 +4,7 @@ import {useConfig} from './config'
 export const useCatalog = defineStore('catalog', {
   state: () => ({
     list: [],
-    thesaurus: null,
+    thesaurus: [],
     tilename: '',
     catalogs: null,
     currentGrp: null,
@@ -27,8 +27,12 @@ export const useCatalog = defineStore('catalog', {
                 }
             }
             fetch(url, {headers: {'accept':'application/json', 'accept-language': config.state.lang}})
-            .then(resp => resp.json())
+            .then(resp => {
+                this.thesaurus = null
+                return resp.json()
+            })
             .then(json => {
+                console.log(json)
                 this.initialized = true
                 if (json.tileThesaurus) {
                     this.list = json.tiles

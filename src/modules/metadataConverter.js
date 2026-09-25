@@ -71,7 +71,6 @@ export default function (attrs) {
           metadata.identifier.href =  code['gmx:Anchor']['@xlink:href']
           metadata.identifier.value = code['gmx:Anchor']['#text']
         }
-        console.log(metadata.identifier)
         // metadata.dataCenter =
         if (dataInfo['gmd:topicCategory']) {
         metadata.topicCat = dataInfo['gmd:topicCategory']['gmd:MD_TopicCategoryCode']
@@ -123,6 +122,7 @@ export default function (attrs) {
         extractAssociation(metadata, dataInfo['gmd:aggregationInfo'])
         extractResolution(metadata, dataInfo['gmd:spatialResolution'])
         extractSpatialRepresentation(metadata, dataInfo['gmd:spatialRepresentationType'])
+        console.log(metadata)
         return metadata
     }
     
