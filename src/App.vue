@@ -76,10 +76,12 @@ let currentCatalog = computed(() => {
             </div>
         </header>
   </template>
-   <template v-if="!loading && !catalog.thesaurus">
+   <template v-if="(!loading && !catalog.thesaurus) || config.state.undermaintenance">
         <div style="color:darkred;font-size:50px;text-align:center;margin-top:50px;"> UNDER MAINTENANCE </div>
     </template>
-  <RouterView />
+    <template v-else>
+      <RouterView />
+    </template>
 </template>
 <style>
 /**

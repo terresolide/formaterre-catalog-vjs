@@ -13,7 +13,8 @@ export const useConfig = defineStore('config', () => {
       formatDate: '',
       size:24,
       sortBy: 'popularity',
-      profile: false
+      profile: false,
+      undermaintenance: false
   }
 
   function init(conf) {

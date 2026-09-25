@@ -58,7 +58,6 @@ export const useCatalog = defineStore('catalog', {
                     this.getGroups()
                 }
             }).catch(err => {
-                console.log(typeof this.thesaurus)
                 if (typeof this.thesaurus ===  'array' || typeof this.thesaurus === 'object') {
                     this.thesaurus = null
                 }
