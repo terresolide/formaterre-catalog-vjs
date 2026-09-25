@@ -28,11 +28,9 @@ export const useCatalog = defineStore('catalog', {
             }
             fetch(url, {headers: {'accept':'application/json', 'accept-language': config.state.lang}})
             .then(resp => {
-                this.thesaurus = null
                 return resp.json()
             })
             .then(json => {
-                console.log(json)
                 this.initialized = true
                 if (json.tileThesaurus) {
                     this.list = json.tiles
@@ -58,6 +56,11 @@ export const useCatalog = defineStore('catalog', {
                     })
                 } else {
                     this.getGroups()
+                }
+            }).catch(err => {
+                console.log(typeof this.thesaurus)
+                if (typeof this.thesaurus ===  'array' || typeof this.thesaurus === 'object') {
+                    this.thesaurus = null
                 }
             })
         }
