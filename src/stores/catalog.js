@@ -19,6 +19,7 @@ export const useCatalog = defineStore('catalog', {
         if (!this.initialized) {
             const config = useConfig()
             var url = config.state.geonetwork + '/srv/api/groups?withReservedGroup=false'
+            console.log(config.state.tools)
             if (config.state.tools) {
                 if (config.state.app) {
                     url = config.state.tools + '/api/tiles/' + config.state.app
@@ -26,8 +27,10 @@ export const useCatalog = defineStore('catalog', {
                     url = config.state.tools + '/api/groups'
                 }
             }
+            url = new URL(url)
             fetch(url, {headers: {'accept':'application/json', 'accept-language': config.state.lang}})
             .then(resp => {
+                console.log(resp)
                 return resp.json()
             })
             .then(json => {
@@ -58,6 +61,7 @@ export const useCatalog = defineStore('catalog', {
                     this.getGroups()
                 }
             }).catch(err => {
+                console.log(err)
                 if (typeof this.thesaurus ===  'array' || typeof this.thesaurus === 'object') {
                     this.thesaurus = null
                 }

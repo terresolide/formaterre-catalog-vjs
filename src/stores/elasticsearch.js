@@ -195,7 +195,7 @@ export const useElasticsearch = defineStore('elasticsearch', {
                 delete parameters.query.bool.must_not
             } else {
                 this.step = 'step1'
-                aggregations = Object.assign({},this.aggregations.step1)
+                aggregations = Object.assign(aggregations,this.aggregations.step1)
             }
             // aggregations['provider'] = {
             //     terms: {

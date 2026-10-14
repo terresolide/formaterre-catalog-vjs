@@ -64,12 +64,13 @@ export default function (attrs) {
         metadata.identifier = {
             authority: JSONPATH.query(dataInfo, "$..['gmd:identifier']..['gmd:authority']..['gmd:title']['gco:CharacterString']['#text']")[0],
         }
-        
-        if (code['gco:CharacterString']) {
-          metadata.identifier.value = code['gco:CharacterString']['#text']
-        } else {
-          metadata.identifier.href =  code['gmx:Anchor']['@xlink:href']
-          metadata.identifier.value = code['gmx:Anchor']['#text']
+        if (code ) {
+          if (code['gco:CharacterString']) {
+            metadata.identifier.value = code['gco:CharacterString']['#text']
+          } else {
+            metadata.identifier.href =  code['gmx:Anchor']['@xlink:href']
+            metadata.identifier.value = code['gmx:Anchor']['#text']
+          }
         }
         // metadata.dataCenter =
         if (dataInfo['gmd:topicCategory']) {
@@ -414,8 +415,10 @@ export default function (attrs) {
     function extractKeywords (metadata, json, idLang) {
     
         var keywords = []
-
-        if (json) 
+        if (json && !json[0]) {
+          json = [json]
+        }
+        if (json ) 
         json.forEach(function (keynode) {
 
             var list = keynode['gmd:MD_Keywords']['gmd:keyword']
