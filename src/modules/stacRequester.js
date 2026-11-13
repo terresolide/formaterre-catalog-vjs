@@ -7,8 +7,8 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
     for (var key in fixed) {
         mappingParameters[key.replace(':', '_')] = key
     }
-    
-    const parameters =  {page: 1, limit: limit, query: {}, sortBy:[{direction: 'desc',field: 'start_datetime' }]}
+    console.log(mappingParameters)
+    const parameters =  {page: 1, limit: limit, sortBy:[{direction: 'desc',field: 'start_datetime' }]}
     const predefined =  {
          start: "start",
          end: "end",
