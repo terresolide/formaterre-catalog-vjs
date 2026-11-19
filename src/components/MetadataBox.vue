@@ -75,9 +75,22 @@ function show () {
             </router-link>
         </template>
         <div class="element-description">
-            <div v-if="metadata.quicklook || metadata.status" style="display:block;float:left;max-width:120px;text-align:center;">
+            <div v-if="metadata.quicklook" style="display:block;float:left;max-width:120px;text-align:center;">
                 <img :src="metadata.quicklook.src" :title="metadata.quicklook.title" v-if="metadata.quicklook"/>
-                 <div class="mtdt-status" v-if="metadata.status"  >
+                 <div v-if="metadata.status" class="mtdt-status"  >
+                    {{metadata.status.label || metadata.status}}
+                 </div>
+       
+            </div>
+            <div v-else-if="metadata.images && metadata.images.length > 0" style="display:block;float:left;max-width:120px;text-align:center;">
+                <img :src="metadata.images[0][1]" :title="metadata.images[0][0]" />
+                 <div v-if="metadata.status" class="mtdt-status"   >
+                    {{metadata.status.label || metadata.status}}
+                 </div>
+       
+            </div>
+            <div v-else-if="metadata.status" style="display:block;float:left;max-width:120px;text-align:center;">
+                 <div v-if="metadata.status" class="mtdt-status"   >
                     {{metadata.status.label || metadata.status}}
                  </div>
        
