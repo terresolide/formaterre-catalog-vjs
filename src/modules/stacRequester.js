@@ -53,35 +53,43 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
     function prepareRequest( newroute) {
         // initParameters()
         
-        if (newroute.query.from) {
-          var nb = parseInt(newroute.query.to) - parseInt(newroute.query.from) + 1
-          parameters.limit = nb
-          parameters.page = Math.round((parseInt(newroute.query.from) -1) / nb) + 1
-        }
-        if (newroute.query.bbox) {
-            var bbox = newroute.query.bbox.split(',')
-            parameters.bbox = bbox.map(x => parseFloat(x))
-        }
-        if (newroute.query.start) {
-          parameters.query['end_datetime'] = {gte: newroute.query.start + 'T00:00:00.000Z'}
-        }
-        if (newroute.query.end) {
-          parameters.query['start_datetime']= {lte: newroute.query.end + 'T23:59:59.000Z'}
-        }
+        // if (newroute.query.from) {
+        //   var nb = parseInt(newroute.query.to) - parseInt(newroute.query.from) + 1
+        //   parameters.limit = nb
+        //   parameters.page = Math.round((parseInt(newroute.query.from) -1) / nb) + 1
+        // }
+        // if (newroute.query.bbox) {
+        //     var bbox = newroute.query.bbox.split(',')
+        //     parameters.bbox = bbox.map(x => parseFloat(x))
+        // }
+        // if (newroute.query.start) {
+          
+        //   parameters.query['end_datetime'] = {gte: newroute.query.start + 'T00:00:00.000Z'}
+        // }
+        // if (newroute.query.end) {
+        //   parameters.query['start_datetime']= {lte: newroute.query.end + 'T23:59:59.000Z'}
+        // }
+        var filter = []
         for (var key in defaultQuery) {
             // les filtres fixes, issus des metadonnées
-            parameters.query[key] = {in: defaultQuery[key]}
-        }
-        for (var key in newroute.query) {
-            if (['from', 'to', 'bbox', 'start', 'end'].indexOf(key) < 0) {
-                parameters.query[key] = {in: newroute.query[key].split(',')}
+            if (key === 'collection') {
+                parameters.collections = defaultQuery[key]
+            } else {
+                filter.push({args:[{property: key}, defaultQuery[key]], op: '='})
             }
+            
         }
-        for(var name in mappingParameters) {
-            if (newroute.query[name]){
-                parameters.query[mappingParameters[name]] = {in: newroute.query[name].split(',')}
-            }
-        }
+        // for (var key in newroute.query) {
+        //     if (['from', 'to', 'bbox', 'start', 'end'].indexOf(key) < 0) {
+        //         parameters.query[key] = {in: newroute.query[key].split(',')}
+        //     }
+        // }
+        // for(var name in mappingParameters) {
+        //     if (newroute.query[name]){
+        //         parameters.query[mappingParameters[name]] = {in: newroute.query[name].split(',')}
+        //     }
+        // }
+        //parameters.filter = filter[0]
     }
     function treatmentGeojson (parent, data) {
       var metadatas = {}
