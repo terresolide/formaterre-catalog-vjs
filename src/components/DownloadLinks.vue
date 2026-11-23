@@ -45,7 +45,7 @@ function commandLine(index) {
 
 function download (index) {
     if (access.download === 0) {
-        // emit('click')
+        emit('click')
         return
     }
     recordDownload({link: links[index].url, uuid: uuid, type: 'download', cds: group})
@@ -186,7 +186,7 @@ function getTokenInHeader (link, token) {
        <div v-if="links.length > 1 || mode === 'page'" class="mtdt-expand mtdt-links">
     <ul>
       <template v-for="(link, index) in links">
-        <li @click="commandLine(index)" style="cursor:pointer;" :class="{disabled: access.download < 0 && (!access.charter || !access.charter.signed), notAuthenticated: access.download === 0}">
+        <li @click="commandLine(index)" style="cursor:pointer;" :class="{disabled: access.download < 0 || (access.charter && !access.charter.signed), notAuthenticated: access.download === 0}">
           <span  :title="link.description">{{ link.name }}</span>
         </li>
       </template>

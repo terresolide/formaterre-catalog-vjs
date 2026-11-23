@@ -75,6 +75,7 @@ function show () {
             </router-link>
         </template>
         <div class="element-description">
+            {{ access }}
             <div v-if="metadata.quicklook" style="display:block;float:left;max-width:120px;text-align:center;">
                 <img :src="metadata.quicklook.src" :title="metadata.quicklook.title" v-if="metadata.quicklook"/>
                  <div v-if="metadata.status" class="mtdt-status"  >

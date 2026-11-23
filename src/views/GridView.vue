@@ -77,6 +77,10 @@
             var roles = stacAccess.download.split(',')
             var charterObj = {}
             if (charterId) {
+              if (roles.length === 1) {
+                 acc.download = client.charters.signed.indexOf(charterId) >= 0
+                 acc.view = acc.download
+              }
               var charterObj = {
                 charter: {
                   id: charterId,
