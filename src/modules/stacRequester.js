@@ -1,6 +1,6 @@
-import {useClient} from '@/stores/client.js'
+// import {useClient} from '@/stores/client.js'
 export function stacRequester (url, fixed={}, limit=24, cds) {
-    const client = useClient()
+    // const client = useClient()
     const stacParameters = []
     console.log(url)
     const mappingParameters =  {}
@@ -147,6 +147,9 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
         if (feature.properties.identifier) {
           properties.identifier = feature.properties.identifier
           properties.title = feature.properties.identifier
+        } else if (feature.id) {
+            properties.identifier = feature.id
+            properties.title = feature.id
         }
         if (feature.properties['start_datetime']) {
           properties.temporalExtents = [{
@@ -155,8 +158,8 @@ export function stacRequester (url, fixed={}, limit=24, cds) {
           }]
         }
         
-        if (feature.properties.datetime) {
-          properties.dateStamp = feature.properties.datetime
+        if (feature.properties.updated || feature.properties.created) {
+          properties.dateStamp = feature.properties.updated || feature.properties.created
         }
         if (feature.properties['processing:datetime']) {
           properties.processingDate = feature.properties['processing:datetime']
